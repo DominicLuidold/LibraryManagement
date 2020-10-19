@@ -28,3 +28,8 @@ steps:
     CleanTargetFolder: true
     OverWrite: true
     flattenFolders: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: 'WebApp'
+    publishLocation: 'Container'
