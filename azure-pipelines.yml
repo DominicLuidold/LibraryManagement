@@ -1,35 +1,64 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
 - master
+- develop
+- feature/*
+- release/*
+- bugfix/*
+- hotfix/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: Default
+  demands: maven
 
 steps:
 - task: Maven@3
+  displayName: 'Maven Package'
   inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+    options: '-ntp'
+    codeCoverageToolOption: JaCoCo
+    codeCoverageFailIfEmpty: true
+    javaHomeOption: Path
+    jdkDirectory: '/usr/lib/jvm/java-8-openjdk-amd64'
+
+- task: Maven@3
+  displayName: 'Maven Site'
+  inputs:
+    goals: site
+    options: '-ntp'
+    publishJUnitResults: false
+    javaHomeOption: Path
+    jdkDirectory: '/usr/lib/jvm/java-8-openjdk-amd64'
+
 - task: CopyFiles@2
+  displayName: 'Copy WAR files to: $(build.artifactstagingdirectory)/webapp'
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/*.war'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+    TargetFolder: '$(build.artifactstagingdirectory)/webapp'
     CleanTargetFolder: true
     OverWrite: true
     flattenFolders: true
+  condition: succeededOrFailed()
+
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: WebApp'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: 'WebApp'
-    publishLocation: 'Container'
+    PathtoPublish: '$(build.artifactstagingdirectory)/webapp'
+    ArtifactName: WebApp
+  condition: succeededOrFailed()
+
+- task: CopyFiles@2
+  displayName: 'Copy MVN Site to: $(build.artifactstagingdirectory)/mvn-site'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)/target/site/'
+    TargetFolder: '$(build.artifactstagingdirectory)/mvn-site'
+    CleanTargetFolder: true
+    OverWrite: true
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: MVN Site'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)/mvn-site'
+    ArtifactName: 'MVN Site'
+  condition: succeededOrFailed()

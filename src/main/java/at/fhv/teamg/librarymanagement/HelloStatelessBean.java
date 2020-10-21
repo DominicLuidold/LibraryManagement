@@ -1,4 +1,4 @@
-package at.fhv.jee.example.ejb;
+package at.fhv.teamg.librarymanagement;
 
 import javax.ejb.Stateless;
 
