@@ -1,0 +1,37 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - bugfix/*
+      - hotfix/*
+  paths:
+    include:
+      - /server/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Gradle@2
+  displayName: 'Gradle'
+  inputs:
+    gradleWrapperFile: 'server/gradlew'
+    gradleOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    checkStyleRunAnalysis: true
+    tasks: 'build'
+    sonarQubeRunAnalysis: false
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage results'
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/jacocoTestReport.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/jacoco/test/**'
