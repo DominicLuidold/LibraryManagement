@@ -9,7 +9,7 @@ trigger:
       - hotfix/*
   paths:
     include:
-      - /server/*
+      - /client/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -18,14 +18,14 @@ steps:
 - task: Gradle@2
   displayName: 'Gradle'
   inputs:
-    workingDirectory: 'server/'
-    gradleWrapperFile: 'server/gradlew'
+    workingDirectory: 'client/'
+    gradleWrapperFile: 'client/gradlew'
     gradleOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
+    jdkVersionOption: '1.11'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
-    testResultsFiles: 'server/**/TEST-*.xml'
+    testResultsFiles: 'client/**/TEST-*.xml'
     checkStyleRunAnalysis: true
     tasks: 'build'
     sonarQubeRunAnalysis: false

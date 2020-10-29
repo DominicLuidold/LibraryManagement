@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="at.fhv.teamg.librarymanagement.client.controller.MainController">
+    <AnchorPane VBox.vgrow="ALWAYS">
+        <fx:include fx:id="userHeaderMenu" source="userHeaderMenu.fxml"/>
+        <fx:include fx:id="tabPane" source="tabPane.fxml"/>
+    </AnchorPane>
+</VBox>

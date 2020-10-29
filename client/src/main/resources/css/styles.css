@@ -1,0 +1,60 @@
+.warning,.error {
+    -fx-background-color: #FF000055;
+    -fx-prompt-text-fill: grey;
+}
+
+/* TAB PANE */
+.jfx-tab-pane .headers-region {
+    -fx-background-color: #2E426A;
+}
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: #2E426A;
+}
+.jfx-tab-pane .tab-selected-line {
+    -fx-background-color: white;
+    -fx-pref-height: 4;
+}
+.jfx-tab-pane .headers-region .tab:selected {
+    -fx-background-color: #5A7CA0;
+}
+
+.split-pane *.split-pane-divider {
+    -fx-padding: 0 1 0 1;
+}
+
+#tabsTopBorderPane {
+    -fx-background-color: rgba(39, 73, 109, 0.5);
+}
+
+#tabsBottomButtonHbox > Button{
+    -fx-background-color: #A7AEB4;
+    -fx-font-size: 120%;
+}
+
+#tabsBottomButtonHbox > Button:hover{
+    -fx-background-color:  #C1C8CE;
+}
+
+#tabsBottomButtonHbox > Button:pressed{
+    -fx-background-color:  #596075;
+    -fx-text-fill: white;
+}
+
+#txtRolePlain {
+    -fx-font-weight: bold;
+}
+
+#userShortcut {
+    -fx-background-color: rgba(20, 41, 82, 0.1);
+    -fx-font-weight: bolder;
+}
+#userShortcut:hover {
+    -fx-background-color: #5A7CA0;
+
+}
+
+/* UNCOMMENT WHEN WE HAVE NUTZERZENTRIERT SEMINAR
+*, root, .root {
+    -fx-font-family: "Comic Sans MS";
+}
+*/
