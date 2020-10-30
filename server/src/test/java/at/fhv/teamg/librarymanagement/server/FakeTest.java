@@ -1,8 +1,8 @@
-package at.fhv.teamg.librarymanagement.client;
-
-import org.junit.jupiter.api.Test;
+package at.fhv.teamg.librarymanagement.server;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 public class FakeTest {
 
