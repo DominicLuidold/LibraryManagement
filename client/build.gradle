@@ -11,7 +11,7 @@ plugins {
     id 'org.sonarqube' version '3.0'
 }
 
-group = 'at.fhv.teamg.librarymanagement.client'
+group = 'at.fhv.teamg.librarymanagement'
 version = '0.0.1'
 
 repositories {
@@ -31,6 +31,7 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-core:2.13.3'
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
 
+    implementation 'at.fhv.teamg.librarymanagement:LibraryManagement_Shared:0.+'
     implementation('org.controlsfx:controlsfx:11.0.2') {
         exclude group: 'org.controlsfx'
     }
@@ -59,7 +60,7 @@ tasks.named('test') {
 /* Checkstyle configuration */
 checkstyle {
     toolVersion = '8.36.2'
-    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    configFile = file("${rootDir}/../config/checkstyle/checkstyle.xml")
 }
 
 /* JaCoCo configuration */
@@ -72,7 +73,23 @@ jacocoTestReport {
         xml.enabled true
     }
 }
-build.dependsOn jacocoTestReport
+
+// Uncomment when ready
+
+/*
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+*/
+
 
 /* JavaFX configuration */
 javafx {

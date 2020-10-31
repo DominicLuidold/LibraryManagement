@@ -1,6 +1,10 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -20,11 +24,6 @@ import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.controlsfx.validation.decoration.StyleClassValidationDecoration;
 import org.controlsfx.validation.decoration.ValidationDecoration;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * GUI Controller responsible for processing the Login.

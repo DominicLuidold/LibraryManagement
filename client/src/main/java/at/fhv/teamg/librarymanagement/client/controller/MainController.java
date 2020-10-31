@@ -1,6 +1,12 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,14 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
     private static final Logger LOG = LogManager.getLogger(MainController.class);

@@ -2,6 +2,12 @@ package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import java.io.IOException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,13 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.StatusBar;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.ResourceBundle;
 
 public class TabPaneController implements Initializable, Parentable<MainController> {
     private static final Logger LOG = LogManager.getLogger(TabPaneController.class);

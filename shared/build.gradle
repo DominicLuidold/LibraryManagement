@@ -1,0 +1,57 @@
+plugins {
+    id 'java-library'
+
+    /* Project specific plugins */
+    id 'checkstyle'
+    id 'jacoco'
+    id 'org.sonarqube' version '3.0'
+}
+
+group = 'at.fhv.teamg.librarymanagement'
+version = '0.0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+
+/* Checkstyle configuration */
+checkstyle {
+    toolVersion = '8.36.2'
+    configFile = file("${rootDir}/../config/checkstyle/checkstyle.xml")
+}
+
+/* JaCoCo configuration */
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+// Uncomment when ready
+
+/*
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+*/

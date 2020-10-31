@@ -1,12 +1,11 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class SearchController implements Initializable, Parentable<MainController> {
     private static final Logger LOG = LogManager.getLogger(SearchController.class);
