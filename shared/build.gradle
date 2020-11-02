@@ -22,6 +22,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
 
 /* Checkstyle configuration */
 checkstyle {
@@ -39,6 +42,7 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+build.dependsOn jacocoTestReport
 
 // Uncomment when ready
 
@@ -52,6 +56,5 @@ jacocoTestCoverageVerification {
         }
     }
 }
-
 check.dependsOn jacocoTestCoverageVerification
 */

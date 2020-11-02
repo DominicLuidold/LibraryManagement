@@ -73,6 +73,7 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+build.dependsOn jacocoTestReport
 
 // Uncomment when ready
 
@@ -86,7 +87,6 @@ jacocoTestCoverageVerification {
         }
     }
 }
-
 check.dependsOn jacocoTestCoverageVerification
 */
 
