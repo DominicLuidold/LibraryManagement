@@ -35,7 +35,7 @@ steps:
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/LibraryManagement_Server-0.0.1.jar'
-    TargetFolder: '$(System.DefaultWorkingDirectory)/server'
+    TargetFolder: '$(build.artifactstagingdirectory)/server'
     CleanTargetFolder: true
     OverWrite: true
     flattenFolders: true
@@ -44,7 +44,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: Server'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/server'
+    PathtoPublish: '$(build.artifactstagingdirectory)/server'
     ArtifactName: Server
   condition: succeededOrFailed()
 
