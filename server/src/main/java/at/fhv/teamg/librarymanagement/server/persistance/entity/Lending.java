@@ -30,7 +30,7 @@ public class Lending {
     private int renewalCount = 0;
 
     @ManyToOne
-    private Medium medium;
+    private MediumCopy mediumCopy;
 
     public UUID getId() {
         return id;
@@ -52,7 +52,7 @@ public class Lending {
         return renewalCount;
     }
 
-    public Medium getMedium() {
-        return medium;
+    public MediumCopy getMediumCopy() {
+        return mediumCopy;
     }
 }

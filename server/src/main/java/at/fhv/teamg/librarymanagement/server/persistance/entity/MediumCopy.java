@@ -25,7 +25,7 @@ public class MediumCopy {
     @ManyToOne
     private Medium medium;
 
-    @OneToMany(mappedBy = "medium")
+    @OneToMany(mappedBy = "mediumCopy")
     private Set<Lending> lending = new LinkedHashSet<>();
 
     public UUID getId() {
