@@ -30,6 +30,16 @@ steps:
     tasks: 'build'
     sonarQubeRunAnalysis: false
 
+- task: CopyFiles@2
+  displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)/server'
+    CleanTargetFolder: true
+    OverWrite: true
+    flattenFolders: true
+  condition: succeededOrFailed()
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage results'
   inputs:
