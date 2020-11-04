@@ -35,8 +35,8 @@ steps:
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/*.jar'
-    #TargetFolder: '$(build.artifactstagingdirectory)/server'
-    TargetFolder: '/home/fhv_team/server'
+    TargetFolder: '$(build.artifactstagingdirectory)/server'
+    #TargetFolder: '/home/fhv_team/server'
     CleanTargetFolder: true
     OverWrite: true
     flattenFolders: true
@@ -45,7 +45,8 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: Server'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/server'
+    #PathtoPublish: '$(build.artifactstagingdirectory)/server'
+    PathtoPublish: '/home/fhv_team/azagent/azagent/_work/r2/a/server'
     ArtifactName: Server
   condition: succeededOrFailed()
 
