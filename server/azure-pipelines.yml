@@ -34,7 +34,7 @@ steps:
   displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**/LibraryManagement_Server-0.0.1.jar'
+    Contents: '**/*.jar'
     TargetFolder: '$(build.artifactstagingdirectory)/server'
     CleanTargetFolder: true
     OverWrite: true

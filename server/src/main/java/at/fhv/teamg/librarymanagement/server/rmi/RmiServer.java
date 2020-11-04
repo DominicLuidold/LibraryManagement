@@ -19,7 +19,10 @@ public class RmiServer {
         try {
             LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
             LibraryFactoryInterface remote = new LibraryFactory();
-            Naming.rebind("rmi://localhost/libraryfactory", remote);
+            Naming.rebind(
+                "rmi://vsts-team007.westeurope.cloudapp.azure.com/libraryfactory",
+                remote
+            );
             System.out.println("Server is ready");
             LOG.debug("RMI Server is ready.");
 
