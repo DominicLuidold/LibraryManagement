@@ -40,6 +40,14 @@ steps:
     OverWrite: true
     flattenFolders: true
   condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: Server'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: Server
+  condition: succeededOrFailed()
+
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage results'
   inputs:
