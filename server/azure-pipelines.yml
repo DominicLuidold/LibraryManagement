@@ -35,7 +35,8 @@ steps:
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/*.jar'
-    TargetFolder: '$(build.artifactstagingdirectory)/server'
+    #TargetFolder: '$(build.artifactstagingdirectory)/server'
+    TargetFolder: '/home/fhv_team/server'
     CleanTargetFolder: true
     OverWrite: true
     flattenFolders: true
