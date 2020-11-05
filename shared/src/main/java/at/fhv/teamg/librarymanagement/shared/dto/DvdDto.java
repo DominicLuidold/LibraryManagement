@@ -15,6 +15,7 @@ public class DvdDto implements Serializable {
     private final String actors;
     private final String ageRestriction;
     private final String durationMinutes;
+    private final String studio;
     private final String director;
 
 
@@ -28,6 +29,7 @@ public class DvdDto implements Serializable {
         this.actors = dvdDtoBuilder.actors;
         this.ageRestriction = dvdDtoBuilder.ageRestriction;
         this.durationMinutes = dvdDtoBuilder.durationMinutes;
+        this.studio = dvdDtoBuilder.studio;
         this.director = dvdDtoBuilder.director;
     }
 
@@ -42,6 +44,7 @@ public class DvdDto implements Serializable {
         private String actors;
         private String ageRestriction;
         private String durationMinutes;
+        private String studio;
         private String director;
 
         public DvdDtoBuilder(UUID id) {
@@ -80,6 +83,11 @@ public class DvdDto implements Serializable {
 
         public DvdDtoBuilder durationMinutes(String durationMinutes) {
             this.durationMinutes = durationMinutes;
+            return this;
+        }
+
+        public DvdDtoBuilder studio(String studio) {
+            this.studio = studio;
             return this;
         }
 
@@ -134,6 +142,10 @@ public class DvdDto implements Serializable {
 
     public String getDurationMinutes() {
         return this.durationMinutes;
+    }
+
+    public String getStudio() {
+        return this.studio;
     }
 
     public String getDirector() {

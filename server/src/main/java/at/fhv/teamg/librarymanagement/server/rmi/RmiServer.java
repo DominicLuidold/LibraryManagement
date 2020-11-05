@@ -17,9 +17,9 @@ public class RmiServer {
     public RmiServer() {
         LOG.debug("Start up RMI Server");
         try {
-            LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+            LocateRegistry.createRegistry(9988);
             LibraryFactoryInterface remote = new LibraryFactory();
-            Naming.rebind("rmi://localhost/libraryfactory", remote);
+            Naming.rebind("rmi://localhost:9988/libraryfactory", remote);
             System.out.println("Server is ready");
             LOG.debug("RMI Server is ready.");
 

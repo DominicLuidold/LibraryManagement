@@ -92,11 +92,11 @@ public class ReservationDto implements Serializable {
     @Override
     public String toString() {
         return "ReservationDto{"
-                + "id=" + id
-                + ", endDate=" + endDate
-                + ", startDate=" + startDate
-                + ", mediumId='" + mediumId + '\''
-                + ", userId=" + userId
-                + '}';
+            + "id=" + id
+            + ", endDate=" + endDate
+            + ", startDate=" + startDate
+            + ", mediumId='" + mediumId + '\''
+            + ", userId=" + userId
+            + '}';
     }
 }

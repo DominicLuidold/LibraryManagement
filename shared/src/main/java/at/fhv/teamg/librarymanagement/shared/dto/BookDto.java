@@ -40,7 +40,7 @@ public class BookDto implements Serializable {
         private String storageLocation;
         private String title;
         private String topic;
-
+        
         private String author;
         private String isbn10;
         private String isbn13;

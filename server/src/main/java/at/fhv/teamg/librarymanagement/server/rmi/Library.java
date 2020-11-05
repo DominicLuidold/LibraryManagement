@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.rmi;
 
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -9,7 +10,10 @@ import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,17 +25,71 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
-        return null;
+        List<GameDto> mockResult = new ArrayList<>();
+        mockResult.add(new GameDto.GameDtoBuilder(UUID.randomUUID())
+            .title("Lord of the Rings - The Fellowship of the Ring")
+            .platforms("PC")
+            .developer("Dev1")
+            .releaseDate(LocalDate.now())
+            .build());
+        mockResult.add(new GameDto.GameDtoBuilder(UUID.randomUUID())
+            .title("The Lord of the Rings - The Two Towers")
+            .platforms("XBOX One")
+            .developer("DICE")
+            .releaseDate(LocalDate.now())
+            .build());
+        mockResult.add(new GameDto.GameDtoBuilder(UUID.randomUUID())
+            .title("Harry Potter and the Philosopher`s Stone")
+            .platforms("PlayStation 5")
+            .developer("Dev2")
+            .releaseDate(LocalDate.now())
+            .build());
+        return mockResult;
     }
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
-        return null;
+        List<BookDto> mockResult = new ArrayList<>();
+        mockResult.add(new BookDto.BookDtoBuilder(UUID.randomUUID())
+            .title("Lord of the Rings - The Fellowship of the Ring")
+            .author("J.R.R. Tolkien")
+            .storageLocation("B-01")
+            .build());
+        mockResult.add(new BookDto.BookDtoBuilder(UUID.randomUUID())
+            .title("The Lord of the Rings - The Two Towers")
+            .author("J.R.R. Tolkien")
+            .storageLocation("B-02")
+            .build());
+        mockResult.add(new BookDto.BookDtoBuilder(UUID.randomUUID())
+            .title("Harry Potter and the Philosopher`s Stone")
+            .author("J.K. Rowling")
+            .storageLocation("B-03")
+            .build());
+        return mockResult;
     }
 
     @Override
     public List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException {
-        return null;
+        List<DvdDto> mockResult = new ArrayList<>();
+        mockResult.add(new DvdDto.DvdDtoBuilder(UUID.randomUUID())
+            .title("Lord of the Rings - The Fellowship of the Ring")
+            .director("J.R.R. Tolkien")
+            .storageLocation("M-1")
+            .releaseDate(LocalDate.now())
+            .build());
+        mockResult.add(new DvdDto.DvdDtoBuilder(UUID.randomUUID())
+            .title("The Lord of the Rings - The Two Towers")
+            .director("J.R.R. Tolkien")
+            .storageLocation("M-2")
+            .releaseDate(LocalDate.now())
+            .build());
+        mockResult.add(new DvdDto.DvdDtoBuilder(UUID.randomUUID())
+            .title("Harry Potter and the Philosopher`s Stone")
+            .director("J.R.R. Tolkien")
+            .storageLocation("M-3")
+            .releaseDate(LocalDate.now())
+            .build());
+        return mockResult;
     }
 
     @Override
