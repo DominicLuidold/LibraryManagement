@@ -32,6 +32,10 @@ public class ReservationDto implements Serializable {
             this.id = id;
         }
 
+        public ReservationDtoBuilder() {
+            //intentional empty
+        }
+
         public ReservationDtoBuilder endDate(LocalDate endDate) {
             this.endDate = endDate;
             return this;
@@ -55,10 +59,11 @@ public class ReservationDto implements Serializable {
 
         /**
          * Build a new ReservationDto.
+         *
          * @return new ReservationDto
          */
         public ReservationDto build() {
-            ReservationDto reservationDto =  new ReservationDto(this);
+            ReservationDto reservationDto = new ReservationDto(this);
             validateReservationDto(reservationDto);
             return reservationDto;
         }
