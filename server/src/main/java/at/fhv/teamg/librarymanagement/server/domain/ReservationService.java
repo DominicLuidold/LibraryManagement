@@ -102,12 +102,12 @@ public class ReservationService extends BaseMediaService {
      * @return Newly created Reservation
      */
     public Optional<ReservationDto> createReservation(ReservationDto reservationDto) {
-        Optional<Medium> medium = findMediumById(reservationDto.getmediumId());
+        Optional<Medium> medium = findMediumById(reservationDto.getMediumId());
         if (!medium.isPresent()) {
             return Optional.empty();
         }
 
-        Optional<User> user = findUserById(reservationDto.getuserId());
+        Optional<User> user = findUserById(reservationDto.getUserId());
         if (!user.isPresent()) {
             return Optional.empty();
         }

@@ -7,47 +7,37 @@ public class MediumCopyDto {
     private final boolean isAvailable;
     private final UUID mediumID;
 
-    /**
-     * Dto for Copy.
-     * @param builder builds the DTO
-     */
-    public MediumCopyDto(CopyDtoBuilder builder) {
+    private MediumCopyDto(MediumCopyDtoBuilder builder) {
         this.id = builder.id;
         this.isAvailable = builder.isAvailable;
         this.mediumID = builder.mediumID;
     }
 
-    public static class CopyDtoBuilder {
+    public static class MediumCopyDtoBuilder {
         private UUID id;
         private boolean isAvailable;
         private UUID mediumID;
 
-        public CopyDtoBuilder(UUID id) {
+        public MediumCopyDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
+
+        public MediumCopyDtoBuilder(UUID id) {
             this.id = id;
         }
 
-        public CopyDtoBuilder isAvailable(boolean isAvailable) {
+        public MediumCopyDtoBuilder isAvailable(boolean isAvailable) {
             this.isAvailable = isAvailable;
             return this;
         }
 
-        public CopyDtoBuilder mediumID(UUID mediumID) {
+        public MediumCopyDtoBuilder mediumID(UUID mediumID) {
             this.mediumID = mediumID;
             return this;
         }
 
-        /**
-         * Build a new MediumCopyDto.
-         * @return new MediumCopyDto
-         */
         public MediumCopyDto build() {
-            MediumCopyDto mediumCopyDto = new MediumCopyDto(this);
-            validate(mediumCopyDto);
-            return mediumCopyDto;
-        }
-
-        private void validate(MediumCopyDto mediumCopyDto) {
-            //validate
+            return new MediumCopyDto(this);
         }
     }
 

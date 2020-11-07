@@ -17,17 +17,17 @@ public class ReservationDtoTest {
         UUID userId = UUID.fromString("2401e527-1337-1337-1337-21119a686ed1");
 
         ReservationDto reservationDto = new ReservationDto.ReservationDtoBuilder(id)
-                .startDate(startDate)
-                .endDate(endDate)
-                .mediumId(mediumId)
-                .userId(userId)
-                .build();
+            .startDate(startDate)
+            .endDate(endDate)
+            .mediumId(mediumId)
+            .userId(userId)
+            .build();
 
         assertSame(reservationDto.getId(), id, "UUID should be the same");
         assertSame(reservationDto.getStartDate(), startDate, "startDate should be the same");
         assertSame(reservationDto.getEndDate(), endDate, "endDate should be the same");
-        assertSame(reservationDto.getmediumId(), mediumId, "mediumId should be the same");
-        assertSame(reservationDto.getuserId(), userId, "userId should be the same");
+        assertSame(reservationDto.getMediumId(), mediumId, "mediumId should be the same");
+        assertSame(reservationDto.getUserId(), userId, "userId should be the same");
 
     }
 }

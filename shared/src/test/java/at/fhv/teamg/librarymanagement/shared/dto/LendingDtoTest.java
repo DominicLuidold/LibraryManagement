@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class LendingDtoTest {
+
     @Test
     void lendingDtoBuilder_shouldReturnValidDto() {
         UUID id = UUID.fromString("2401e527-4bd3-4b67-8641-21119a686ed1");
@@ -28,7 +29,7 @@ public class LendingDtoTest {
         assertSame(lendingDto.getStartDate(), startDate, "startDate should be the same");
         assertSame(lendingDto.getEndDate(), endDate, "endDate should be the same");
         assertSame(lendingDto.getRenewalCount(), renewalCount, "renewalCount should be the same");
-        assertSame(lendingDto.getmediumCopyId(), mediumCopyId, "mediumCopyId should be the same");
+        assertSame(lendingDto.getMediumCopyId(), mediumCopyId, "mediumCopyId should be the same");
         assertSame(lendingDto.getReturnDate(), returnDate, "returnDate should be the same");
     }
 }

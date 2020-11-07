@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class LendingDto implements Serializable {
     private static final long serialVersionUID = 4488858801782386377L;
+
     private final UUID id;
     private final LocalDate endDate;
     private final Integer renewalCount;
@@ -29,6 +30,10 @@ public class LendingDto implements Serializable {
         private LocalDate returnDate;
         private LocalDate startDate;
         private UUID mediumCopyId;
+
+        public LendingDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
 
         public LendingDtoBuilder(UUID id) {
             this.id = id;
@@ -59,21 +64,8 @@ public class LendingDto implements Serializable {
             return this;
         }
 
-
-        /**
-         * Build a new LendingDto.
-         *
-         * @return new LendingDto
-         */
         public LendingDto build() {
-            LendingDto lendingDto = new LendingDto(this);
-            validateLendingDto(lendingDto);
-            return lendingDto;
-        }
-
-        private void validateLendingDto(LendingDto lendingDto) {
-            //Do some basic validations to check
-            //if user object does not break any assumption of system
+            return new LendingDto(this);
         }
     }
 
@@ -97,19 +89,7 @@ public class LendingDto implements Serializable {
         return this.startDate;
     }
 
-    public UUID getmediumCopyId() {
+    public UUID getMediumCopyId() {
         return this.mediumCopyId;
-    }
-
-    @Override
-    public String toString() {
-        return "LendingDto{"
-                + "id=" + id
-                + ", endDate=" + endDate
-                + ", renewalCount=" + renewalCount
-                + ", returnDate=" + returnDate
-                + ", startDate=" + startDate
-                + ", mediumCopyId=" + mediumCopyId
-                + '}';
     }
 }

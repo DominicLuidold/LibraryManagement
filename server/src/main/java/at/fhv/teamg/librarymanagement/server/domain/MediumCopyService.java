@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class CopyService extends BaseMediaService {
+public class MediumCopyService extends BaseMediaService {
 
     /**
      * Get List of copies.
@@ -75,7 +75,8 @@ public class CopyService extends BaseMediaService {
         List<MediumCopyDto> copies = new LinkedList<>();
 
         medium.getCopies().forEach(copy -> {
-            MediumCopyDto.CopyDtoBuilder builder = new MediumCopyDto.CopyDtoBuilder(copy.getId());
+            MediumCopyDto.MediumCopyDtoBuilder builder =
+                new MediumCopyDto.MediumCopyDtoBuilder(copy.getId());
 
             builder.isAvailable(copy.isAvailable())
                 .mediumID(medium.getId());

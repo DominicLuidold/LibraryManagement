@@ -20,6 +20,9 @@ public class Dvd {
     private int durationMinutes;
 
     @Column(nullable = false)
+    private String director;
+
+    @Column(nullable = false)
     private String actors;
 
     @Column(nullable = false)
@@ -37,6 +40,10 @@ public class Dvd {
 
     public int getDurationMinutes() {
         return durationMinutes;
+    }
+
+    public String getDirector() {
+        return director;
     }
 
     public String getActors() {

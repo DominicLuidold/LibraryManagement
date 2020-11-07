@@ -2,21 +2,26 @@ package at.fhv.teamg.librarymanagement.shared.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class GameDto implements Serializable {
     private static final long serialVersionUID = 5478353807950770613L;
+
+    /* Medium properties */
     private final UUID id;
     private final LocalDate releaseDate;
     private final String storageLocation;
     private final String title;
     private final String topic;
+    private final List<String> tags;
+    private final String availability;
 
+    /* Game properties */
     private final String publisher;
     private final String developer;
     private final String ageRestriction;
     private final String platforms;
-
 
     private GameDto(GameDtoBuilder gameDtoBuilder) {
         this.id = gameDtoBuilder.id;
@@ -24,6 +29,8 @@ public class GameDto implements Serializable {
         this.storageLocation = gameDtoBuilder.storageLocation;
         this.title = gameDtoBuilder.title;
         this.topic = gameDtoBuilder.topic;
+        this.tags = gameDtoBuilder.tags;
+        this.availability = gameDtoBuilder.availability;
 
         this.publisher = gameDtoBuilder.publisher;
         this.developer = gameDtoBuilder.developer;
@@ -31,18 +38,23 @@ public class GameDto implements Serializable {
         this.platforms = gameDtoBuilder.platforms;
     }
 
-
     public static class GameDtoBuilder {
         private UUID id;
         private LocalDate releaseDate;
         private String storageLocation;
         private String title;
         private String topic;
+        private List<String> tags;
+        private String availability;
 
         private String publisher;
         private String developer;
         private String ageRestriction;
         private String platforms;
+
+        public GameDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
 
         public GameDtoBuilder(UUID id) {
             this.id = id;
@@ -68,6 +80,16 @@ public class GameDto implements Serializable {
             return this;
         }
 
+        public GameDtoBuilder tags(List<String> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public GameDtoBuilder availability(String availability) {
+            this.availability = availability;
+            return this;
+        }
+
         public GameDtoBuilder publisher(String publisher) {
             this.publisher = publisher;
             return this;
@@ -88,19 +110,8 @@ public class GameDto implements Serializable {
             return this;
         }
 
-        /**
-         * Build a new GameDto.
-         * @return new GameDto
-         */
         public GameDto build() {
-            GameDto gameDto =  new GameDto(this);
-            validateGameDto(gameDto);
-            return gameDto;
-        }
-
-        private void validateGameDto(GameDto gameDto) {
-            //Do some basic validations to check
-            //if user object does not break any assumption of system
+            return new GameDto(this);
         }
     }
 
@@ -124,6 +135,14 @@ public class GameDto implements Serializable {
         return this.topic;
     }
 
+    public List<String> getTags() {
+        return this.tags;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
     public String getPublisher() {
         return this.publisher;
     }
@@ -138,20 +157,5 @@ public class GameDto implements Serializable {
 
     public String getPlatforms() {
         return this.platforms;
-    }
-
-    @Override
-    public String toString() {
-        return "GameDto{"
-                + "id=" + id
-                + ", releaseDate=" + releaseDate
-                + ", storageLocation='" + storageLocation + '\''
-                + ", title='" + title + '\''
-                + ", topic='" + topic + '\''
-                + ", publisher='" + publisher + '\''
-                + ", developer='" + developer + '\''
-                + ", ageRestriction='" + ageRestriction + '\''
-                + ", platforms='" + platforms + '\''
-                + '}';
     }
 }
