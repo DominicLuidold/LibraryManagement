@@ -14,7 +14,6 @@ public class Main {
      */
     public static void main(String[] args) {
         LOG.info("Project initialized successfully");
-        LOG.debug("Start server asdfasdfa");
         // Testing
         //Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();
         RmiServer rmiServer = new RmiServer();

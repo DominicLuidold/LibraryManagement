@@ -6,6 +6,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -59,4 +60,8 @@ public interface LibraryInterface extends Remote {
     Boolean returnBook(MediumCopyDto mediumCopyDto) throws RemoteException;
 
     Boolean returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
+
+    //Get all available Topics
+    List<TopicDto> getAllTopics() throws RemoteException;
+
 }

@@ -9,6 +9,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -126,6 +127,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public List<TopicDto> getAllTopics() throws RemoteException {
         return null;
     }
 }
