@@ -7,7 +7,7 @@ import at.fhv.teamg.librarymanagement.server.domain.GameService;
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
+import at.fhv.teamg.librarymanagement.server.domain.TopicService;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -20,7 +20,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +33,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final MediumCopyService mediumCopyService = new MediumCopyService();
     private final ReservationService reservationService = new ReservationService();
     private final LendingService lendingService = new LendingService();
+    private final TopicService topicService = new TopicService();
 
     public Library() throws RemoteException {
         super();
@@ -149,6 +149,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<TopicDto> getAllTopics() throws RemoteException {
-        return null;
+        return topicService.getAllTopics();
     }
 }
