@@ -23,7 +23,7 @@ public class Lending {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate returnDate;
 
     @Column(nullable = false)

@@ -2,7 +2,6 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.ReservationDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
@@ -140,11 +139,6 @@ public class ReservationService extends BaseMediaService {
 
     protected Optional<Medium> findMediumById(UUID id) {
         MediumDao dao = new MediumDao();
-        return dao.find(id);
-    }
-
-    protected Optional<User> findUserById(UUID id) {
-        UserDao dao = new UserDao();
         return dao.find(id);
     }
 
