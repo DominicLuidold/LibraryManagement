@@ -15,44 +15,42 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: Gradle@2
-  displayName: 'Gradle'
-  inputs:
-    workingDirectory: 'server/'
-    gradleWrapperFile: 'server/gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: 'server/**/TEST-*.xml'
-    checkStyleRunAnalysis: true
-    tasks: 'build'
-    sonarQubeRunAnalysis: false
+  - task: Gradle@2
+    displayName: 'Gradle'
+    inputs:
+      workingDirectory: 'server/'
+      gradleWrapperFile: 'server/gradlew'
+      gradleOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: 'server/**/TEST-*.xml'
+      checkStyleRunAnalysis: true
+      tasks: 'build'
+      sonarQubeRunAnalysis: false
 
-- task: CopyFiles@2
-  displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**/*.jar'
-    #TargetFolder: '$(build.artifactstagingdirectory)/server'
-    TargetFolder: '/home/fhv_team/azagent/azagent/_work/r2/a/server'
-    CleanTargetFolder: true
-    OverWrite: true
-    flattenFolders: true
-  condition: succeededOrFailed()
+  - task: CopyFiles@2
+    displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: '**/*.jar'
+      TargetFolder: '$(build.artifactstagingdirectory)/server'
+      CleanTargetFolder: true
+      OverWrite: true
+      flattenFolders: true
+    condition: succeededOrFailed()
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: Server'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/server'
-    #PathtoPublish: '/home/fhv_team/azagent/azagent/_work/r2/a/server'
-    ArtifactName: Server
-  condition: succeededOrFailed()
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Server'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/server'
+      ArtifactName: Server
+    condition: succeededOrFailed()
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage results'
-  inputs:
-    codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/jacocoTestReport.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/jacoco/test/**'
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage results'
+    inputs:
+      codeCoverageTool: 'JaCoCo'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/jacocoTestReport.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/jacoco/test/**'
