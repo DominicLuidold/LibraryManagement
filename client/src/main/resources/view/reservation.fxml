@@ -42,6 +42,7 @@
                                     </rowConstraints>
                                     <children>
                                         <!--Generic-->
+                                        <!--TODO get content with ${controller.currentBook.title} and so on-->
                                         <Label fx:id="lblTitle" visible="true" text="Title: " GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                                         <Label fx:id="lblTitleContent" visible="true" text="Here comes the Title" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
                                         <Label fx:id="lblLocationContent" visible="true" text="Here comes the Location" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
@@ -52,46 +53,46 @@
                                         <Label fx:id="lblTopicContent" visible="true" text="Here comes the Topic" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
                                         <!--Book-->
-                                        <Label fx:id="lblBookAuthor" visible="true"  text="Author:" GridPane.rowIndex="1"/>
-                                        <Label fx:id="lblBookAuthorContent" visible="true" text="Author Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblBookAuthor" visible="false"  text="Author:" GridPane.rowIndex="1"/>
+                                        <Label fx:id="lblBookAuthorContent" visible="false" text="Author Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
-                                        <Label fx:id="lblBookIsbn13" visible="true"  text="ISBN-13:" GridPane.rowIndex="2"/>
-                                        <Label fx:id="lblBookIsbn13Content" visible="true" text="ISBN13 Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblBookIsbn13" visible="false"  text="ISBN-13:" GridPane.rowIndex="2"/>
+                                        <Label fx:id="lblBookIsbn13Content" visible="false" text="ISBN13 Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
-                                        <Label fx:id="lblBookIsbn10" visible="true" text="ISBN-10:" GridPane.rowIndex="3"/>
-                                        <Label fx:id="lblBookIsbn10Content" visible="true" text="ISBN10 Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblBookIsbn10" visible="false" text="ISBN-10:" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblBookIsbn10Content" visible="false" text="ISBN10 Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
-                                        <Label fx:id="lblBookPublisher" visible="true" text="Publisher" GridPane.rowIndex="7"/>
-                                        <Label fx:id="lblBookPublisherContent" visible="true" text="Publisher Content" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblBookPublisher" visible="false" text="Publisher" GridPane.rowIndex="7"/>
+                                        <Label fx:id="lblBookPublisherContent" visible="false" text="Publisher Content" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
-                                        <Label fx:id="lblBookLanguage" visible="true" text="Language:" GridPane.rowIndex="8"/>
-                                        <Label fx:id="lblBookLanguageContent" visible="true" text="Language Content" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblBookLanguage" visible="false" text="Language:" GridPane.rowIndex="8"/>
+                                        <Label fx:id="lblBookLanguageContent" visible="false" text="Language Content" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <!--DVD-->
                                         <Label fx:id="lblDvdDirector" visible="false"  text="Director:" GridPane.rowIndex="1"/>
-                                        <Label fx:id="lblDvdDirectorContent" visible="true" text="Director Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblDvdDirectorContent" visible="false" text="Director Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblDvdDuration" visible="false"  text="Duration:" GridPane.rowIndex="2"/>
-                                        <Label fx:id="lblDvdDurationContent" visible="true" text="Duration Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblDvdDurationContent" visible="false" text="Duration Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblDvdActors" visible="false" text="Actors:" GridPane.rowIndex="3"/>
-                                        <Label fx:id="lblDvdActorsContent" visible="true" text="Actors Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblDvdActorsContent" visible="false" text="Actors Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblDvdStudio" visible="false" text="Studio:" GridPane.rowIndex="7"/>
-                                        <Label fx:id="lblDvdStudioContent" visible="true" text="Studio Content" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblDvdStudioContent" visible="false" text="Studio Content" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblDvdAgeRestriction" visible="false" text="Age restriction:" GridPane.rowIndex="8"/>
-                                        <Label fx:id="lblDvdAgeRestrictionContent" visible="true" text="Age Content" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblDvdAgeRestrictionContent" visible="false" text="Age Content" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <!--Game-->
                                         <Label fx:id="lblGameDeveloper" visible="false"  text="Developer:" GridPane.rowIndex="1"/>
-                                        <Label fx:id="lblGameDeveloperContent" visible="true" text="Dev Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblGameDeveloperContent" visible="false" text="Dev Content" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblGameAgeRestriction" visible="false" text="Age restriction:" GridPane.rowIndex="2"/>
-                                        <Label fx:id="lblGameAgeRestrictionContent" visible="true" text="GameAge Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblGameAgeRestrictionContent" visible="false" text="GameAge Content" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                         <Label fx:id="lblGamePlatforms" visible="false" text="Platforms:" GridPane.rowIndex="3"/>
-                                        <Label fx:id="lblGamePlatformsContent" visible="true" text="Platforms Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+                                        <Label fx:id="lblGamePlatformsContent" visible="false" text="Platforms Content" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
                                     </children>
                                 </GridPane>
