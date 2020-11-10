@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import at.fhv.teamg.librarymanagement.client.controller.internal.GetAllUserTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
@@ -149,12 +150,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         
         // TODO: UNTEN DAS GETALLUSERS das darf nicht gleichzeitig sein wie loadAdditionalData()
         // -> das unten hier in .setOnSucceed() von loadAdditional data rein verschieben
-        try {
-            this.allUserList = RmiClient.getInstance().getAllUsers();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        this.createUsersString(allUserList);
+
+        //this.createUsersString(allUserList);
         // try {
         //     fillMap(RmiClient.getInstance().getAllUsers());
         // } catch (RemoteException e) {
@@ -354,6 +351,13 @@ public class ReservationController implements Initializable, Parentable<MediaDet
             topics = task.getValue();
 
 
+            GetAllUserTask userTask = new GetAllUserTask(this.reservationPane);
+            Thread getAllUsersThread = new Thread(userTask, "Load All Users");
+
+            userTask.setOnSucceeded(event1 -> {
+                this.allUserList = userTask.getValue();
+            });
+            getAllUsersThread.start();
             // TODO: hier user laden anstelle von initialize()
         });
         thread.start();
