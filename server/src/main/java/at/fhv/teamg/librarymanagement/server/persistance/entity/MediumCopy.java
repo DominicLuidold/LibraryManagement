@@ -43,4 +43,8 @@ public class MediumCopy {
     public Set<Lending> getLending() {
         return lending;
     }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
 }

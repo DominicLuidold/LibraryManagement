@@ -13,6 +13,7 @@ public class LendingDto implements Serializable {
     private final LocalDate returnDate;
     private final LocalDate startDate;
     private final UUID mediumCopyId;
+    private final UUID userId;
 
     private LendingDto(LendingDtoBuilder lendingDtoBuilder) {
         this.id = lendingDtoBuilder.id;
@@ -21,6 +22,7 @@ public class LendingDto implements Serializable {
         this.returnDate = lendingDtoBuilder.returnDate;
         this.startDate = lendingDtoBuilder.startDate;
         this.mediumCopyId = lendingDtoBuilder.mediumCopyId;
+        this.userId = lendingDtoBuilder.userId;
     }
 
     public static class LendingDtoBuilder {
@@ -30,6 +32,7 @@ public class LendingDto implements Serializable {
         private LocalDate returnDate;
         private LocalDate startDate;
         private UUID mediumCopyId;
+        private UUID userId;
 
         public LendingDtoBuilder() {
             // GUI might not be able to provide an id
@@ -64,6 +67,11 @@ public class LendingDto implements Serializable {
             return this;
         }
 
+        public LendingDtoBuilder userId(UUID userId) {
+            this.userId = userId;
+            return this;
+        }
+
         public LendingDto build() {
             return new LendingDto(this);
         }
@@ -91,5 +99,9 @@ public class LendingDto implements Serializable {
 
     public UUID getMediumCopyId() {
         return this.mediumCopyId;
+    }
+
+    public UUID getUserId() {
+        return userId;
     }
 }

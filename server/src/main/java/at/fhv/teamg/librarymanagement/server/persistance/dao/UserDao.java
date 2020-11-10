@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server.persistance.dao;
 
 import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,5 +37,9 @@ public class UserDao extends BaseDao<User> {
     @Override
     public boolean remove(User elem) {
         return this.remove(User.class, elem);
+    }
+
+    public List<User> getAll() {
+        return super.getAll(User.class);
     }
 }

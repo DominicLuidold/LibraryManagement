@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -42,6 +43,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Reservation> reservations = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Lending> lendings = new LinkedHashSet<>();
 
     public UUID getId() {
         return id;
@@ -77,5 +81,9 @@ public class User {
 
     public Set<Reservation> getReservations() {
         return reservations;
+    }
+
+    public Set<Lending> getLendings() {
+        return lendings;
     }
 }

@@ -3,11 +3,13 @@ package at.fhv.teamg.librarymanagement.server.domain;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
+import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,5 +46,10 @@ public abstract class BaseMediaService {
         }
 
         return availableCopies + "/" + copies;
+    }
+
+    protected Optional<User> findUserById(UUID id) {
+        UserDao dao = new UserDao();
+        return dao.find(id);
     }
 }
