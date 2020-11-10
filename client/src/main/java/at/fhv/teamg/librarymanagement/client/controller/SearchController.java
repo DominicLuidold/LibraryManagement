@@ -251,9 +251,9 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                     .isbn13(this.txtBookIsbn13.getText() != null
                         ? this.txtBookIsbn13.getText()
                         : "")
-                    .topic(selectedTopic != null && selectedTopic.getName() != null
-                        ? selectedTopic.getName()
-                        : "")
+                    .topic(selectedTopic != null && selectedTopic.getId() != null
+                        ? selectedTopic.getId()
+                        : null)
                     .build();
 
                 BookSearchTask task = new BookSearchTask(dto, this.searchPane);
@@ -273,9 +273,9 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                     .releaseDate(this.txtDvdYearOfPublication.getValue() != null
                         ? this.txtDvdYearOfPublication.getValue()
                         : LocalDate.MIN)
-                    .topic(selectedTopic != null && selectedTopic.getName() != null
-                        ? selectedTopic.getName()
-                        : "")
+                    .topic(selectedTopic != null && selectedTopic.getId() != null
+                        ? selectedTopic.getId()
+                        : null)
                     .build();
 
                 DvdSearchTask task = new DvdSearchTask(dto, this.searchPane);
@@ -295,9 +295,9 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                     .platforms(this.txtGamePlatform.getText() != null
                         ? this.txtGamePlatform.getText()
                         : "")
-                    .topic(selectedTopic != null && selectedTopic.getName() != null
-                        ? selectedTopic.getName()
-                        : ""
+                    .topic(selectedTopic != null && selectedTopic.getId() != null
+                        ? selectedTopic.getId()
+                        : null
                     )
                     .build();
 

@@ -7,9 +7,11 @@ import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Optional;
 
 public interface LibraryInterface extends Remote {
     //Search for all Medium Types
@@ -63,5 +65,8 @@ public interface LibraryInterface extends Remote {
 
     //Get all available Topics
     List<TopicDto> getAllTopics() throws RemoteException;
+
+    //Get all Users
+    List<UserDto> getAllUsers() throws RemoteException;
 
 }

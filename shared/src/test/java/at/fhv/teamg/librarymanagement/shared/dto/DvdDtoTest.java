@@ -15,7 +15,7 @@ public class DvdDtoTest {
     void dvdDtoBuilder_shouldReturnValidDto() {
         UUID id = UUID.fromString("2401e527-4bd3-4b67-8641-21119a686ed1");
         String title = "The real Movie";
-        String topic = "Fantasy";
+        UUID topic = UUID.fromString("2401e527-4bd3-4b67-8641-deadbeef6ed1");
         List<String> tags = new LinkedList<>();
         tags.add("Test");
         String director = "Fantasia";

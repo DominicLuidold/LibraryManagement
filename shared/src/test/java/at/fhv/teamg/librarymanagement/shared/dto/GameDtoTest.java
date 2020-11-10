@@ -15,7 +15,7 @@ public class GameDtoTest {
     void gameDtoBuilder_shouldReturnValidDto() {
         UUID id = UUID.fromString("2401e527-4bd3-4b67-8641-21119a686ed1");
         String title = "Game of Life";
-        String topic = "Life";
+        UUID topic = UUID.fromString("2401e527-4bd3-4b67-8641-deadbeef6ed1");
         List<String> tags = new LinkedList<>();
         tags.add("Test");
         String publisher = "The Game Company";
