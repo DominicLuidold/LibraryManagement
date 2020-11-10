@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -41,11 +40,9 @@ public class GameServiceTest {
         mockedEntities.add(gameMock);
 
         // Prepare GameService
-        GameService gameService = new GameService();
-        GameDao mockedDao = spy(GameDao.class);
-        doReturn(mockedEntities).when(mockedDao)
+        GameService gameService = spy(GameService.class);
+        doReturn(mockedEntities).when(gameService)
             .findBy(anyString(), anyString(), anyString(), anyString());
-        gameService.gameDao = mockedDao;
 
         // Assertions
         List<GameDto> result = gameService.search(gameDtoMock);

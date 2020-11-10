@@ -3,22 +3,17 @@ package at.fhv.teamg.librarymanagement.server.domain;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
-    DvdDao dvdDao;
-
-    public DvdService() {
-        dvdDao = new DvdDao();
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public List<DvdDto> search(DvdDto dvdDto) {
-        List<Dvd> entities = dvdDao.findBy(
+        List<Dvd> entities = findBy(
             dvdDto.getTitle(),
             dvdDto.getDirector(),
             dvdDto.getReleaseDate(),
@@ -37,5 +32,9 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
         });
 
         return dtoList;
+    }
+
+    protected List<Dvd> findBy(String title, String director, LocalDate releaseDate, String topic) {
+        return new DvdDao().findBy(title, director, releaseDate, topic);
     }
 }

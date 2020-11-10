@@ -7,18 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GameService extends BaseMediaService implements Searchable<GameDto> {
-    GameDao gameDao;
-
-    public GameService() {
-        gameDao = new GameDao();
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public List<GameDto> search(GameDto gameDto) {
-        List<Game> entities = gameDao.findBy(
+        List<Game> entities = findBy(
             gameDto.getTitle(),
             gameDto.getDeveloper(),
             gameDto.getPlatforms(),
@@ -37,5 +31,9 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         });
 
         return dtoList;
+    }
+
+    protected List<Game> findBy(String title, String developer, String platform, String topic) {
+        return new GameDao().findBy(title, developer, platform, topic);
     }
 }

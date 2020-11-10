@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
@@ -42,11 +41,9 @@ public class BookServiceTest {
         mockedEntities.add(bookMock);
 
         // Prepare BookService
-        BookService bookService = new BookService();
-        BookDao mockedDao = spy(BookDao.class);
-        doReturn(mockedEntities).when(mockedDao)
+        BookService bookService = spy(BookService.class);
+        doReturn(mockedEntities).when(bookService)
             .findBy(anyString(), anyString(), anyString(), anyString());
-        bookService.bookDao = mockedDao;
 
         // Assertions
         List<BookDto> result = bookService.search(bookDtoMock);

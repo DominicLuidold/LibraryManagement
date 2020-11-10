@@ -9,7 +9,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -44,11 +43,9 @@ public class DvdServiceTest {
         mockedEntities.add(dvdMock);
 
         // Prepare DvdService
-        DvdService dvdService = new DvdService();
-        DvdDao mockedDao = spy(DvdDao.class);
-        doReturn(mockedEntities).when(mockedDao)
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(mockedEntities).when(dvdService)
             .findBy(anyString(), anyString(), any(LocalDate.class), anyString());
-        dvdService.dvdDao = mockedDao;
 
         // Assertions
         List<DvdDto> result = dvdService.search(dvdDtoMock);
