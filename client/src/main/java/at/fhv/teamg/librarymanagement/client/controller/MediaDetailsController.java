@@ -217,13 +217,22 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
             System.out.println("Search button pressed");
-
+            // change view
+            Parentable<?> controller =
+                    this.getParentController().getParentController().addTab(TabPaneEntry.RESERVATION,
+                            this).get();
+            ReservationController reservationController =
+                    (ReservationController) controller;
             if (this.currentMediumType.equals(MediumType.BOOK)) {
                 System.out.println("Reserve book");
+
+                reservationController.setCurrentBook(currentBook);
             } else if (this.currentMediumType.equals(MediumType.DVD)) {
                 System.out.println("Reserve DVD");
+                reservationController.setCurrentDvd(currentDvd);
             } else if (this.currentMediumType.equals(MediumType.GAME)) {
                 System.out.println("Reserve Game");
+                reservationController.setCurrentGame(currentGame);
             }
         });
 
