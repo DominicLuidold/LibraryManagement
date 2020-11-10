@@ -144,7 +144,11 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.resourceBundle = resources;
         this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
-        loadAdditionalData(); // das darf nicht gleichzeitig sein wie unten
+        loadAdditionalData();
+        
+        
+        // TODO: UNTEN DAS GETALLUSERS das darf nicht gleichzeitig sein wie loadAdditionalData()
+        // -> das unten hier in .setOnSucceed() von loadAdditional data rein verschieben
         try {
             this.allUserList = RmiClient.getInstance().getAllUsers();
         } catch (RemoteException e) {
@@ -350,7 +354,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
             topics = task.getValue();
 
 
-            // hier user laden
+            // TODO: hier user laden anstelle von initialize()
         });
         thread.start();
     }
