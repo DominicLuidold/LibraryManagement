@@ -134,17 +134,17 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public Boolean returnGame(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override
     public Boolean returnBook(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override

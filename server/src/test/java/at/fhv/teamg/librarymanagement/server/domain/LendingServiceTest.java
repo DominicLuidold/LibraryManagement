@@ -12,8 +12,11 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -96,5 +99,151 @@ public class LendingServiceTest {
             .userId(validUserID);
         doReturn(Optional.of(mock(User.class))).when(lendingService).findUserById(validUserID);
         assertFalse(lendingService.createLending(builder.build()).isPresent());
+    }
+
+    @Test
+    void returnLending_shouldReturnTrue() {
+        // Mock currently active Lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+        doReturn(Optional.of(lendingMock)).when(lendingService).updateLending(lendingMock);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService)
+            .updateMediumCopy(mediumCopyMock);
+
+        // Assertions
+        assertTrue(lendingService.returnLending(mediumCopyDtoMock));
+    }
+
+    @Test
+    void returnLending_shouldReturnFalse_whenMediumCopyNotFound() {
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(notValidCopyID);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.empty()).when(lendingService).findMediumCopyById(notValidCopyID);
+
+        // Assertions
+        assertFalse(lendingService.returnLending(mediumCopyDtoMock));
+    }
+
+    @Test
+    void returnLending_shouldReturnFalse_whenMediumCopyAvailable() {
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(true);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+
+        // Assertions
+        assertFalse(lendingService.returnLending(mediumCopyDtoMock));
+    }
+
+    @Test
+    void returnLending_shouldReturnFalse_whenNoLendingFound() {
+        // Mock currently active Lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+
+        // Assertions
+        assertFalse(lendingService.returnLending(mediumCopyDtoMock));
+    }
+
+    @Test
+    void returnLending_shouldReturnFalse_whenLendingUpdateFails() {
+        // Mock currently active Lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+        doReturn(Optional.empty()).when(lendingService).updateLending(lendingMock);
+
+        // Assertions
+        assertFalse(lendingService.returnLending(mediumCopyDtoMock));
+    }
+
+    @Test
+    void returnLending_shouldReturnFalse_whenMediumCopyUpdateFails() {
+        // Mock currently active Lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+        doReturn(Optional.of(lendingMock)).when(lendingService).updateLending(lendingMock);
+        doReturn(Optional.empty()).when(lendingService)
+            .updateMediumCopy(mediumCopyMock);
+
+        // Assertions
+        assertFalse(lendingService.returnLending(mediumCopyDtoMock));
     }
 }

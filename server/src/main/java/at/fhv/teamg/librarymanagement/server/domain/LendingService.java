@@ -6,7 +6,10 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class LendingService extends BaseMediaService {
@@ -59,18 +62,66 @@ public class LendingService extends BaseMediaService {
         return Optional.of(builder.build());
     }
 
+    /**
+     * Stop currently ongoing {@link Lending} (if any) for given {@link MediumCopy}.
+     *
+     * @param mediumCopyDto The MediumCopyDto to end the lending for
+     * @return true if stopping the lending was successful, false otherwise
+     */
+    public boolean returnLending(MediumCopyDto mediumCopyDto) {
+        Optional<MediumCopy> mediumCopyOptional = findMediumCopyById(mediumCopyDto.getId());
+        if (!mediumCopyOptional.isPresent()) {
+            return false;
+        }
+
+        MediumCopy mediumCopy = mediumCopyOptional.get();
+        if (mediumCopy.isAvailable()) {
+            return false;
+        }
+
+        Optional<Lending> lendingOptional = getCurrentLending(mediumCopy.getLending());
+        if (!lendingOptional.isPresent()) {
+            return false;
+        }
+
+        Lending lending = lendingOptional.get();
+        lending.setReturnDate(LocalDate.now());
+        if (!updateLending(lending).isPresent()) {
+            return false;
+        }
+
+        mediumCopy.setAvailable(true);
+        if (!updateMediumCopy(mediumCopy).isPresent()) {
+            return false;
+        }
+
+        return true;
+    }
+
     protected Optional<MediumCopy> findMediumCopyById(UUID id) {
-        MediumCopyDao dao = new MediumCopyDao();
-        return dao.find(id);
+        return new MediumCopyDao().find(id);
     }
 
     protected Optional<Lending> updateLending(Lending lending) {
-        LendingDao dao = new LendingDao();
-        return dao.update(lending);
+        return new LendingDao().update(lending);
     }
 
     protected Optional<MediumCopy> updateMediumCopy(MediumCopy mediumCopy) {
-        MediumCopyDao dao = new MediumCopyDao();
-        return dao.update(mediumCopy);
+        return new MediumCopyDao().update(mediumCopy);
+    }
+
+    private Optional<Lending> getCurrentLending(Set<Lending> lendingSet) {
+        for (Lending lending : lendingSet) {
+            if ((lending.getStartDate().isBefore(LocalDate.now())
+                || lending.getStartDate().isEqual(LocalDate.now()))
+                && (lending.getEndDate().isAfter(LocalDate.now())
+                || lending.getEndDate().isEqual(LocalDate.now()))
+                && null == lending.getReturnDate()
+            ) {
+                return Optional.of(lending);
+            }
+        }
+
+        return Optional.empty();
     }
 }
