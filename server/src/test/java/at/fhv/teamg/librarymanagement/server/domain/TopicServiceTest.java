@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.Test;

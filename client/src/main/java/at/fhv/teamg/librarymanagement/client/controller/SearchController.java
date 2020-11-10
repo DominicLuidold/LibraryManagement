@@ -5,11 +5,16 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell
 import at.fhv.teamg.librarymanagement.client.controller.internal.DvdSearchTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.GameSearchTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
+import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import com.jfoenix.controls.JFXDatePicker;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -24,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.SegmentedButton;
@@ -59,11 +65,11 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
     @FXML
     private TextField txtGamePlatform;
     @FXML
-    private ComboBox txtBookTopic; // TODO use generics
+    private ComboBox<TopicDto> txtBookTopic;
     @FXML
-    private ComboBox txtDvdTopic; // TODO use generics
+    private ComboBox<TopicDto> txtDvdTopic;
     @FXML
-    private ComboBox txtGameTopic; // TODO use generics
+    private ComboBox<TopicDto> txtGameTopic;
     @FXML
     private Button btnSearch;
     @FXML
@@ -106,7 +112,41 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
         this.resourceBundle = resources;
         this.setCellFactories();
         this.addMediaTypeEventHandlers();
+        this.loadAdditionalData();
         LOG.debug("Initialized UserController");
+    }
+
+    private void loadAdditionalData() {
+        MediaTopicTask task = new MediaTopicTask(this.searchPane);
+        Thread thread = new Thread(task, "Load All Topics Task");
+        task.setOnSucceeded(event -> {
+            System.out.println("Loaded all Topics");
+            List<TopicDto> result = task.getValue();
+            if (result == null) {
+                System.err.println("No Topics found. Server Team messed up.");
+                result = new ArrayList<>();
+                // TODO: remove this once server team has implemented that
+                result.add(new TopicDto.TopicDtoBuilder()
+                    .id(UUID.randomUUID())
+                    .name("Topic1")
+                    .build());
+                result.add(new TopicDto.TopicDtoBuilder()
+                    .id(UUID.randomUUID())
+                    .name("Topic2")
+                    .build());
+                result.add(new TopicDto.TopicDtoBuilder()
+                    .id(UUID.randomUUID())
+                    .name("Topic3")
+                    .build());
+            }
+            for (TopicDto topic : result) {
+                System.out.println(topic.toString());
+            }
+            this.txtBookTopic.setItems(FXCollections.observableList(result));
+            this.txtGameTopic.setItems(FXCollections.observableList(result));
+            this.txtDvdTopic.setItems(FXCollections.observableList(result));
+        });
+        thread.start();
     }
 
     private void setCellFactories() {
@@ -115,7 +155,16 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                 "Details",
                 (BookDto dto) -> {
                     LOG.debug("Book details button has been pressed");
-                    // TODO change view
+
+                    // change view
+                    Parentable<?> controller =
+                        this.getParentController().addTab(TabPaneEntry.MEDIA_DETAIL,
+                            this).get();
+
+                    MediaDetailsController mediaDetailsController =
+                        (MediaDetailsController) controller;
+                    mediaDetailsController.setCurrentMediumType(MediumType.BOOK, dto.getId());
+
                     return dto;
                 }
             )
@@ -125,7 +174,16 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                 "Details",
                 (DvdDto dto) -> {
                     LOG.debug("Dvd details button has been pressed");
-                    // TODO change view
+
+                    // change view
+                    Parentable<?> controller =
+                        this.getParentController().addTab(TabPaneEntry.MEDIA_DETAIL,
+                            this).get();
+
+                    MediaDetailsController mediaDetailsController =
+                        (MediaDetailsController) controller;
+                    mediaDetailsController.setCurrentMediumType(MediumType.DVD, dto.getId());
+
                     return dto;
                 }
             )
@@ -135,11 +193,34 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                 "Details",
                 (GameDto dto) -> {
                     LOG.debug("Game details button has been pressed");
-                    // TODO change view
+
+                    // change view
+                    Parentable<?> controller =
+                        this.getParentController().addTab(TabPaneEntry.MEDIA_DETAIL,
+                            this).get();
+
+                    MediaDetailsController mediaDetailsController =
+                        (MediaDetailsController) controller;
+                    mediaDetailsController.setCurrentMediumType(MediumType.GAME, dto.getId());
+
                     return dto;
                 }
             )
         );
+        StringConverter<TopicDto> topicConverter = new StringConverter<>() {
+            @Override
+            public String toString(TopicDto topic) {
+                return topic.getName();
+            }
+
+            @Override
+            public TopicDto fromString(String topic) {
+                return new TopicDto.TopicDtoBuilder().name(topic).build();
+            }
+        };
+        this.txtBookTopic.setConverter(topicConverter);
+        this.txtDvdTopic.setConverter(topicConverter);
+        this.txtGameTopic.setConverter(topicConverter);
     }
 
     private void addMediaTypeEventHandlers() {
@@ -159,12 +240,20 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
         this.btnSearch.setOnAction(e -> {
             System.out.println("Search button pressed");
 
-
             if (this.toggleBtnBook.isSelected()) {
+                TopicDto selectedTopic = this.txtBookTopic.getSelectionModel().getSelectedItem();
+
                 BookDto dto = new BookDto.BookDtoBuilder(UUID.randomUUID())
-                    .title(this.txtTitle.getText())
-                    .isbn13(this.txtBookIsbn13.getText())
-                    // TODO add topic
+                    .title(this.txtTitle.getText() != null ? this.txtTitle.getText() : "")
+                    .author(this.txtBookAuthor.getText() != null
+                        ? this.txtBookAuthor.getText()
+                        : "")
+                    .isbn13(this.txtBookIsbn13.getText() != null
+                        ? this.txtBookIsbn13.getText()
+                        : "")
+                    .topic(selectedTopic != null && selectedTopic.getName() != null
+                        ? selectedTopic.getName()
+                        : "")
                     .build();
 
                 BookSearchTask task = new BookSearchTask(dto, this.searchPane);
@@ -175,10 +264,18 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                 });
                 thread.start();
             } else if (this.toggleBtnDvd.isSelected()) {
+                TopicDto selectedTopic = this.txtDvdTopic.getSelectionModel().getSelectedItem();
                 DvdDto dto = new DvdDto.DvdDtoBuilder(UUID.randomUUID())
-                    .title(this.txtTitle.getText())
-                    .releaseDate(this.txtDvdYearOfPublication.getValue())
-                    // TODO add topic
+                    .title(this.txtTitle.getText() != null ? this.txtTitle.getText() : "")
+                    .director(this.txtDvdDirector.getText() != null
+                        ? this.txtDvdDirector.getText()
+                        : "")
+                    .releaseDate(this.txtDvdYearOfPublication.getValue() != null
+                        ? this.txtDvdYearOfPublication.getValue()
+                        : LocalDate.MIN)
+                    .topic(selectedTopic != null && selectedTopic.getName() != null
+                        ? selectedTopic.getName()
+                        : "")
                     .build();
 
                 DvdSearchTask task = new DvdSearchTask(dto, this.searchPane);
@@ -189,10 +286,19 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
                 });
                 thread.start();
             } else if (this.toggleBtnGame.isSelected()) {
+                TopicDto selectedTopic = this.txtGameTopic.getSelectionModel().getSelectedItem();
                 GameDto dto = new GameDto.GameDtoBuilder(UUID.randomUUID())
-                    .title(this.txtTitle.getText())
-                    .releaseDate(this.txtDvdYearOfPublication.getValue())
-                    // TODO add topic
+                    .title(this.txtTitle.getText() != null ? this.txtTitle.getText() : "")
+                    .developer(this.txtGameDeveloper.getText() != null
+                        ? this.txtGameDeveloper.getText()
+                        : "")
+                    .platforms(this.txtGamePlatform.getText() != null
+                        ? this.txtGamePlatform.getText()
+                        : "")
+                    .topic(selectedTopic != null && selectedTopic.getName() != null
+                        ? selectedTopic.getName()
+                        : ""
+                    )
                     .build();
 
                 GameSearchTask task = new GameSearchTask(dto, this.searchPane);
@@ -276,10 +382,6 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
     @Override
     public void initializeWithParent() {
         LOG.debug("Initialized SearchController with parent");
-    }
-
-    private enum MediumType {
-        BOOK, DVD, GAME
     }
 
 }

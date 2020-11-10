@@ -8,6 +8,7 @@ import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -20,6 +21,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,18 +57,36 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public Optional<GameDto> getGameDetail(GameDto gameDto) throws RemoteException {
-        return detailService.getGameDetail(gameDto);
+    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
+        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
+        Optional<GameDto> result = new DetailService().getGameDetail(gameDto);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        LOG.error("No Game details found");
+        return null;
     }
 
     @Override
-    public Optional<BookDto> getBookDetail(BookDto bookDto) throws RemoteException {
-        return detailService.getBookDetail(bookDto);
+    public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
+        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
+        Optional<BookDto> result = new DetailService().getBookDetail(bookDto);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        LOG.error("No Book details found");
+        return null;
     }
 
     @Override
-    public Optional<DvdDto> getDvdDetail(DvdDto dvdDto) throws RemoteException {
-        return detailService.getDvdDetail(dvdDto);
+    public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
+        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
+        Optional<DvdDto> result = new DetailService().getDvdDetail(dvdDto);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        LOG.error("No DVD details found");
+        return null;
     }
 
     @Override
@@ -100,51 +120,66 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public Optional<ReservationDto> reserveGame(ReservationDto reservationDto)
+    public ReservationDto reserveGame(ReservationDto reservationDto)
         throws RemoteException {
-        return reservationService.createReservation(reservationDto);
+        Optional<ReservationDto> result = reservationService.createReservation(reservationDto);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        LOG.error("Cannot create reservation");
+        return null;
     }
 
     @Override
-    public Optional<ReservationDto> reserveBook(ReservationDto reservationDto)
+    public ReservationDto reserveBook(ReservationDto reservationDto)
         throws RemoteException {
-        return reservationService.createReservation(reservationDto);
+        // same as above
+        return this.reserveGame(reservationDto);
     }
 
     @Override
-    public Optional<ReservationDto> reserveDvd(ReservationDto reservationDto)
+    public ReservationDto reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
-        return reservationService.createReservation(reservationDto);
+        // same as above
+        return this.reserveDvd(reservationDto);
     }
 
     @Override
-    public Optional<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
-        return lendingService.createLending(lendingDto);
+    public LendingDto lendGame(LendingDto lendingDto) throws RemoteException {
+        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
+        Optional<LendingDto> result = lendingService.createLending(lendingDto);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        LOG.error("Cannot create lending");
+        return null;
     }
 
     @Override
-    public Optional<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
-        return lendingService.createLending(lendingDto);
+    public LendingDto lendBook(LendingDto lendingDto) throws RemoteException {
+        // same as above
+        return this.lendGame(lendingDto);
     }
 
     @Override
-    public Optional<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
-        return lendingService.createLending(lendingDto);
+    public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
+        // same as above
+        return this.lendGame(lendingDto);
     }
 
     @Override
     public Boolean returnGame(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override
     public Boolean returnBook(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
-        return null;
+        return lendingService.returnLending(copyDto);
     }
 
     @Override

@@ -1,8 +1,11 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class TopicDto {
+public class TopicDto implements Serializable {
+    private static final long serialVersionUID = 4488868801782386377L;
+
     private final UUID id;
     private final String name;
 
@@ -13,7 +16,6 @@ public class TopicDto {
     public TopicDto(TopicDtoBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
-
     }
 
     public static class TopicDtoBuilder {

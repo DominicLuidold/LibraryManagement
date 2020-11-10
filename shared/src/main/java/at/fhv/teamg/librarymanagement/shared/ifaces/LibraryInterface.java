@@ -10,7 +10,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Optional;
 
 public interface LibraryInterface extends Remote {
     //Search for all Medium Types
@@ -21,11 +20,11 @@ public interface LibraryInterface extends Remote {
     List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException;
 
     //Get Detail for all Medium Types
-    Optional<GameDto> getGameDetail(GameDto gameDto) throws RemoteException;
+    GameDto getGameDetail(GameDto gameDto) throws RemoteException;
 
-    Optional<BookDto> getBookDetail(BookDto bookDto) throws RemoteException;
+    BookDto getBookDetail(BookDto bookDto) throws RemoteException;
 
-    Optional<DvdDto> getDvdDetail(DvdDto dvdDto) throws RemoteException;
+    DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException;
 
     //Get all Copies of all Medium Types
     List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException;
@@ -42,18 +41,18 @@ public interface LibraryInterface extends Remote {
     List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException;
 
     //Reserve for all Medium Types
-    Optional<ReservationDto>  reserveGame(ReservationDto reservationDto) throws RemoteException;
+    ReservationDto  reserveGame(ReservationDto reservationDto) throws RemoteException;
 
-    Optional<ReservationDto>  reserveBook(ReservationDto reservationDto) throws RemoteException;
+    ReservationDto  reserveBook(ReservationDto reservationDto) throws RemoteException;
 
-    Optional<ReservationDto>  reserveDvd(ReservationDto reservationDto) throws RemoteException;
+    ReservationDto  reserveDvd(ReservationDto reservationDto) throws RemoteException;
 
     //Lend for all Medium Types
-    Optional<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
+    LendingDto lendGame(LendingDto lendingDto) throws RemoteException;
 
-    Optional<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException;
+    LendingDto lendBook(LendingDto lendingDto) throws RemoteException;
 
-    Optional<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException;
+    LendingDto lendDvd(LendingDto lendingDto) throws RemoteException;
 
     //Return all Medium Types
     Boolean returnGame(MediumCopyDto mediumCopyDto) throws RemoteException;

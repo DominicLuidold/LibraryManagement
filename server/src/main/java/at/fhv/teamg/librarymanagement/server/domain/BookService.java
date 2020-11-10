@@ -7,18 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BookService extends BaseMediaService implements Searchable<BookDto> {
-    BookDao bookDao;
-
-    public BookService() {
-        bookDao = new BookDao();
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public List<BookDto> search(BookDto bookDto) {
-        List<Book> entities = bookDao.findBy(
+        List<Book> entities = findBy(
             bookDto.getTitle(),
             bookDto.getAuthor(),
             bookDto.getIsbn13(),
@@ -37,5 +31,9 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
         });
 
         return dtoList;
+    }
+
+    protected List<Book> findBy(String title, String author, String isbn13, String topic) {
+        return new BookDao().findBy(title, author, isbn13, topic);
     }
 }
