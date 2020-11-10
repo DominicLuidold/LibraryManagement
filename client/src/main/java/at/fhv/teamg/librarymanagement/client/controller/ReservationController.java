@@ -49,7 +49,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     //TestData
     private MediumType type = MediumType.DVD;
 
-    //private UUID userUUIDToReserve;
+    private UUID userUUIDToReserve;
     private List<TopicDto> topics;
 
     //Generic
@@ -145,13 +145,17 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
         loadAdditionalData();
-        //this.allUserList = RmiClient.getInstance().getAllUsers();
-        //this.createUsersString(allUserList);
         try {
-            fillMap(RmiClient.getInstance().getAllUsers());
+            this.allUserList = RmiClient.getInstance().getAllUsers();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        this.createUsersString(allUserList);
+        // try {
+        //     fillMap(RmiClient.getInstance().getAllUsers());
+        // } catch (RemoteException e) {
+        //     e.printStackTrace();
+        // }
         TextFields.bindAutoCompletion(txtUser, allUsers);
         LOG.debug("Initialized ReservationController");
     }
@@ -173,7 +177,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private void addMediaTypeEventHandlers() {
         this.btnOK.setOnAction(e -> {
             if (getUserName().length() != 0) {
-                //userUUIDToReserve = getUserID(getUserName());
+                userUUIDToReserve = getUserID(getUserName());
 
                 //TODO hand userName to backend
                 ReservationDto.ReservationDtoBuilder dtoBuilder = new ReservationDto.ReservationDtoBuilder();
@@ -214,8 +218,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     }
 
     private ReservationDto buildReservation(ReservationDto.ReservationDtoBuilder dtoBuilder) {
-        dtoBuilder.userId(getUserUuidValue());
-        //dtoBuilder.userId(userUUIDToReserve);
+        //dtoBuilder.userId(getUserUuidValue());
+        dtoBuilder.userId(userUUIDToReserve);
         dtoBuilder.mediumId(mediumUUID);
         dtoBuilder.startDate(LocalDate.now());
         dtoBuilder.endDate(LocalDate.now().plusDays(60));
@@ -235,14 +239,14 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         return this.txtUser.getText().trim();
     }
 
-    /*private UUID getUserID(String userName){
+    private UUID getUserID(String userName){
         for (UserDto user: allUserList){
             if(user.getName().equals(userName)){
                 return user.getId();
             }
         }
         return null;
-    }*/
+    }
 
     public void setCurrentBook(BookDto dto) {
         this.currentBook = dto;
