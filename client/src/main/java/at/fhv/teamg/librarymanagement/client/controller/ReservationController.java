@@ -1,10 +1,15 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
+import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.*;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,16 +23,17 @@ import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.*;
 
-public class ReservationController implements Initializable, Parentable<TabPaneController> {
+public class ReservationController implements Initializable, Parentable<MediaDetailsController> {
     private static final Logger LOG = LogManager.getLogger(ReservationController.class);
 
-    private TabPaneController parentController;
+    private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
     //TODO getAllUsers of DB
     private List<UserDto> allUserList;
     private ArrayList<String> allUsers = new ArrayList<>();
     //{"Anton", "Antonia", "Abraham", "Bertram", "Berta"};
+    private HashMap<UUID, String> usersMap = new HashMap<>();
 
     private BookDto currentBook = null;
     private DvdDto currentDvd = null;
@@ -43,7 +49,8 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
     //TestData
     private MediumType type = MediumType.DVD;
 
-    private UUID userUUIDToReserve;
+    //private UUID userUUIDToReserve;
+    private List<TopicDto> topics;
 
     //Generic
     @FXML
@@ -135,84 +142,107 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
-        this.enableLablesForMediumType(type);
+        this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
+        loadAdditionalData();
         //this.allUserList = RmiClient.getInstance().getAllUsers();
-        this.createUsersString(allUserList);
+        //this.createUsersString(allUserList);
+        try {
+            fillMap(RmiClient.getInstance().getAllUsers());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         TextFields.bindAutoCompletion(txtUser, allUsers);
         LOG.debug("Initialized ReservationController");
     }
 
-    private void createUsersString(List<UserDto> usersList){
+    private void fillMap(List<UserDto> users) {
+        usersMap.clear();
+        for (UserDto dto : users) {
+            usersMap.put(dto.getId(), dto.getName());
+        }
+    }
+
+    private void createUsersString(List<UserDto> usersList) {
         allUsers = new ArrayList<>();
-        for (UserDto user: usersList) {
+        for (UserDto user : usersList) {
             allUsers.add(user.getUsername());
         }
     }
 
-    private void addMediaTypeEventHandlers(){
+    private void addMediaTypeEventHandlers() {
         this.btnOK.setOnAction(e -> {
-            if(getUserName().length() != 0) {
-                userUUIDToReserve = getUserID(getUserName());
+            if (getUserName().length() != 0) {
+                //userUUIDToReserve = getUserID(getUserName());
 
-            //TODO hand userName to backend
-            ReservationDto.ReservationDtoBuilder dtoBuilder = new ReservationDto.ReservationDtoBuilder();
+                //TODO hand userName to backend
+                ReservationDto.ReservationDtoBuilder dtoBuilder = new ReservationDto.ReservationDtoBuilder();
 
-            if(this.type.equals(MediumType.BOOK)){
-                ReservationDto resDto = buildReservation(dtoBuilder);
-                try {
-                    RmiClient.getInstance().reserveBook(resDto);
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
+                if (this.type.equals(MediumType.BOOK)) {
+                    ReservationDto resDto = buildReservation(dtoBuilder);
+                    try {
+                        RmiClient.getInstance().reserveBook(resDto);
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                } else if (this.type.equals(MediumType.DVD)) {
+                    ReservationDto resDto = buildReservation(dtoBuilder);
+                    try {
+                        RmiClient.getInstance().reserveDvd(resDto);
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                } else if (this.type.equals(MediumType.GAME)) {
+                    ReservationDto resDto = buildReservation(dtoBuilder);
+                    try {
+                        RmiClient.getInstance().reserveGame(resDto);
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            }else if(this.type.equals(MediumType.DVD)){
-                ReservationDto resDto = buildReservation(dtoBuilder);
-                try {
-                    RmiClient.getInstance().reserveDvd(resDto);
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-            }else if(this.type.equals(MediumType.GAME)){
-                ReservationDto resDto = buildReservation(dtoBuilder);
-                try {
-                    RmiClient.getInstance().reserveGame(resDto);
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-            }
             }
         });
 
-        /*this.btnCancel.setOnAction(e -> {
+        this.btnCancel.setOnAction(e -> {
             System.out.println("Cancel button pressed");
-            //TODO add reservation to TabPaneEntry
-            this.parentController.getParentController().removeTab(TabPaneEntry.RESERVATION);
-            this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
-        });*/
+            this.parentController.getParentController().getParentController().removeTab(TabPaneEntry.RESERVATION);
+            this.parentController.getParentController().getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
+        });
     }
 
-    private ReservationDto buildReservation(ReservationDto.ReservationDtoBuilder dtoBuilder){
-        dtoBuilder = new ReservationDto.ReservationDtoBuilder();
-        dtoBuilder.userId(userUUIDToReserve);
+    private ReservationDto buildReservation(ReservationDto.ReservationDtoBuilder dtoBuilder) {
+        dtoBuilder.userId(getUserUuidValue());
+        //dtoBuilder.userId(userUUIDToReserve);
         dtoBuilder.mediumId(mediumUUID);
         dtoBuilder.startDate(LocalDate.now());
         dtoBuilder.endDate(LocalDate.now().plusDays(60));
         return dtoBuilder.build();
     }
 
-    private String getUserName(){
+    private UUID getUserUuidValue() {
+        for (Map.Entry<UUID, String> entry : usersMap.entrySet()) {
+            if (Objects.equals(getUserName(), entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    private String getUserName() {
         return this.txtUser.getText().trim();
     }
 
-    //to get User
-    private UUID getUserID(String userName){
+    /*private UUID getUserID(String userName){
         for (UserDto user: allUserList){
             if(user.getName().equals(userName)){
                 return user.getId();
             }
         }
         return null;
-    }
+    }*/
 
     public void setCurrentBook(BookDto dto) {
         this.currentBook = dto;
@@ -232,19 +262,20 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
         setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(), dto.getReleaseDate());
     }
 
-    private void setGenericParams(UUID uuid, String title, String loc, String topic, LocalDate date){
+    private void setGenericParams(UUID uuid, String title, String loc, UUID topicUuid, LocalDate date) {
         this.mediumUUID = uuid;
         this.mediumTitle = title;
         this.mediumLocation = loc;
-        this.mediumTopic = topic;
-        if(date != null) {
+        this.mediumTopic = topics.stream()
+                .filter(top ->topicUuid.equals(top.getId())).findAny().orElse(null).getName();
+        if (date != null) {
             this.mediumReleaseDate = date.toString();
         } else {
             this.mediumReleaseDate = "";
         }
     }
 
-    private void enableLablesForMediumType(MediumType type) {
+    private void enableLabelsForMediumType(MediumType type) {
         this.lblTitle.setVisible(true);
         this.lblTitleContent.setVisible(true);
         this.lblLocation.setVisible(true);
@@ -269,8 +300,8 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
         }
     }
 
-    private void handleBookFields(boolean visible){
-        System.out.println("all books set to "+ visible);
+    private void handleBookFields(boolean visible) {
+        System.out.println("all books set to " + visible);
         this.lblBookAuthor.setVisible(visible);
         this.lblBookAuthorContent.setVisible(visible);
         this.lblBookIsbn10.setVisible(visible);
@@ -307,6 +338,16 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
         this.lblGameAgeRestrictionContent.setVisible(visible);
     }
 
+    private void loadAdditionalData() {
+        MediaTopicTask task = new MediaTopicTask(this.reservationPane);
+        Thread thread = new Thread(task, "Load All Topics Task");
+        task.setOnSucceeded(event -> {
+            System.out.println("Loaded all Topics");
+            topics = task.getValue();
+        });
+        thread.start();
+    }
+
     public String getMediumTitle() {
         return mediumTitle;
     }
@@ -336,12 +377,12 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
     }
 
     @Override
-    public TabPaneController getParentController() {
-        return this.parentController;
+    public MediaDetailsController getParentController() {
+        return this.getParentController();
     }
 
     @Override
-    public void setParentController(TabPaneController controller) {
+    public void setParentController(MediaDetailsController controller) {
         this.parentController = controller;
     }
 
