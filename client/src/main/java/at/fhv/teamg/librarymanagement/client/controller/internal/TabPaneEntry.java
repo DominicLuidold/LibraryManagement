@@ -9,7 +9,8 @@ package at.fhv.teamg.librarymanagement.client.controller.internal;
  */
 public enum TabPaneEntry {
     UNSUPPORTED(1, "Unsupported", "/view/unsupportedTab.fxml", false),
-    SEARCH(1, "Search", "/view/search.fxml", false);
+    SEARCH(1, "Search", "/view/search.fxml", false),
+    MEDIA_DETAIL(1, "Media Details", "/view/mediaDetails.fxml", true);
 
     private final int order;
     private final String title;

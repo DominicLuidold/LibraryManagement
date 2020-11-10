@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
-import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,17 +67,17 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public Optional<GameDto> getGameDetail(GameDto gameDto) throws RemoteException {
+    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
         return library.getGameDetail(gameDto);
     }
 
     @Override
-    public Optional<BookDto> getBookDetail(BookDto bookDto) throws RemoteException {
+    public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
         return library.getBookDetail(bookDto);
     }
 
     @Override
-    public Optional<DvdDto> getDvdDetail(DvdDto dvdDto) throws RemoteException {
+    public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
         return library.getDvdDetail(dvdDto);
     }
 
@@ -113,35 +112,35 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public Optional<ReservationDto> reserveGame(ReservationDto reservationDto)
+    public ReservationDto reserveGame(ReservationDto reservationDto)
             throws RemoteException {
         return library.reserveGame(reservationDto);
     }
 
     @Override
-    public Optional<ReservationDto> reserveBook(ReservationDto reservationDto)
+    public ReservationDto reserveBook(ReservationDto reservationDto)
             throws RemoteException {
         return library.reserveBook(reservationDto);
     }
 
     @Override
-    public Optional<ReservationDto> reserveDvd(ReservationDto reservationDto)
+    public ReservationDto reserveDvd(ReservationDto reservationDto)
             throws RemoteException {
         return library.reserveDvd(reservationDto);
     }
 
     @Override
-    public Optional<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
+    public LendingDto lendGame(LendingDto lendingDto) throws RemoteException {
         return library.lendGame(lendingDto);
     }
 
     @Override
-    public Optional<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
+    public LendingDto lendBook(LendingDto lendingDto) throws RemoteException {
         return library.lendBook(lendingDto);
     }
 
     @Override
-    public Optional<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
+    public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
         return library.lendDvd(lendingDto);
     }
 
