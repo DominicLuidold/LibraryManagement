@@ -307,6 +307,34 @@ public class ReservationController implements Initializable, Parentable<TabPaneC
         this.lblGameAgeRestrictionContent.setVisible(visible);
     }
 
+    public String getMediumTitle() {
+        return mediumTitle;
+    }
+
+    public String getMediumLocation() {
+        return mediumLocation;
+    }
+
+    public String getMediumReleaseDate() {
+        return mediumReleaseDate;
+    }
+
+    public String getMediumTopic() {
+        return mediumTopic;
+    }
+
+    public BookDto getCurrentBook() {
+        return currentBook;
+    }
+
+    public DvdDto getCurrentDvd() {
+        return currentDvd;
+    }
+
+    public GameDto getCurrentGame() {
+        return currentGame;
+    }
+
     @Override
     public TabPaneController getParentController() {
         return this.parentController;
