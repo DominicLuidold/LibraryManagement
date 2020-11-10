@@ -2,9 +2,12 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class BookService extends BaseMediaService implements Searchable<BookDto> {
     /**
@@ -12,11 +15,20 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
      */
     @Override
     public List<BookDto> search(BookDto bookDto) {
+        String topic = "";
+        if (bookDto.getTopic()  != null) {
+            Optional<Topic> topicEntity = findTopicById(bookDto.getTopic());
+
+            if (topicEntity.isPresent()) {
+                topic = topicEntity.get().getName();
+            }
+        }
+
         List<Book> entities = findBy(
             bookDto.getTitle(),
             bookDto.getAuthor(),
             bookDto.getIsbn13(),
-            bookDto.getTopic()
+            topic
         );
 
         List<BookDto> dtoList = new LinkedList<>();

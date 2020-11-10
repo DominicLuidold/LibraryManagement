@@ -5,8 +5,10 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public class TopicService {
+public class TopicService extends BaseMediaService {
     /**
      * Get all Topics.
      *
@@ -24,6 +26,25 @@ public class TopicService {
         });
 
         return topicDtos;
+    }
+
+    /**
+     * Find a Topic by its ID.
+     *
+     * @param topicDto wiht ID to find
+     * @return TopicDto with all Parameters
+     */
+    public Optional<TopicDto> findTopicById(TopicDto topicDto) {
+        Optional<Topic> foundTopic = findTopicById(topicDto.getId());
+        if (foundTopic.isPresent()) {
+            Topic topic = foundTopic.get();
+            TopicDto foundTopicDto = new TopicDto.TopicDtoBuilder()
+                .id(topic.getId())
+                .name(topic.getName())
+                .build();
+            return Optional.of(foundTopicDto);
+        }
+        return Optional.empty();
     }
 
     protected List<Topic> getAll() {

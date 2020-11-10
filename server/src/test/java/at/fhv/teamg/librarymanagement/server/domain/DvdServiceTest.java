@@ -11,10 +11,12 @@ import static org.mockito.Mockito.when;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +26,11 @@ public class DvdServiceTest {
     void search_shouldReturnDtoList() {
         // Mock incoming DTO
         DvdDto dvdDtoMock = mock(DvdDto.class);
+        UUID topic = UUID.fromString("2401e527-4bd3-4b67-8641-deadbeef6ed1");
         when(dvdDtoMock.getTitle()).thenReturn("Title");
         when(dvdDtoMock.getReleaseDate()).thenReturn(LocalDate.of(2001, 8, 25));
         when(dvdDtoMock.getDirector()).thenReturn("Director");
-        when(dvdDtoMock.getTopic()).thenReturn("Topic");
+        when(dvdDtoMock.getTopic()).thenReturn(topic);
 
         // Mock returned entity
         Medium mediumMock = mock(Medium.class);
@@ -44,8 +47,11 @@ public class DvdServiceTest {
 
         // Prepare DvdService
         DvdService dvdService = spy(DvdService.class);
+        Topic topicMock = mock(Topic.class);
+        when(topicMock.getName()).thenReturn("Topic");
         doReturn(mockedEntities).when(dvdService)
             .findBy(anyString(), anyString(), any(LocalDate.class), anyString());
+        doReturn(Optional.of(topicMock)).when(dvdService).findTopicById(any(UUID.class));
 
         // Assertions
         List<DvdDto> result = dvdService.search(dvdDtoMock);

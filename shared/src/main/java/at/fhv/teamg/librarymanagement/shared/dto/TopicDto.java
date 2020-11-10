@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public class TopicDto implements Serializable {
-    private static final long serialVersionUID = 4488868801782386377L;
-
+    private static final long serialVersionUID = -1609930578380138693L;
     private final UUID id;
     private final String name;
 

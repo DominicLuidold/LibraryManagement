@@ -15,7 +15,7 @@ public class BookDtoTest {
     void bookDtoBuilder_shouldReturnValidDto() {
         UUID id = UUID.fromString("2401e527-4bd3-4b67-8641-21119a686ed1");
         String title = "Corpus Delicti";
-        String topic = "Not so good";
+        UUID topic = UUID.fromString("2401e527-4bd3-4b67-8641-deadbeef6ed1");
         List<String> tags = new LinkedList<>();
         tags.add("Test");
         String author = "Juli Zeh";

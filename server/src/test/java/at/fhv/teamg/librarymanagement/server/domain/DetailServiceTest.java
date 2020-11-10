@@ -11,6 +11,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -27,6 +28,8 @@ public class DetailServiceTest {
         Book bookMock = mock(Book.class);
         Medium mediumMock = mock(Medium.class);
         when(bookMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(bookMock)).when(detailService).findBookById(validId);
@@ -53,6 +56,8 @@ public class DetailServiceTest {
         Dvd dvdMock = mock(Dvd.class);
         Medium mediumMock = mock(Medium.class);
         when(dvdMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(dvdMock)).when(detailService).findDvdById(validId);
@@ -80,6 +85,8 @@ public class DetailServiceTest {
         Game gameMock = mock(Game.class);
         Medium mediumMock = mock(Medium.class);
         when(gameMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(gameMock)).when(detailService).findGameById(validId);

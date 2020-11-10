@@ -7,6 +7,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.Naming;
@@ -26,8 +27,7 @@ public class RmiClient implements LibraryInterface {
     /**
      * Singleton Client for RMI.
      */
-    private RmiClient() {
-
+    public   RmiClient() {
         try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1");
             LibraryFactoryInterface libraryFactory =
@@ -162,5 +162,10 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<TopicDto> getAllTopics() throws RemoteException {
         return library.getAllTopics();
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() throws RemoteException {
+        return library.getAllUsers();
     }
 }

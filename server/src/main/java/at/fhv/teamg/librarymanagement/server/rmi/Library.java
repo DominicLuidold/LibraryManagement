@@ -8,7 +8,7 @@ import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
+import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -16,12 +16,12 @@ import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +36,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final ReservationService reservationService = new ReservationService();
     private final LendingService lendingService = new LendingService();
     private final TopicService topicService = new TopicService();
+    private final UserService userService = new UserService();
 
     public Library() throws RemoteException {
         super();
@@ -59,7 +60,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
         // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<GameDto> result = new DetailService().getGameDetail(gameDto);
+        Optional<GameDto> result = detailService.getGameDetail(gameDto);
         if (result.isPresent()) {
             return result.get();
         }
@@ -70,7 +71,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
         // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<BookDto> result = new DetailService().getBookDetail(bookDto);
+        Optional<BookDto> result = detailService.getBookDetail(bookDto);
         if (result.isPresent()) {
             return result.get();
         }
@@ -81,7 +82,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
         // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<DvdDto> result = new DetailService().getDvdDetail(dvdDto);
+        Optional<DvdDto> result = detailService.getDvdDetail(dvdDto);
         if (result.isPresent()) {
             return result.get();
         }
@@ -185,5 +186,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public List<TopicDto> getAllTopics() throws RemoteException {
         return topicService.getAllTopics();
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() throws RemoteException {
+        return userService.getAllUsers();
     }
 }

@@ -13,7 +13,7 @@ public class DvdDto implements Serializable {
     private final LocalDate releaseDate;
     private final String storageLocation;
     private final String title;
-    private final String topic;
+    private final UUID topic;
     private final List<String> tags;
     private final String availability;
 
@@ -45,7 +45,7 @@ public class DvdDto implements Serializable {
         private LocalDate releaseDate;
         private String storageLocation;
         private String title;
-        private String topic;
+        private UUID topic;
         private List<String> tags;
         private String availability;
 
@@ -78,7 +78,7 @@ public class DvdDto implements Serializable {
             return this;
         }
 
-        public DvdDtoBuilder topic(String topic) {
+        public DvdDtoBuilder topic(UUID topic) {
             this.topic = topic;
             return this;
         }
@@ -139,7 +139,7 @@ public class DvdDto implements Serializable {
         return this.title;
     }
 
-    public String getTopic() {
+    public UUID getTopic() {
         return this.topic;
     }
 

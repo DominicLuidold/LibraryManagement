@@ -352,7 +352,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentBook.getTitle(),
                 this.currentBook.getStorageLocation(),
-                this.currentBook.getTopic(),
+                this.currentBook.getTopic().toString(),
                 this.currentBook.getReleaseDate() != null
                     ? this.currentBook.getReleaseDate().toString()
                     : ""
@@ -392,7 +392,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentDvd.getTitle(),
                 this.currentDvd.getStorageLocation(),
-                this.currentDvd.getTopic(),
+                this.currentDvd.getTopic().toString(),
                 this.currentDvd.getReleaseDate() != null
                     ? this.currentDvd.getReleaseDate().toString()
                     : ""
@@ -432,7 +432,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentGame.getTitle(),
                 this.currentGame.getStorageLocation(),
-                this.currentGame.getTopic(),
+                this.currentGame.getTopic().toString(),
                 this.currentGame.getReleaseDate() != null
                     ? this.currentGame.getReleaseDate().toString()
                     : ""
