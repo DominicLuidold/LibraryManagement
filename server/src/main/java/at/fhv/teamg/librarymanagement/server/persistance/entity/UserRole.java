@@ -1,10 +1,13 @@
 package at.fhv.teamg.librarymanagement.server.persistance.entity;
 
+import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -19,7 +22,8 @@ public class UserRole {
     private UUID id;
 
     @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private UserRoleName name;
 
     @OneToMany(mappedBy = "role")
     private List<User> users = new LinkedList<>();
@@ -28,7 +32,7 @@ public class UserRole {
         return id;
     }
 
-    public String getName() {
+    public UserRoleName getName() {
         return name;
     }
 

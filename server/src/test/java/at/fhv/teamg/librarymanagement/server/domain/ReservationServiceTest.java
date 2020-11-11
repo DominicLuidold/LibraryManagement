@@ -1,5 +1,8 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -11,17 +14,27 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
+import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class ReservationServiceTest {
-    private static final UUID validId = UUID.fromString("16748d88-517f-4684-bb39-ef2fa1168d74");
-    private static final UUID notValidId = UUID.fromString("B16B00B5-4711-1337-6969-BADBADBADBAD");
+    private static final UUID validReservationId =
+        UUID.fromString("16748d88-517f-4684-bb39-ef2fa1168d74");
+    private static final UUID notValidReservationId =
+        UUID.fromString("B16B00B5-4711-1337-6969-BADBADBADBAD");
+    private static final UUID validUserId = UUID.randomUUID();
+    private static final UUID notValidUserId = UUID.randomUUID();
+    private static final UUID validMediumId = UUID.randomUUID();
+    private static final UUID notValidMediumId = UUID.randomUUID();
 
     @Test
     void getReservationsBook_shouldReturnFilledList() {
@@ -37,23 +50,23 @@ public class ReservationServiceTest {
         when(reservationMock.getUser()).thenReturn(userMock);
 
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.of(bookMock)).when(reservationService).findBookById(validId);
+        doReturn(Optional.of(bookMock)).when(reservationService).findBookById(validReservationId);
 
         BookDto bookDtoMock = mock(BookDto.class);
-        when(bookDtoMock.getId()).thenReturn(validId);
+        when(bookDtoMock.getId()).thenReturn(validReservationId);
 
-        assert (!reservationService.getReservations(bookDtoMock).isEmpty());
+        assertFalse(reservationService.getReservations(bookDtoMock).isEmpty());
     }
 
     @Test
     void getReservationsBook_shouldReturnEmptyList() {
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.empty()).when(reservationService).findBookById(notValidId);
+        doReturn(Optional.empty()).when(reservationService).findBookById(notValidReservationId);
 
         BookDto bookDtoMock = mock(BookDto.class);
-        when(bookDtoMock.getId()).thenReturn(notValidId);
+        when(bookDtoMock.getId()).thenReturn(notValidReservationId);
 
-        assert (reservationService.getReservations(bookDtoMock).isEmpty());
+        assertTrue(reservationService.getReservations(bookDtoMock).isEmpty());
     }
 
     @Test
@@ -70,23 +83,23 @@ public class ReservationServiceTest {
         when(reservationMock.getUser()).thenReturn(userMock);
 
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.of(dvdMock)).when(reservationService).findDvdById(validId);
+        doReturn(Optional.of(dvdMock)).when(reservationService).findDvdById(validReservationId);
 
         DvdDto dvdDtoMock = mock(DvdDto.class);
-        when(dvdDtoMock.getId()).thenReturn(validId);
+        when(dvdDtoMock.getId()).thenReturn(validReservationId);
 
-        assert (!reservationService.getReservations(dvdDtoMock).isEmpty());
+        assertFalse(reservationService.getReservations(dvdDtoMock).isEmpty());
     }
 
     @Test
     void getReservationsDvd_shouldReturnEmptyList() {
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.empty()).when(reservationService).findDvdById(notValidId);
+        doReturn(Optional.empty()).when(reservationService).findDvdById(notValidReservationId);
 
         DvdDto dvdDtoMock = mock(DvdDto.class);
-        when(dvdDtoMock.getId()).thenReturn(notValidId);
+        when(dvdDtoMock.getId()).thenReturn(notValidReservationId);
 
-        assert (reservationService.getReservations(dvdDtoMock).isEmpty());
+        assertTrue(reservationService.getReservations(dvdDtoMock).isEmpty());
     }
 
     @Test
@@ -103,22 +116,99 @@ public class ReservationServiceTest {
         when(reservationMock.getUser()).thenReturn(userMock);
 
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.of(gameMock)).when(reservationService).findGameById(validId);
+        doReturn(Optional.of(gameMock)).when(reservationService).findGameById(validReservationId);
 
         GameDto gameDtoMock = mock(GameDto.class);
-        when(gameDtoMock.getId()).thenReturn(validId);
+        when(gameDtoMock.getId()).thenReturn(validReservationId);
 
-        assert (!reservationService.getReservations(gameDtoMock).isEmpty());
+        assertFalse(reservationService.getReservations(gameDtoMock).isEmpty());
     }
 
     @Test
     void getReservationsGame_shouldReturnEmptyList() {
         ReservationService reservationService = spy(ReservationService.class);
-        doReturn(Optional.empty()).when(reservationService).findGameById(notValidId);
+        doReturn(Optional.empty()).when(reservationService).findGameById(notValidReservationId);
 
         GameDto gameDtoMock = mock(GameDto.class);
-        when(gameDtoMock.getId()).thenReturn(notValidId);
+        when(gameDtoMock.getId()).thenReturn(notValidReservationId);
 
-        assert (reservationService.getReservations(gameDtoMock).isEmpty());
+        assertTrue(reservationService.getReservations(gameDtoMock).isEmpty());
+    }
+
+    @Test
+    void createReservation_shouldReturnDto() {
+        Medium mediumMock = mock(Medium.class);
+        User userMock = mock(User.class);
+        UserRole userRoleMock = mock(UserRole.class);
+        ReservationDto reservationDtoMock = mock(ReservationDto.class);
+        Reservation reservationMock = mock(Reservation.class);
+
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(userMock.getId()).thenReturn(validUserId);
+        when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
+
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(Optional.of(userMock)).when(reservationService).findUserById(validUserId);
+        doReturn(Optional.of(reservationMock)).when(reservationService)
+            .updateReservation(any(Reservation.class));
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder.endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+
+        assertTrue(reservationService.createReservation(builder.build()).isPresent());
+    }
+
+    @Test
+    void createReservation_shouldReturnEmpty() {
+        Medium mediumMock = mock(Medium.class);
+        User userMock = mock(User.class);
+        UserRole userRoleMock = mock(UserRole.class);
+
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(userMock.getId()).thenReturn(validUserId);
+        when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Admin);
+
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.empty()).when(reservationService).findMediumById(notValidMediumId);
+        doReturn(Optional.empty()).when(reservationService).findUserById(notValidUserId);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(Optional.of(userMock)).when(reservationService).findUserById(validUserId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder
+            .endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(notValidMediumId)
+            .userId(notValidUserId);
+        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        builder = new ReservationDto.ReservationDtoBuilder();
+        builder
+            .endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(notValidUserId);
+        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        builder = new ReservationDto.ReservationDtoBuilder();
+        builder
+            .endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+        ReservationDto validReservation = builder.build();
+        assertFalse(reservationService.createReservation(validReservation).isPresent());
+
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
+        doReturn(Optional.empty()).when(reservationService)
+            .updateReservation(any(Reservation.class));
+
+        assertFalse(reservationService.createReservation(validReservation).isPresent());
     }
 }

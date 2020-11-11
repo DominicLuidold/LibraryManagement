@@ -6,12 +6,14 @@ import java.util.UUID;
 
 public class LendingDto implements Serializable {
     private static final long serialVersionUID = 4488858801782386377L;
+
     private final UUID id;
     private final LocalDate endDate;
     private final Integer renewalCount;
     private final LocalDate returnDate;
     private final LocalDate startDate;
     private final UUID mediumCopyId;
+    private final UUID userId;
 
     private LendingDto(LendingDtoBuilder lendingDtoBuilder) {
         this.id = lendingDtoBuilder.id;
@@ -20,6 +22,7 @@ public class LendingDto implements Serializable {
         this.returnDate = lendingDtoBuilder.returnDate;
         this.startDate = lendingDtoBuilder.startDate;
         this.mediumCopyId = lendingDtoBuilder.mediumCopyId;
+        this.userId = lendingDtoBuilder.userId;
     }
 
     public static class LendingDtoBuilder {
@@ -29,6 +32,11 @@ public class LendingDto implements Serializable {
         private LocalDate returnDate;
         private LocalDate startDate;
         private UUID mediumCopyId;
+        private UUID userId;
+
+        public LendingDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
 
         public LendingDtoBuilder(UUID id) {
             this.id = id;
@@ -59,21 +67,13 @@ public class LendingDto implements Serializable {
             return this;
         }
 
-
-        /**
-         * Build a new LendingDto.
-         *
-         * @return new LendingDto
-         */
-        public LendingDto build() {
-            LendingDto lendingDto = new LendingDto(this);
-            validateLendingDto(lendingDto);
-            return lendingDto;
+        public LendingDtoBuilder userId(UUID userId) {
+            this.userId = userId;
+            return this;
         }
 
-        private void validateLendingDto(LendingDto lendingDto) {
-            //Do some basic validations to check
-            //if user object does not break any assumption of system
+        public LendingDto build() {
+            return new LendingDto(this);
         }
     }
 
@@ -97,19 +97,11 @@ public class LendingDto implements Serializable {
         return this.startDate;
     }
 
-    public UUID getmediumCopyId() {
+    public UUID getMediumCopyId() {
         return this.mediumCopyId;
     }
 
-    @Override
-    public String toString() {
-        return "LendingDto{"
-                + "id=" + id
-                + ", endDate=" + endDate
-                + ", renewalCount=" + renewalCount
-                + ", returnDate=" + returnDate
-                + ", startDate=" + startDate
-                + ", mediumCopyId=" + mediumCopyId
-                + '}';
+    public UUID getUserId() {
+        return userId;
     }
 }

@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server;
+package at.fhv.teamg.librarymanagement.client.controller;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

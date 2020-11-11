@@ -23,7 +23,7 @@ public class Lending {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate returnDate;
 
     @Column(nullable = false)
@@ -31,6 +31,9 @@ public class Lending {
 
     @ManyToOne
     private MediumCopy mediumCopy;
+
+    @ManyToOne
+    private User user;
 
     public UUID getId() {
         return id;
@@ -54,5 +57,37 @@ public class Lending {
 
     public MediumCopy getMediumCopy() {
         return mediumCopy;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public void setRenewalCount(int renewalCount) {
+        this.renewalCount = renewalCount;
+    }
+
+    public void setMediumCopy(MediumCopy mediumCopy) {
+        this.mediumCopy = mediumCopy;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -6,6 +6,8 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,7 +33,7 @@ public class DetailService extends BaseMediaService {
                 .releaseDate(book.getMedium().getReleaseDate())
                 .storageLocation(book.getMedium().getStorageLocation())
                 .title(book.getMedium().getTitle())
-                .topic("some topic");
+                .topic(book.getMedium().getTopic().getId());
             //TODO fix topic
 
             return Optional.of(builder.build());
@@ -58,9 +60,10 @@ public class DetailService extends BaseMediaService {
                 .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
                 .releaseDate(dvd.getMedium().getReleaseDate())
                 .storageLocation(dvd.getMedium().getStorageLocation())
-                .director("some director")
+                .studio(dvd.getStudio())
+                .director(dvd.getDirector())
                 .title(dvd.getMedium().getTitle())
-                .topic("some topic");
+                .topic(dvd.getMedium().getTopic().getId());
             //TODO fix topic and director
 
             return Optional.of(builder.build());
@@ -89,7 +92,7 @@ public class DetailService extends BaseMediaService {
                 .releaseDate(game.getMedium().getReleaseDate())
                 .storageLocation(game.getMedium().getStorageLocation())
                 .title(game.getMedium().getTitle())
-                .topic("some topic");
+                .topic(game.getMedium().getTopic().getId());
             //TODO fix topic
 
             return Optional.of(builder.build());

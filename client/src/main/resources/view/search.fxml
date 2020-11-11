@@ -1,8 +1,176 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-
-<AnchorPane fx:id="calendarPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import org.controlsfx.control.SegmentedButton?>
+<AnchorPane fx:id="searchPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhv.teamg.librarymanagement.client.controller.SearchController">
-
+    <children>
+        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <children>
+                <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <children>
+                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <padding>
+                                        <Insets top="20" right="20" bottom="20" left="20"/>
+                                    </padding>
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
+                                        <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <SegmentedButton fx:id="mediaTypeBtn" GridPane.columnIndex="1"
+                                                         GridPane.rowIndex="0">
+                                            <buttons>
+                                                <ToggleButton fx:id="toggleBtnBook" text="Book"/>
+                                                <ToggleButton fx:id="toggleBtnDvd" text="DVD"/>
+                                                <ToggleButton fx:id="toggleBtnGame" text="Game"/>
+                                            </buttons>
+                                        </SegmentedButton>
+                                        <JFXTextField fx:id="txtTitle" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="Title"/>
+                                        <JFXTextField fx:id="txtBookAuthor" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Author" />
+                                        <JFXTextField fx:id="txtDvdDirector" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Director"/>
+                                        <JFXTextField fx:id="txtGameDeveloper" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Developer" />
+                                        <JFXTextField fx:id="txtBookIsbn13" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="ISBN-13"/>
+                                        <JFXDatePicker fx:id="txtDvdYearOfPublication" visible="false"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Year Of Publication" />
+                                        <JFXTextField fx:id="txtGamePlatform" visible="false"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Platform"/>
+                                        <ComboBox fx:id="txtBookTopic" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Topic (Book)"/>
+                                        <ComboBox fx:id="txtDvdTopic" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Topic (DVD)"/>
+                                        <ComboBox fx:id="txtGameTopic" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Topic (Game)"/>
+                                        <Button fx:id="btnSearch" prefWidth="300" prefHeight="40" defaultButton="true" GridPane.columnSpan="2" GridPane.rowSpan="1" GridPane.columnIndex="0" GridPane.rowIndex="5" text="Search" GridPane.halignment="CENTER"/>
+                                        <Label fx:id="lblMediaType" text="Media Type" GridPane.rowIndex="0"/>
+                                        <Label fx:id="lblTitle" visible="false" text="Title" GridPane.rowIndex="1"/>
+                                        <Label fx:id="lblBookAuthor" visible="false"  text="Author" GridPane.rowIndex="2"/>
+                                        <Label fx:id="lblDvdDirector" visible="false"  text="Director" GridPane.rowIndex="2"/>
+                                        <Label fx:id="lblGameDeveloper" visible="false"  text="Developer" GridPane.rowIndex="2"/>
+                                        <Label fx:id="lblBookIsbn13" visible="false"  text="ISBN-13" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblDvdYearOfPublication" visible="false"  text="Year of Publication" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblGamePlatform" visible="false"  text="Platform" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblBookTopic" visible="false" text="Topic (Book)" GridPane.rowIndex="4"/>
+                                        <Label fx:id="lblDvdTopic" visible="false" text="Topic (DVD)" GridPane.rowIndex="4"/>
+                                        <Label fx:id="lblGameTopic" visible="false" text="Topic (Game)" GridPane.rowIndex="4"/>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <children>
+                                <TableView fx:id="tblResultsBook" visible="false" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="columnTitle" prefWidth="200.0" text="Title" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="title" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnStorageLocation" prefWidth="110.0" text="Storage Location" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="storageLocation" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnAvailability" prefWidth="120.0" text="Availability" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="availability" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnAuthor" prefWidth="120.0" text="Author" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="author" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnDetailsBook" prefWidth="100" text="Details">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                                <TableView fx:id="tblResultsDvd" visible="false" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="columnTitleDvd" prefWidth="200.0" text="Title" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="title" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnStorageLocationDvd" prefWidth="110.0" text="Storage Location" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="storageLocation" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnAvailabilityDvd" prefWidth="120.0" text="Availability" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="availability" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnDirectorDvd" prefWidth="120.0" text="Director" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="director" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnDetailsDvd" prefWidth="100" text="Details">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                                <TableView fx:id="tblResultsGame" visible="false" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="columnTitleGame" prefWidth="200.0" text="Title" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="title" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnDeveloperGame" prefWidth="110.0" text="Developer" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="developer" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnAvailabilityGame" prefWidth="120.0" text="Availability" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="availability" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnPlatformGame" prefWidth="120.0" text="Platform" >
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="platforms" />
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="columnDetailsGame" prefWidth="100" text="Details">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

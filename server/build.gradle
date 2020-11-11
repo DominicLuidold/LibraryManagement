@@ -5,6 +5,7 @@ plugins {
     /* Project specific plugins */
     id 'checkstyle'
     id 'jacoco'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group = 'at.fhv.teamg.librarymanagement'
@@ -62,7 +63,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.from = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    '**/persistance/entity/**'
+                    '**/persistance/*',
             ])
         })
     }
@@ -83,3 +84,24 @@ jacocoTestCoverageVerification {
 }
 check.dependsOn jacocoTestCoverageVerification
 */
+
+/* ShadowJar configuration */
+shadowJar {
+    archiveFileName = 'LibraryServer.jar'
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
+        )
+    }
+}
+
+/* Distribution configuration */
+distributions {
+    main {
+        distributionBaseName = 'main'
+        contents {
+            from shadowJar
+        }
+    }
+}

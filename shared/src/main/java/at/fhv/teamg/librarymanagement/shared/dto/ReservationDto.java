@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class ReservationDto implements Serializable {
     private static final long serialVersionUID = -8940871800405364694L;
+
     private final UUID id;
     private final LocalDate endDate;
     private final LocalDate startDate;
@@ -27,6 +28,9 @@ public class ReservationDto implements Serializable {
         private UUID mediumId;
         private UUID userId;
 
+        public ReservationDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
 
         public ReservationDtoBuilder(UUID id) {
             this.id = id;
@@ -52,20 +56,8 @@ public class ReservationDto implements Serializable {
             return this;
         }
 
-
-        /**
-         * Build a new ReservationDto.
-         * @return new ReservationDto
-         */
         public ReservationDto build() {
-            ReservationDto reservationDto =  new ReservationDto(this);
-            validateReservationDto(reservationDto);
-            return reservationDto;
-        }
-
-        private void validateReservationDto(ReservationDto reservationDto) {
-            //Do some basic validations to check
-            //if user object does not break any assumption of system
+            return new ReservationDto(this);
         }
     }
 
@@ -81,22 +73,11 @@ public class ReservationDto implements Serializable {
         return this.startDate;
     }
 
-    public UUID getmediumId() {
+    public UUID getMediumId() {
         return this.mediumId;
     }
 
-    public UUID getuserId() {
+    public UUID getUserId() {
         return this.userId;
-    }
-
-    @Override
-    public String toString() {
-        return "ReservationDto{"
-                + "id=" + id
-                + ", endDate=" + endDate
-                + ", startDate=" + startDate
-                + ", mediumId='" + mediumId + '\''
-                + ", userId=" + userId
-                + '}';
     }
 }

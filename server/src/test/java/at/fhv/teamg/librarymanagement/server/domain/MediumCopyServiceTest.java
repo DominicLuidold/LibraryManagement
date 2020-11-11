@@ -1,5 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -18,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-public class CopyServiceTest {
+public class MediumCopyServiceTest {
     private static final UUID validId = UUID.fromString("16748d88-517f-4684-bb39-ef2fa1168d74");
     private static final UUID notValidId = UUID.fromString("B16B00B5-4711-1337-6969-BADBADBADBAD");
 
@@ -33,24 +35,24 @@ public class CopyServiceTest {
         when(bookMock.getMedium()).thenReturn(mediumMock);
         when(mediumMock.getCopies()).thenReturn(copies);
 
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.of(bookMock)).when(copyService).findBookById(validId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.of(bookMock)).when(mediumCopyService).findBookById(validId);
 
         BookDto bookDtoMock = mock(BookDto.class);
         when(bookDtoMock.getId()).thenReturn(validId);
 
-        assert (!copyService.getCopies(bookDtoMock).isEmpty());
+        assertFalse(mediumCopyService.getCopies(bookDtoMock).isEmpty());
     }
 
     @Test
     void getCopiesBook_shouldReturnEmptyList() {
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.empty()).when(copyService).findBookById(notValidId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.empty()).when(mediumCopyService).findBookById(notValidId);
 
         BookDto bookDtoMock = mock(BookDto.class);
         when(bookDtoMock.getId()).thenReturn(notValidId);
 
-        assert (copyService.getCopies(bookDtoMock).isEmpty());
+        assertTrue(mediumCopyService.getCopies(bookDtoMock).isEmpty());
     }
 
     @Test
@@ -64,24 +66,24 @@ public class CopyServiceTest {
         when(dvdMock.getMedium()).thenReturn(mediumMock);
         when(mediumMock.getCopies()).thenReturn(copies);
 
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.of(dvdMock)).when(copyService).findDvdById(validId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.of(dvdMock)).when(mediumCopyService).findDvdById(validId);
 
         DvdDto dvdDtoMock = mock(DvdDto.class);
         when(dvdDtoMock.getId()).thenReturn(validId);
 
-        assert (!copyService.getCopies(dvdDtoMock).isEmpty());
+        assertFalse(mediumCopyService.getCopies(dvdDtoMock).isEmpty());
     }
 
     @Test
     void getCopiesDvd_shouldReturnEmptyList() {
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.empty()).when(copyService).findDvdById(notValidId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.empty()).when(mediumCopyService).findDvdById(notValidId);
 
         DvdDto dvdDtoMock = mock(DvdDto.class);
         when(dvdDtoMock.getId()).thenReturn(notValidId);
 
-        assert (copyService.getCopies(dvdDtoMock).isEmpty());
+        assertTrue(mediumCopyService.getCopies(dvdDtoMock).isEmpty());
     }
 
 
@@ -96,23 +98,23 @@ public class CopyServiceTest {
         when(gameMock.getMedium()).thenReturn(mediumMock);
         when(mediumMock.getCopies()).thenReturn(copies);
 
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.of(gameMock)).when(copyService).findGameById(validId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.of(gameMock)).when(mediumCopyService).findGameById(validId);
 
         GameDto gameDtoMock = mock(GameDto.class);
         when(gameDtoMock.getId()).thenReturn(validId);
 
-        assert (!copyService.getCopies(gameDtoMock).isEmpty());
+        assertFalse(mediumCopyService.getCopies(gameDtoMock).isEmpty());
     }
 
     @Test
     void getCopiesGame_shouldReturnEmptyList() {
-        CopyService copyService = spy(CopyService.class);
-        doReturn(Optional.empty()).when(copyService).findGameById(notValidId);
+        MediumCopyService mediumCopyService = spy(MediumCopyService.class);
+        doReturn(Optional.empty()).when(mediumCopyService).findGameById(notValidId);
 
         GameDto gameDtoMock = mock(GameDto.class);
         when(gameDtoMock.getId()).thenReturn(notValidId);
 
-        assert (copyService.getCopies(gameDtoMock).isEmpty());
+        assertTrue(mediumCopyService.getCopies(gameDtoMock).isEmpty());
     }
 }

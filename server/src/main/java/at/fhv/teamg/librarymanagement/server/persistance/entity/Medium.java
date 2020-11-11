@@ -44,6 +44,9 @@ public class Medium {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags = new LinkedHashSet<>();
 
+    @ManyToOne
+    private Topic topic;
+
     @OneToOne
     private Book book;
 
@@ -83,6 +86,10 @@ public class Medium {
 
     public Set<Tag> getTags() {
         return tags;
+    }
+
+    public Topic getTopic() {
+        return topic;
     }
 
     public Book getBook() {

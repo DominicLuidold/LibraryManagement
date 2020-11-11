@@ -2,22 +2,27 @@ package at.fhv.teamg.librarymanagement.shared.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class BookDto implements Serializable {
     private static final long serialVersionUID = 7234119134192614849L;
+
+    /* Medium properties */
     private final UUID id;
     private final LocalDate releaseDate;
     private final String storageLocation;
     private final String title;
-    private final String topic;
+    private final UUID topic;
+    private final List<String> tags;
+    private final String availability;
 
+    /* Book properties */
     private final String author;
     private final String isbn10;
     private final String isbn13;
     private final String languageKey;
     private final String publisher;
-
 
     private BookDto(BookDtoBuilder bookDtoBuilder) {
         this.id = bookDtoBuilder.id;
@@ -25,6 +30,8 @@ public class BookDto implements Serializable {
         this.storageLocation = bookDtoBuilder.storageLocation;
         this.title = bookDtoBuilder.title;
         this.topic = bookDtoBuilder.topic;
+        this.tags = bookDtoBuilder.tags;
+        this.availability = bookDtoBuilder.availability;
 
         this.author = bookDtoBuilder.author;
         this.isbn10 = bookDtoBuilder.isbn10;
@@ -33,19 +40,24 @@ public class BookDto implements Serializable {
         this.publisher = bookDtoBuilder.publisher;
     }
 
-
     public static class BookDtoBuilder {
         private UUID id;
         private LocalDate releaseDate;
         private String storageLocation;
         private String title;
-        private String topic;
+        private UUID topic;
+        private List<String> tags;
+        private String availability;
 
         private String author;
         private String isbn10;
         private String isbn13;
         private String languageKey;
         private String publisher;
+
+        public BookDtoBuilder() {
+            // GUI might not be able to provide an id
+        }
 
         public BookDtoBuilder(UUID id) {
             this.id = id;
@@ -66,8 +78,18 @@ public class BookDto implements Serializable {
             return this;
         }
 
-        public BookDtoBuilder topic(String topic) {
+        public BookDtoBuilder topic(UUID topic) {
             this.topic = topic;
+            return this;
+        }
+
+        public BookDtoBuilder tags(List<String> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public BookDtoBuilder availability(String availability) {
+            this.availability = availability;
             return this;
         }
 
@@ -96,19 +118,8 @@ public class BookDto implements Serializable {
             return this;
         }
 
-        /**
-         * Build a new BookDto.
-         * @return new BookDto
-         */
         public BookDto build() {
-            BookDto bookDto =  new BookDto(this);
-            validatebookDto(bookDto);
-            return bookDto;
-        }
-
-        private void validatebookDto(BookDto bookDto) {
-            //Do some basic validations to check
-            //if user object does not break any assumption of system
+            return new BookDto(this);
         }
     }
 
@@ -128,8 +139,16 @@ public class BookDto implements Serializable {
         return this.title;
     }
 
-    public String getTopic() {
+    public UUID getTopic() {
         return this.topic;
+    }
+
+    public List<String> getTags() {
+        return this.tags;
+    }
+
+    public String getAvailability() {
+        return this.availability;
     }
 
     public String getAuthor() {
@@ -150,21 +169,5 @@ public class BookDto implements Serializable {
 
     public String getPublisher() {
         return this.publisher;
-    }
-
-    @Override
-    public String toString() {
-        return "BookDto{"
-                + "id=" + id
-                + ", releaseDate=" + releaseDate
-                + ", storageLocation='" + storageLocation + '\''
-                + ", title='" + title + '\''
-                + ", topic='" + topic + '\''
-                + ", author='" + author + '\''
-                + ", isbn10='" + isbn10 + '\''
-                + ", isbn13='" + isbn13 + '\''
-                + ", languageKey='" + languageKey + '\''
-                + ", publisher='" + publisher + '\''
-                + '}';
     }
 }

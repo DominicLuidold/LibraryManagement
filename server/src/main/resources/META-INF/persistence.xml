@@ -16,6 +16,7 @@
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.MediumType</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Tag</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Topic</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.User</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole</class>
 
@@ -31,7 +32,6 @@
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="5"/>
             <property name="hibernate.connection.provider_class"

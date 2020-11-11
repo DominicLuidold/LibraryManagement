@@ -49,4 +49,24 @@ public class Reservation {
     public User getUser() {
         return user;
     }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setMedium(Medium medium) {
+        this.medium = medium;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

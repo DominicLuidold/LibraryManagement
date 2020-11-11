@@ -1,5 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -9,13 +11,13 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-
 
 public class DetailServiceTest {
     private static final UUID validId = UUID.fromString("16748d88-517f-4684-bb39-ef2fa1168d74");
@@ -26,6 +28,8 @@ public class DetailServiceTest {
         Book bookMock = mock(Book.class);
         Medium mediumMock = mock(Medium.class);
         when(bookMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(bookMock)).when(detailService).findBookById(validId);
@@ -33,7 +37,7 @@ public class DetailServiceTest {
         BookDto bookDtoMock = mock(BookDto.class);
         when(bookDtoMock.getId()).thenReturn(validId);
 
-        assert (detailService.getBookDetail(bookDtoMock).isPresent());
+        assertTrue(detailService.getBookDetail(bookDtoMock).isPresent());
     }
 
     @Test
@@ -44,7 +48,7 @@ public class DetailServiceTest {
         BookDto bookDtoMock = mock(BookDto.class);
         when(bookDtoMock.getId()).thenReturn(notValidId);
 
-        assert (!detailService.getBookDetail(bookDtoMock).isPresent());
+        assertFalse(detailService.getBookDetail(bookDtoMock).isPresent());
     }
 
     @Test
@@ -52,6 +56,8 @@ public class DetailServiceTest {
         Dvd dvdMock = mock(Dvd.class);
         Medium mediumMock = mock(Medium.class);
         when(dvdMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(dvdMock)).when(detailService).findDvdById(validId);
@@ -59,7 +65,7 @@ public class DetailServiceTest {
         DvdDto dvdDtoMock = mock(DvdDto.class);
         when(dvdDtoMock.getId()).thenReturn(validId);
 
-        assert (detailService.getDvdDetail(dvdDtoMock).isPresent());
+        assertTrue(detailService.getDvdDetail(dvdDtoMock).isPresent());
     }
 
     @Test
@@ -70,7 +76,7 @@ public class DetailServiceTest {
         DvdDto dvdDtoMock = mock(DvdDto.class);
         when(dvdDtoMock.getId()).thenReturn(notValidId);
 
-        assert (!detailService.getDvdDetail(dvdDtoMock).isPresent());
+        assertFalse(detailService.getDvdDetail(dvdDtoMock).isPresent());
     }
 
 
@@ -79,6 +85,8 @@ public class DetailServiceTest {
         Game gameMock = mock(Game.class);
         Medium mediumMock = mock(Medium.class);
         when(gameMock.getMedium()).thenReturn(mediumMock);
+        Topic topicMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
 
         DetailService detailService = spy(DetailService.class);
         doReturn(Optional.of(gameMock)).when(detailService).findGameById(validId);
@@ -86,7 +94,7 @@ public class DetailServiceTest {
         GameDto gameDtoMock = mock(GameDto.class);
         when(gameDtoMock.getId()).thenReturn(validId);
 
-        assert (detailService.getGameDetail(gameDtoMock).isPresent());
+        assertTrue(detailService.getGameDetail(gameDtoMock).isPresent());
     }
 
     @Test
@@ -97,6 +105,6 @@ public class DetailServiceTest {
         GameDto gameDtoMock = mock(GameDto.class);
         when(gameDtoMock.getId()).thenReturn(notValidId);
 
-        assert (!detailService.getGameDetail(gameDtoMock).isPresent());
+        assertFalse(detailService.getGameDetail(gameDtoMock).isPresent());
     }
 }

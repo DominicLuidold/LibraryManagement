@@ -59,6 +59,8 @@ public abstract class BaseDao<T> implements Dao<T> {
                 transaction.rollback();
             }
             LOG.error("Could not persist element", e);
+        } finally {
+            entityManager.clear();
         }
         return Optional.empty();
     }
@@ -84,6 +86,8 @@ public abstract class BaseDao<T> implements Dao<T> {
             }
             LOG.error("Could not update element", e);
             return Optional.empty();
+        } finally {
+            entityManager.clear();
         }
     }
 
@@ -108,6 +112,8 @@ public abstract class BaseDao<T> implements Dao<T> {
             }
             LOG.error("Could not remove element", e);
             return false;
+        } finally {
+            entityManager.clear();
         }
     }
 
@@ -124,6 +130,7 @@ public abstract class BaseDao<T> implements Dao<T> {
         CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
 
         TypedQuery<T> allQuery = entityManager.createQuery(all);
+        entityManager.clear();
         return allQuery.getResultList();
     }
 }
