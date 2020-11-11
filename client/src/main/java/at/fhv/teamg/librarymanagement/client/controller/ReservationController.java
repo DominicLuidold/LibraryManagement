@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.GetAllUserTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
+import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -372,7 +373,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     private void loadAdditionalData() {
         try {
-            this.topics = RmiClient.getInstance().getAllTopics();
+            this.topics = Cache.getInstance().getAllTopics();
             this.allUserList = RmiClient.getInstance().getAllUsers();
         } catch (RemoteException e) {
             e.printStackTrace();

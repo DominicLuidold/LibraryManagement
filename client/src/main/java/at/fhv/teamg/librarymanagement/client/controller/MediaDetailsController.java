@@ -9,6 +9,7 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.D
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameMediumCopyTask;
+import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -158,11 +159,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         LOG.debug("Initialized UserController");
 
         // Load Topics
-        try {
-            this.topics = RmiClient.getInstance().getAllTopics();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        this.topics = Cache.getInstance().getAllTopics();
     }
 
     private void setCellFactories() {

@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -51,6 +52,9 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //create cache instance to preload
+        Cache.getInstance();
+
         this.resources = resources;
         ValidationDecoration cssDecorator = new StyleClassValidationDecoration(
             "error",
