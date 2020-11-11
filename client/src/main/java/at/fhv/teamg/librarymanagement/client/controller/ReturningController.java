@@ -138,7 +138,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         LOG.debug("Initialized ReturningController");
         addMediaTypeEventHandlers();
 
-        RmiClient client = new RmiClient();
+        RmiClient client = RmiClient.getInstance();
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -175,7 +175,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
 
-            RmiClient client = new RmiClient();
+            RmiClient client = RmiClient.getInstance();
             boolean confirmedReturn = false;
             try {
                 switch (currentMediumType) {

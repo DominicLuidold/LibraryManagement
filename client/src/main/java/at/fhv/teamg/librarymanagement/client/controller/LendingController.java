@@ -153,7 +153,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
 
-        RmiClient client = new RmiClient();
+        RmiClient client = RmiClient.getInstance();
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -194,7 +194,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 .mediumCopyId(currentUuid)
                 .renewalCount(0);
 
-            RmiClient client = new RmiClient();
+            RmiClient client = RmiClient.getInstance();
 
             LendingDto confirmedLending = null;
             try {
