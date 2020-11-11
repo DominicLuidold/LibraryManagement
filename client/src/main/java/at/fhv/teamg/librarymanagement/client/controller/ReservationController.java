@@ -160,7 +160,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         // TODO: UNTEN DAS GETALLUSERS das darf nicht gleichzeitig sein wie loadAdditionalData()
         // -> das unten hier in .setOnSucceed() von loadAdditional data rein verschieben
 
-        //this.createUsersString(allUserList);
+        this.createUsersString(allUserList);
         // try {
         //     fillMap(RmiClient.getInstance().getAllUsers());
         // } catch (RemoteException e) {
@@ -378,23 +378,12 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     }
 
     private void loadAdditionalData() {
-        MediaTopicTask task = new MediaTopicTask(this.reservationPane);
-        Thread thread = new Thread(task, "Load All Topics Task");
-        task.setOnSucceeded(event -> {
-            System.out.println("Loaded all Topics");
-            topics = task.getValue();
-
-
-            GetAllUserTask userTask = new GetAllUserTask(this.reservationPane);
-            Thread getAllUsersThread = new Thread(userTask, "Load All Users");
-
-            userTask.setOnSucceeded(event1 -> {
-                this.allUserList = userTask.getValue();
-            });
-            getAllUsersThread.start();
-            // TODO: hier user laden anstelle von initialize()
-        });
-        thread.start();
+        try {
+            this.topics = RmiClient.getInstance().getAllTopics();
+            this.allUserList = RmiClient.getInstance().getAllUsers();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getMediumTitle() {

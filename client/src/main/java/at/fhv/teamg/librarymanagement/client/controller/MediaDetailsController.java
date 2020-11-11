@@ -346,6 +346,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
 
     private void loadCurrentBook() {
+        this.currentMediumType = MediumType.BOOK;
         BookDetailTask task = new BookDetailTask(
             new BookDto.BookDtoBuilder(this.currentUuid).build(),
             this.detailsPane
@@ -388,6 +389,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     }
 
     private void loadCurrentDvd() {
+        this.currentMediumType = MediumType.DVD;
         DvdDetailTask task = new DvdDetailTask(
             new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
             this.detailsPane
@@ -428,6 +430,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     }
 
     private void loadCurrentGame() {
+        this.currentMediumType = MediumType.GAME;
         GameDetailTask task = new GameDetailTask(
             new GameDto.GameDtoBuilder(this.currentUuid).build(),
             this.detailsPane
