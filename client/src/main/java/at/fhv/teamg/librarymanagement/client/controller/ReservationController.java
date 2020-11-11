@@ -39,11 +39,11 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
-    //TODO getAllUsers of DB
     private List<UserDto> allUserList;
     private ArrayList<String> allUsers = new ArrayList<>();
-    //{"Anton", "Antonia", "Abraham", "Bertram", "Berta"};
-    private HashMap<UUID, String> usersMap = new HashMap<>();
+
+    //map approach
+    //private HashMap<UUID, String> usersMap = new HashMap<>();
 
     private BookDto currentBook = null;
     private DvdDto currentDvd = null;
@@ -156,26 +156,19 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.addMediaTypeEventHandlers();
         loadAdditionalData();
 
-
-        // TODO: UNTEN DAS GETALLUSERS das darf nicht gleichzeitig sein wie loadAdditionalData()
-        // -> das unten hier in .setOnSucceed() von loadAdditional data rein verschieben
-
         this.createUsersString(allUserList);
-        // try {
-        //     fillMap(RmiClient.getInstance().getAllUsers());
-        // } catch (RemoteException e) {
-        //     e.printStackTrace();
-        // }
+
         TextFields.bindAutoCompletion(txtUser, allUsers);
         LOG.debug("Initialized ReservationController");
     }
 
-    private void fillMap(List<UserDto> users) {
+    //for map approach
+    /*private void fillMap(List<UserDto> users) {
         usersMap.clear();
         for (UserDto dto : users) {
             usersMap.put(dto.getId(), dto.getName());
         }
-    }
+    }*/
 
     private void createUsersString(List<UserDto> usersList) {
         allUsers = new ArrayList<>();
@@ -189,7 +182,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
             if (getUserName().length() != 0) {
                 userUuidToReserve = getUserID(getUserName());
 
-                //TODO hand userName to backend
                 ReservationDto.ReservationDtoBuilder dtoBuilder =
                     new ReservationDto.ReservationDtoBuilder();
 
@@ -237,7 +229,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     }
 
     private ReservationDto buildReservation(ReservationDto.ReservationDtoBuilder dtoBuilder) {
-        //dtoBuilder.userId(getUserUuidValue());
+        //dtoBuilder.userId(getUserUuidValue());    //map approach
         dtoBuilder.userId(userUuidToReserve);
         dtoBuilder.mediumId(mediumUuid);
         dtoBuilder.startDate(LocalDate.now());
@@ -245,14 +237,15 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         return dtoBuilder.build();
     }
 
-    private UUID getUserUuidValue() {
+    //map approach
+    /*private UUID getUserUuidValue() {
         for (Map.Entry<UUID, String> entry : usersMap.entrySet()) {
             if (Objects.equals(getUserName(), entry.getValue())) {
                 return entry.getKey();
             }
         }
         return null;
-    }
+    }*/
 
     private String getUserName() {
         return this.txtUser.getText().trim();
