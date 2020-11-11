@@ -16,7 +16,7 @@ public class LendingService extends BaseMediaService {
     /**
      * Create new lending.
      *
-     * @param lendingDto Dto without id
+     * @param lendingDto Dto without id and dates
      * @return Newly created lending
      */
     public Optional<LendingDto> createLending(LendingDto lendingDto) {
@@ -36,8 +36,9 @@ public class LendingService extends BaseMediaService {
 
         Lending lending = new Lending();
         lending.setId(UUID.randomUUID());
-        lending.setStartDate(lendingDto.getStartDate());
-        lending.setEndDate(lendingDto.getEndDate());
+        lending.setStartDate(LocalDate.now());
+        lending.setEndDate(
+            LocalDate.now().plusDays(mediumCopy.get().getMedium().getType().getMaxLendingDays()));
         lending.setMediumCopy(mediumCopy.get());
         lending.setUser(user.get());
         lending.setRenewalCount(lendingDto.getRenewalCount());

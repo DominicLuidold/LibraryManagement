@@ -29,7 +29,6 @@ public class RmiClient implements LibraryInterface {
      */
     public   RmiClient() {
         try {
-            Registry registry = LocateRegistry.getRegistry("127.0.0.1");
             LibraryFactoryInterface libraryFactory =
                     (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
             library = libraryFactory.getLibrary();

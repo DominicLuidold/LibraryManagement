@@ -156,17 +156,37 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             ButtonTableCell.forTableColumn(
                 "Lend",
                 (MediumCopyDto dto) -> {
-                    LOG.debug("Book details button has been pressed");
+                    LOG.debug("Lend button has been pressed");
 
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.UNSUPPORTED, this).get();
+                            .addTab(TabPaneEntry.LENDING, this.getParentController()).get();
 
-                    MediaDetailsController mediaDetailsController =
-                        (MediaDetailsController) controller;
-                    mediaDetailsController.setCurrentMediumType(MediumType.BOOK, dto.getId());
+                    LendingController lendingController =
+                        (LendingController) controller;
+
+                    if (currentMediumType == null) {
+                        System.out.println("###### why null");
+                    } else {
+                        System.out.println("######### not null");
+                        switch (currentMediumType) {
+                            case DVD:
+                                lendingController.setCurrentMedium(currentDvd);
+                                break;
+                            case BOOK:
+                                lendingController.setCurrentMedium(currentBook);
+                                break;
+                            case GAME:
+                                lendingController.setCurrentMedium(currentGame);
+                                break;
+                            default:
+                                LOG.error("no medium type");
+                        }
+                        lendingController.setCurrentUuid(dto.getId());
+                    }
+
 
                     return dto;
                 }
@@ -246,6 +266,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
      * @param uuid UUID of Medium to load
      */
     public void setCurrentMediumType(MediumType type, UUID uuid) {
+        currentMediumType = type;
         this.enableFieldsForMediumType(type);
         this.currentUuid = uuid;
         switch (type) {
