@@ -424,6 +424,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
@@ -432,6 +433,18 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         });
         thread.start();
 
+    }
+
+    private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
+        boolean isAvailable = true;
+        for (MediumCopyDto dto : copies) {
+            // if a copy is available, disable button
+            if (dto.getLendTill() == null) {
+                isAvailable = false;
+                break;
+            }
+        }
+        this.btnReserve.setVisible(isAvailable);
     }
 
     public DvdDto getCurrentDvd() {
@@ -465,6 +478,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
@@ -506,6 +520,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
