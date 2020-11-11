@@ -12,6 +12,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
@@ -23,6 +24,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -137,13 +139,18 @@ public class ReservationServiceTest {
 
     @Test
     void createReservation_shouldReturnDto() {
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        Set<MediumCopy> mediumCopies = new HashSet<>();
+        mediumCopies.add(mediumCopyMock);
+
         Medium mediumMock = mock(Medium.class);
         User userMock = mock(User.class);
         UserRole userRoleMock = mock(UserRole.class);
-        ReservationDto reservationDtoMock = mock(ReservationDto.class);
         Reservation reservationMock = mock(Reservation.class);
 
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
         when(mediumMock.getId()).thenReturn(validMediumId);
+        when(mediumMock.getCopies()).thenReturn(mediumCopies);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
         when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
@@ -210,5 +217,31 @@ public class ReservationServiceTest {
             .updateReservation(any(Reservation.class));
 
         assertFalse(reservationService.createReservation(validReservation).isPresent());
+    }
+
+    @Test
+    void createReservation_shouldReturnEmpty_whenCopiesAvailable() {
+        // Mocks
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        Set<MediumCopy> mediumCopies = new HashSet<>();
+        mediumCopies.add(mediumCopyMock);
+        Medium mediumMock = mock(Medium.class);
+
+        when(mediumCopyMock.isAvailable()).thenReturn(true);
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(mediumMock.getCopies()).thenReturn(mediumCopies);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder.endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+
+        // Assertions
+        assertFalse(reservationService.createReservation(builder.build()).isPresent());
     }
 }

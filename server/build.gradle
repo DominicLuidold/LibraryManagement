@@ -64,6 +64,8 @@ jacocoTestReport {
         classDirectories.from = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     '**/persistance/*',
+                    '**/rmi/*',
+                    '**/server/*Main*',
             ])
         })
     }
