@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class MediumCopyDto implements Serializable {
@@ -8,17 +9,20 @@ public class MediumCopyDto implements Serializable {
 
     private final UUID id;
     private final boolean isAvailable;
+    private final LocalDate lendTill;
     private final UUID mediumID;
 
     private MediumCopyDto(MediumCopyDtoBuilder builder) {
         this.id = builder.id;
         this.isAvailable = builder.isAvailable;
+        this.lendTill = builder.lendTill;
         this.mediumID = builder.mediumID;
     }
 
     public static class MediumCopyDtoBuilder {
         private UUID id;
         private boolean isAvailable;
+        private LocalDate lendTill;
         private UUID mediumID;
 
         public MediumCopyDtoBuilder() {
@@ -31,6 +35,11 @@ public class MediumCopyDto implements Serializable {
 
         public MediumCopyDtoBuilder isAvailable(boolean isAvailable) {
             this.isAvailable = isAvailable;
+            return this;
+        }
+
+        public MediumCopyDtoBuilder lendTill(LocalDate lendTill) {
+            this.lendTill = lendTill;
             return this;
         }
 
@@ -50,6 +59,10 @@ public class MediumCopyDto implements Serializable {
 
     public boolean isAvailable() {
         return isAvailable;
+    }
+
+    public LocalDate getLendTill() {
+        return lendTill;
     }
 
     public UUID getMediumID() {

@@ -16,7 +16,7 @@ public class LendingService extends BaseMediaService {
     /**
      * Create new lending.
      *
-     * @param lendingDto Dto without id
+     * @param lendingDto Dto without id and dates
      * @return Newly created lending
      */
     public Optional<LendingDto> createLending(LendingDto lendingDto) {
@@ -36,8 +36,9 @@ public class LendingService extends BaseMediaService {
 
         Lending lending = new Lending();
         lending.setId(UUID.randomUUID());
-        lending.setStartDate(lendingDto.getStartDate());
-        lending.setEndDate(lendingDto.getEndDate());
+        lending.setStartDate(LocalDate.now());
+        lending.setEndDate(
+            LocalDate.now().plusDays(mediumCopy.get().getMedium().getType().getMaxLendingDays()));
         lending.setMediumCopy(mediumCopy.get());
         lending.setUser(user.get());
         lending.setRenewalCount(lendingDto.getRenewalCount());
@@ -98,19 +99,13 @@ public class LendingService extends BaseMediaService {
         return true;
     }
 
-    protected Optional<MediumCopy> findMediumCopyById(UUID id) {
-        return new MediumCopyDao().find(id);
-    }
-
-    protected Optional<Lending> updateLending(Lending lending) {
-        return new LendingDao().update(lending);
-    }
-
-    protected Optional<MediumCopy> updateMediumCopy(MediumCopy mediumCopy) {
-        return new MediumCopyDao().update(mediumCopy);
-    }
-
-    private Optional<Lending> getCurrentLending(Set<Lending> lendingSet) {
+    /**
+     * Returns the currently ongoing lending (if any) based on given list of lending.
+     *
+     * @param lendingSet A list of lending
+     * @return Current lending, {@link Optional#empty()} if there's no active lending
+     */
+    public Optional<Lending> getCurrentLending(Set<Lending> lendingSet) {
         for (Lending lending : lendingSet) {
             if ((lending.getStartDate().isBefore(LocalDate.now())
                 || lending.getStartDate().isEqual(LocalDate.now()))
@@ -123,5 +118,17 @@ public class LendingService extends BaseMediaService {
         }
 
         return Optional.empty();
+    }
+
+    protected Optional<MediumCopy> findMediumCopyById(UUID id) {
+        return new MediumCopyDao().find(id);
+    }
+
+    protected Optional<Lending> updateLending(Lending lending) {
+        return new LendingDao().update(lending);
+    }
+
+    protected Optional<MediumCopy> updateMediumCopy(MediumCopy mediumCopy) {
+        return new MediumCopyDao().update(mediumCopy);
     }
 }
