@@ -8,11 +8,16 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.B
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdDetailTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameMediumCopyTask;
+import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -132,7 +137,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private TableColumn<MediumCopyDto, String> columnCopyId;
     @FXML
-    private TableColumn<MediumCopyDto, Boolean> columnLendTill;
+    private TableColumn<MediumCopyDto, String> columnLendTill;
     @FXML
     private TableColumn<MediumCopyDto, Button> columnLend;
     @FXML
@@ -142,12 +147,21 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML // TODO use generics
     private TableView<MediumCopyDto> tblResults;
 
+    private List<TopicDto> topics = new LinkedList<>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
         this.setCellFactories();
         this.addMediaTypeEventHandlers();
         LOG.debug("Initialized UserController");
+
+        // Load Topics
+        try {
+            this.topics = RmiClient.getInstance().getAllTopics();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setCellFactories() {
@@ -247,13 +261,23 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
             System.out.println("Search button pressed");
-
+            // change view
+            Parentable<?> controller = this.getParentController().getParentController().addTab(
+                TabPaneEntry.RESERVATION,
+                this
+            ).get();
+            ReservationController reservationController =
+                (ReservationController) controller;
             if (this.currentMediumType.equals(MediumType.BOOK)) {
                 System.out.println("Reserve book");
+
+                reservationController.setCurrentBook(currentBook);
             } else if (this.currentMediumType.equals(MediumType.DVD)) {
                 System.out.println("Reserve DVD");
+                reservationController.setCurrentDvd(currentDvd);
             } else if (this.currentMediumType.equals(MediumType.GAME)) {
                 System.out.println("Reserve Game");
+                reservationController.setCurrentGame(currentGame);
             }
         });
 
@@ -265,7 +289,9 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
         this.columnLendTill.setCellValueFactory(tc -> {
             // p.getValue() returns the Person instance for a particular TableView row
-            return new SimpleBooleanProperty(tc.getValue().isAvailable());
+            return new SimpleStringProperty(
+                tc.getValue().getLendTill() != null ? tc.getValue().getLendTill().toString() : ""
+            );
         });
     }
 
@@ -368,6 +394,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
 
     private void loadCurrentBook() {
+        this.currentMediumType = MediumType.BOOK;
         BookDetailTask task = new BookDetailTask(
             new BookDto.BookDtoBuilder(this.currentUuid).build(),
             this.detailsPane
@@ -383,26 +410,28 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentBook.getTitle(),
                 this.currentBook.getStorageLocation(),
-                this.currentBook.getTopic().toString(),
+                this.topics.stream().filter(top -> this.currentBook.getTopic().equals(top.getId()))
+                    .findAny().orElse(null).getName(),
                 this.currentBook.getReleaseDate() != null
                     ? this.currentBook.getReleaseDate().toString()
                     : ""
             );
+
+            BookMediumCopyTask task2 = new BookMediumCopyTask(
+                new BookDto.BookDtoBuilder(this.currentUuid).build(),
+                this.detailsPane);
+            Thread thread2 = new Thread(task2, "Book Medium Copy Task");
+            task2.setOnSucceeded(evt -> {
+                List<MediumCopyDto> result = task2.getValue();
+                this.tblResults.setItems(FXCollections.observableList(result));
+                for (MediumCopyDto dto : result) {
+                    System.out.println(dto.getId().toString());
+                }
+            });
+            thread2.start();
         });
         thread.start();
 
-        BookMediumCopyTask task2 = new BookMediumCopyTask(
-            new BookDto.BookDtoBuilder(this.currentUuid).build(),
-            this.detailsPane);
-        thread = new Thread(task2, "Book Medium Copy Task");
-        task2.setOnSucceeded(event -> {
-            List<MediumCopyDto> result = task2.getValue();
-            this.tblResults.setItems(FXCollections.observableList(result));
-            for (MediumCopyDto dto : result) {
-                System.out.println(dto.getId().toString());
-            }
-        });
-        thread.start();
     }
 
     public DvdDto getCurrentDvd() {
@@ -410,6 +439,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     }
 
     private void loadCurrentDvd() {
+        this.currentMediumType = MediumType.DVD;
         DvdDetailTask task = new DvdDetailTask(
             new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
             this.detailsPane
@@ -428,19 +458,18 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     ? this.currentDvd.getReleaseDate().toString()
                     : ""
             );
-        });
-        thread.start();
-
-        DvdMediumCopyTask task2 = new DvdMediumCopyTask(
-            new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
-            this.detailsPane);
-        thread = new Thread(task2, "DVD Medium Copy Task");
-        task2.setOnSucceeded(event -> {
-            List<MediumCopyDto> result = task2.getValue();
-            this.tblResults.setItems(FXCollections.observableList(result));
-            for (MediumCopyDto dto : result) {
-                System.out.println(dto.getId().toString());
-            }
+            DvdMediumCopyTask task2 = new DvdMediumCopyTask(
+                new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
+                this.detailsPane);
+            Thread thread2 = new Thread(task2, "DVD Medium Copy Task");
+            task2.setOnSucceeded(evt -> {
+                List<MediumCopyDto> result = task2.getValue();
+                this.tblResults.setItems(FXCollections.observableList(result));
+                for (MediumCopyDto dto : result) {
+                    System.out.println(dto.getId().toString());
+                }
+            });
+            thread2.start();
         });
         thread.start();
     }
@@ -450,6 +479,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     }
 
     private void loadCurrentGame() {
+        this.currentMediumType = MediumType.GAME;
         GameDetailTask task = new GameDetailTask(
             new GameDto.GameDtoBuilder(this.currentUuid).build(),
             this.detailsPane
@@ -468,6 +498,19 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     ? this.currentGame.getReleaseDate().toString()
                     : ""
             );
+
+            GameMediumCopyTask task2 = new GameMediumCopyTask(
+                new GameDto.GameDtoBuilder(this.currentUuid).build(),
+                this.detailsPane);
+            Thread thread2 = new Thread(task2, "Game Medium Copy Task");
+            task2.setOnSucceeded(evt -> {
+                List<MediumCopyDto> result = task2.getValue();
+                this.tblResults.setItems(FXCollections.observableList(result));
+                for (MediumCopyDto dto : result) {
+                    System.out.println(dto.getId().toString());
+                }
+            });
+            thread2.start();
         });
         thread.start();
     }

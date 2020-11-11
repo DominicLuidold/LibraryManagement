@@ -142,7 +142,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public ReservationDto reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
         // same as above
-        return this.reserveDvd(reservationDto);
+        return this.reserveGame(reservationDto);
     }
 
     @Override
