@@ -6,8 +6,22 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
-import at.fhv.teamg.librarymanagement.shared.dto.*;
-import javafx.collections.FXCollections;
+import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -18,11 +32,6 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
-
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.time.LocalDate;
-import java.util.*;
 
 public class ReservationController implements Initializable, Parentable<MediaDetailsController> {
     private static final Logger LOG = LogManager.getLogger(ReservationController.class);
@@ -41,7 +50,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private GameDto currentGame = null;
 
     //Generics
-    private UUID mediumUUID;
+    private UUID mediumUuid;
     private String mediumTitle;
     private String mediumLocation;
     private String mediumReleaseDate;
@@ -50,7 +59,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     //TestData
     private MediumType type = MediumType.DVD;
 
-    private UUID userUUIDToReserve;
+    private UUID userUuidToReserve;
     private List<TopicDto> topics;
 
     //Generic
@@ -146,8 +155,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
         loadAdditionalData();
-        
-        
+
+
         // TODO: UNTEN DAS GETALLUSERS das darf nicht gleichzeitig sein wie loadAdditionalData()
         // -> das unten hier in .setOnSucceed() von loadAdditional data rein verschieben
 
@@ -178,16 +187,19 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private void addMediaTypeEventHandlers() {
         this.btnOK.setOnAction(e -> {
             if (getUserName().length() != 0) {
-                userUUIDToReserve = getUserID(getUserName());
+                userUuidToReserve = getUserID(getUserName());
 
                 //TODO hand userName to backend
-                ReservationDto.ReservationDtoBuilder dtoBuilder = new ReservationDto.ReservationDtoBuilder();
+                ReservationDto.ReservationDtoBuilder dtoBuilder =
+                    new ReservationDto.ReservationDtoBuilder();
 
                 if (this.type.equals(MediumType.BOOK)) {
                     ReservationDto resDto = buildReservation(dtoBuilder);
                     try {
                         RmiClient.getInstance().reserveBook(resDto);
-                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+                            this.reservationPane.getScene().getWindow(), "Reservation",
+                            "Reservation successful.");
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -195,7 +207,9 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                     ReservationDto resDto = buildReservation(dtoBuilder);
                     try {
                         RmiClient.getInstance().reserveDvd(resDto);
-                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+                            this.reservationPane.getScene().getWindow(), "Reservation",
+                            "Reservation successful.");
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -203,7 +217,9 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                     ReservationDto resDto = buildReservation(dtoBuilder);
                     try {
                         RmiClient.getInstance().reserveGame(resDto);
-                        AlertHelper.showAlert(Alert.AlertType.INFORMATION, this.reservationPane.getScene().getWindow(), "Reservation", "Reservation successful.");
+                        AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+                            this.reservationPane.getScene().getWindow(), "Reservation",
+                            "Reservation successful.");
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -213,15 +229,17 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
         this.btnCancel.setOnAction(e -> {
             System.out.println("Cancel button pressed");
-            this.parentController.getParentController().getParentController().removeTab(TabPaneEntry.RESERVATION);
-            this.parentController.getParentController().getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
+            this.parentController.getParentController().getParentController()
+                .removeTab(TabPaneEntry.RESERVATION);
+            this.parentController.getParentController().getParentController()
+                .selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
     }
 
     private ReservationDto buildReservation(ReservationDto.ReservationDtoBuilder dtoBuilder) {
         //dtoBuilder.userId(getUserUuidValue());
-        dtoBuilder.userId(userUUIDToReserve);
-        dtoBuilder.mediumId(mediumUUID);
+        dtoBuilder.userId(userUuidToReserve);
+        dtoBuilder.mediumId(mediumUuid);
         dtoBuilder.startDate(LocalDate.now());
         dtoBuilder.endDate(LocalDate.now().plusDays(60));
         return dtoBuilder.build();
@@ -240,39 +258,55 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         return this.txtUser.getText().trim();
     }
 
-    private UUID getUserID(String userName){
-        for (UserDto user: allUserList){
-            if(user.getName().equals(userName)){
+    private UUID getUserID(String userName) {
+        for (UserDto user : allUserList) {
+            if (user.getName().equals(userName)) {
                 return user.getId();
             }
         }
         return null;
     }
 
+    /**
+     * function to set the current book.
+     * @param dto current book.
+     */
     public void setCurrentBook(BookDto dto) {
         this.currentBook = dto;
         this.type = MediumType.BOOK;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(), dto.getReleaseDate());
+        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+            dto.getReleaseDate());
     }
 
+    /**
+     * function to set the current dvd.
+     * @param dto current dvd.
+     */
     public void setCurrentDvd(DvdDto dto) {
         this.currentDvd = dto;
         this.type = MediumType.DVD;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(), dto.getReleaseDate());
+        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+            dto.getReleaseDate());
     }
 
+    /**
+     * function to set the current game.
+     * @param dto current game.
+     */
     public void setCurrentGame(GameDto dto) {
         this.currentGame = dto;
         this.type = MediumType.GAME;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(), dto.getReleaseDate());
+        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+            dto.getReleaseDate());
     }
 
-    private void setGenericParams(UUID uuid, String title, String loc, UUID topicUuid, LocalDate date) {
-        this.mediumUUID = uuid;
+    private void setGenericParams(UUID uuid, String title, String loc, UUID topicUuid,
+                                  LocalDate date) {
+        this.mediumUuid = uuid;
         this.mediumTitle = title;
         this.mediumLocation = loc;
         this.mediumTopic = topics.stream()
-                .filter(top ->topicUuid.equals(top.getId())).findAny().orElse(null).getName();
+            .filter(top -> topicUuid.equals(top.getId())).findAny().orElse(null).getName();
         if (date != null) {
             this.mediumReleaseDate = date.toString();
         } else {
