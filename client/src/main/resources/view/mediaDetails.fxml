@@ -51,16 +51,16 @@
                                     <children>
                                         <!-- GENERIC -->
                                         <Label fx:id="lblTitle" visible="true" text="Title" GridPane.rowIndex="0"/>
-                                        <Label fx:id="txtTitle" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="0" text="Title"/>
+                                        <Label fx:id="txtTitle" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="0" text=""/>
 
                                         <Label fx:id="lblLocation" visible="true" GridPane.rowIndex="1" text="Storage Location"/>
-                                        <Label fx:id="txtLocation" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="1" text="${controller.currentBook.storageLocation}" />
+                                        <Label fx:id="txtLocation" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="1" text="" />
 
                                         <Label fx:id="lblTopic" visible="true" GridPane.rowIndex="2" text="Topic"/>
-                                        <Label fx:id="txtTopic" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="2" text="${controller.currentBook.topic}" />
+                                        <Label fx:id="txtTopic" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="2" text="" />
 
                                         <Label fx:id="lblReleaseDate" visible="true" GridPane.rowIndex="3" text="Publication Date"/>
-                                        <Label fx:id="txtReleaseDate" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="3" text="${controller.currentBook.releaseDate}" />
+                                        <Label fx:id="txtReleaseDate" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="3" text="" />
 
                                         <!-- BOOK -->
                                         <Label fx:id="lblBookAuthor" visible="false" text="Author" GridPane.rowIndex="4"/>
@@ -126,7 +126,7 @@
                                         </TableColumn>
                                         <TableColumn fx:id="columnLendTill" prefWidth="110.0" text="Lend Till" >
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="isAvailable" />
+                                                <PropertyValueFactory property="lendTill" />
                                             </cellValueFactory>
                                         </TableColumn>
                                         <TableColumn fx:id="columnLend" prefWidth="120.0" text="Lend" >

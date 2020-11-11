@@ -138,7 +138,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private TableColumn<MediumCopyDto, String> columnCopyId;
     @FXML
-    private TableColumn<MediumCopyDto, Boolean> columnLendTill;
+    private TableColumn<MediumCopyDto, String> columnLendTill;
     @FXML
     private TableColumn<MediumCopyDto, Button> columnLend;
     @FXML
@@ -289,7 +289,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
         this.columnLendTill.setCellValueFactory(tc -> {
             // p.getValue() returns the Person instance for a particular TableView row
-            return new SimpleBooleanProperty(tc.getValue().isAvailable());
+            return new SimpleStringProperty(tc.getValue().getLendTill() != null ? tc.getValue().getLendTill().toString() : "");
         });
     }
 
