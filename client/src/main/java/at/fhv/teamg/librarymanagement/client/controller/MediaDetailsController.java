@@ -166,7 +166,6 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     }
 
     private void setCellFactories() {
-        // TODO
         this.columnLend.setCellFactory(
             ButtonTableCell.forTableColumn(
                 "Lend",
@@ -182,10 +181,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     LendingController lendingController =
                         (LendingController) controller;
 
-                    if (currentMediumType == null) {
-                        System.out.println("###### why null");
-                    } else {
-                        System.out.println("######### not null");
+                    if (currentMediumType != null) {
                         switch (currentMediumType) {
                             case DVD:
                                 lendingController.setCurrentMedium(currentDvd);
@@ -201,7 +197,6 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                         }
                         lendingController.setCurrentUuid(dto.getId());
                     }
-
 
                     return dto;
                 }
@@ -231,17 +226,32 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             ButtonTableCell.forTableColumn(
                 "Return",
                 (MediumCopyDto dto) -> {
-                    LOG.debug("Book details button has been pressed");
+                    LOG.debug("Return button has been pressed");
 
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.UNSUPPORTED, this).get();
+                            .addTab(TabPaneEntry.RETURNING, this.getParentController()).get();
 
-                    MediaDetailsController mediaDetailsController =
-                        (MediaDetailsController) controller;
-                    mediaDetailsController.setCurrentMediumType(MediumType.BOOK, dto.getId());
+                    ReturningController returningController = (ReturningController) controller;
+
+                    if (null != currentMediumType) {
+                        switch (currentMediumType) {
+                            case DVD:
+                                returningController.setCurrentMedium(currentDvd);
+                                break;
+                            case BOOK:
+                                returningController.setCurrentMedium(currentBook);
+                                break;
+                            case GAME:
+                                returningController.setCurrentMedium(currentGame);
+                                break;
+                            default:
+                                LOG.error("No medium type available.");
+                        }
+                        returningController.setCurrentUuid(dto.getId());
+                    }
 
                     return dto;
                 }
