@@ -180,7 +180,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private void createUsersString(List<UserDto> usersList) {
         allUsers = new ArrayList<>();
         for (UserDto user : usersList) {
-            allUsers.add(user.getUsername());
+            allUsers.add(String.format("%s (%s)", user.getName(), user.getUsername()));
         }
     }
 
@@ -260,7 +260,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     private UUID getUserID(String userName) {
         for (UserDto user : allUserList) {
-            if (user.getName().equals(userName)) {
+            if ((user.getName() + " (" + user.getUsername() + ")").equals(userName)) {
                 return user.getId();
             }
         }
