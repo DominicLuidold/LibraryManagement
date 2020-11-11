@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'application'
+
+    /* Project specific plugins */
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group = 'at.fhv.teamg.librarymanagement'
+version = '0.0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+
+    /* Project specific dependencies */
+    compile 'javax.persistence:javax.persistence-api:2.2'
+    compile 'mysql:mysql-connector-java:5.1.49'
+    compile 'org.apache.logging.log4j:log4j-api:2.13.3'
+    compile 'org.apache.logging.log4j:log4j-core:2.13.3'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
+    compile 'org.hibernate:hibernate-core:5.4.22.Final'
+    compile 'org.hibernate:hibernate-c3p0:5.4.22.Final'
+
+    implementation 'at.fhv.teamg.librarymanagement:LibraryManagement_Shared:0.+'
+
+    testCompile 'org.mockito:mockito-core:3.5.15'
+}
+
+application {
+    mainClassName = 'at.fhv.teamg.librarymanagement.server.Main'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+/* Checkstyle configuration */
+checkstyle {
+    toolVersion = '8.36.2'
+    configFile = file("${rootDir}/../config/checkstyle/checkstyle.xml")
+}
+
+/* JaCoCo configuration */
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/persistance/*',
+            ])
+        })
+    }
+}
+build.dependsOn jacocoTestReport
+
+// Uncomment when ready
+
+/*
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
+*/
+
+/* ShadowJar configuration */
+shadowJar {
+    archiveFileName = 'LibraryServer.jar'
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
+        )
+    }
+}
+
+/* Distribution configuration */
+distributions {
+    main {
+        distributionBaseName = 'main'
+        contents {
+            from shadowJar
+        }
+    }
+}

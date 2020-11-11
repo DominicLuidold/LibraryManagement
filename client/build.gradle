@@ -1,0 +1,120 @@
+plugins {
+    id 'java'
+    id 'application'
+
+    /* Project specific plugins */
+    id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'distribution'
+    id 'jacoco'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.sonarqube' version '3.0'
+}
+
+group = 'at.fhv.teamg.librarymanagement'
+version = '0.0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+
+    /* Project specific dependencies */
+    compile 'com.jfoenix:jfoenix:9.0.10'
+    compile 'org.apache.logging.log4j:log4j-api:2.13.3'
+    compile 'org.apache.logging.log4j:log4j-core:2.13.3'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
+
+    implementation 'at.fhv.teamg.librarymanagement:LibraryManagement_Shared:0.+'
+    implementation('org.controlsfx:controlsfx:11.0.2') {
+        exclude group: 'org.controlsfx'
+    }
+
+    testCompile 'org.mockito:mockito-core:3.5.15'
+    testCompile 'org.testfx:testfx-core:4.0.16-alpha'
+    testCompile 'org.testfx:testfx-junit5:4.0.16-alpha'
+}
+
+application {
+    mainClassName = 'at.fhv.teamg.librarymanagement.client.Main'
+    applicationDefaultJvmArgs = [
+            '--add-opens=javafx.base/com.sun.javafx.binding=ALL-UNNAMED',
+            '--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.css=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED',
+            '--add-opens=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED'
+    ]
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+/* Checkstyle configuration */
+checkstyle {
+    toolVersion = '8.36.2'
+    configFile = file("${rootDir}/../config/checkstyle/checkstyle.xml")
+}
+
+/* JaCoCo configuration */
+jacoco {
+    toolVersion = '0.8.5'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+build.dependsOn jacocoTestReport
+
+// Uncomment when ready
+
+/*
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
+*/
+
+
+/* JavaFX configuration */
+javafx {
+    version = '14'
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media']
+}
+
+/* ShadowJar configuration */
+shadowJar {
+    archiveFileName = 'LibraryClient.jar'
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': 'at.fhv.teamg.librarymanagement.client.Main'
+        )
+    }
+}
+
+/* Distribution configuration */
+distributions {
+    main {
+        distributionBaseName = 'main'
+        contents {
+            from shadowJar
+        }
+    }
+}
