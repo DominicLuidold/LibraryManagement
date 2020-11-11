@@ -246,4 +246,80 @@ public class LendingServiceTest {
         // Assertions
         assertFalse(lendingService.returnLending(mediumCopyDtoMock));
     }
+
+    @Test
+    void getCurrentLending_shouldReturnLending_whenActiveLendingGiven() {
+        // Mock lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Assertions
+        assertTrue(new LendingService().getCurrentLending(lendingSet).isPresent());
+    }
+
+    @Test
+    void getCurrentLending_shouldReturnLending_whenLendingStartsEndsToday() {
+        // Mock lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now());
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now());
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Assertions
+        assertTrue(new LendingService().getCurrentLending(lendingSet).isPresent());
+    }
+
+    @Test
+    void getCurrentLending_shouldReturnLending_whenLendingStartsTomorrow() {
+        // Mock lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().plusDays(1));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(2));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Assertions
+        assertFalse(new LendingService().getCurrentLending(lendingSet).isPresent());
+    }
+
+    @Test
+    void getCurrentLending_shouldReturnEmpty_whenLendingEndedYesterday() {
+        // Mock lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(2));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().minusDays(1));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Assertions
+        assertFalse(new LendingService().getCurrentLending(lendingSet).isPresent());
+    }
+
+    @Test
+    void getCurrentLending_shouldReturnEmpty_whenReturnDateGiven() {
+        // Mock lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(2));
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(2));
+        when(lendingMock.getReturnDate()).thenReturn(LocalDate.now());
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Assertions
+        assertFalse(new LendingService().getCurrentLending(lendingSet).isPresent());
+    }
+
+    @Test
+    void getCurrentLending_shouldReturnEmpty_whenNoLendingGiven() {
+        assertFalse(new LendingService().getCurrentLending(new HashSet<>()).isPresent());
+    }
 }

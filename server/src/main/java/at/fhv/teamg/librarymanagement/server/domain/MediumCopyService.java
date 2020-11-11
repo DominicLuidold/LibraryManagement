@@ -3,16 +3,23 @@ package at.fhv.teamg.librarymanagement.server.domain;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 public class MediumCopyService extends BaseMediaService {
+    private final LendingService lendingService;
+
+    public MediumCopyService() {
+        lendingService = new LendingService();
+    }
 
     /**
      * Get List of copies.
@@ -78,8 +85,15 @@ public class MediumCopyService extends BaseMediaService {
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(copy.getId());
 
+            LocalDate lendTill = null;
+            Optional<Lending> possibleLending = lendingService.getCurrentLending(copy.getLending());
+            if (possibleLending.isPresent()) {
+                lendTill = possibleLending.get().getEndDate();
+            }
+
             builder.isAvailable(copy.isAvailable())
-                .mediumID(medium.getId());
+                .mediumID(medium.getId())
+                .lendTill(lendTill);
 
             copies.add(builder.build());
         });
