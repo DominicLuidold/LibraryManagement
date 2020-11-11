@@ -149,17 +149,17 @@ public class UserDto implements Serializable {
 
     @Override
     public String toString() {
-        return "UserDto{" +
-            "id=" + id +
-            ", username='" + username + '\'' +
-            ", name='" + name + '\'' +
-            ", address='" + address + '\'' +
-            ", email='" + email + '\'' +
-            ", phone='" + phone + '\'' +
-            ", externalLibrary=" + externalLibrary +
-            ", roleId=" + roleId +
-            ", reservations=" + reservations +
-            ", lendings=" + lendings +
-            '}';
+        return "UserDto{"
+            + "id=" + id
+            + ", username='" + username + '\''
+            + ", name='" + name + '\''
+            + ", address='" + address + '\''
+            + ", email='" + email + '\''
+            + ", phone='" + phone + '\''
+            + ", externalLibrary=" + externalLibrary
+            + ", roleId=" + roleId
+            + ", reservations=" + reservations
+            + ", lendings=" + lendings
+            + '}';
     }
 }

@@ -15,7 +15,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
-
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
@@ -263,11 +262,12 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         this.btnReserve.setOnAction(e -> {
             System.out.println("Search button pressed");
             // change view
-            Parentable<?> controller =
-                    this.getParentController().getParentController().addTab(TabPaneEntry.RESERVATION,
-                            this).get();
+            Parentable<?> controller = this.getParentController().getParentController().addTab(
+                TabPaneEntry.RESERVATION,
+                this
+            ).get();
             ReservationController reservationController =
-                    (ReservationController) controller;
+                (ReservationController) controller;
             if (this.currentMediumType.equals(MediumType.BOOK)) {
                 System.out.println("Reserve book");
 
@@ -289,7 +289,9 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
         this.columnLendTill.setCellValueFactory(tc -> {
             // p.getValue() returns the Person instance for a particular TableView row
-            return new SimpleStringProperty(tc.getValue().getLendTill() != null ? tc.getValue().getLendTill().toString() : "");
+            return new SimpleStringProperty(
+                tc.getValue().getLendTill() != null ? tc.getValue().getLendTill().toString() : ""
+            );
         });
     }
 
@@ -408,16 +410,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentBook.getTitle(),
                 this.currentBook.getStorageLocation(),
-                this.topics.stream()
-                .filter(top -> this.currentBook.getTopic().equals(top.getId())).findAny().orElse(null).getName(),
+                this.topics.stream().filter(top -> this.currentBook.getTopic().equals(top.getId()))
+                    .findAny().orElse(null).getName(),
                 this.currentBook.getReleaseDate() != null
                     ? this.currentBook.getReleaseDate().toString()
                     : ""
             );
 
             BookMediumCopyTask task2 = new BookMediumCopyTask(
-            new BookDto.BookDtoBuilder(this.currentUuid).build(),
-            this.detailsPane);
+                new BookDto.BookDtoBuilder(this.currentUuid).build(),
+                this.detailsPane);
             Thread thread2 = new Thread(task2, "Book Medium Copy Task");
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
@@ -459,7 +461,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             DvdMediumCopyTask task2 = new DvdMediumCopyTask(
                 new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
-            Thread thread2  = new Thread(task2, "DVD Medium Copy Task");
+            Thread thread2 = new Thread(task2, "DVD Medium Copy Task");
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
@@ -500,7 +502,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             GameMediumCopyTask task2 = new GameMediumCopyTask(
                 new GameDto.GameDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
-            Thread thread2  = new Thread(task2, "Game Medium Copy Task");
+            Thread thread2 = new Thread(task2, "Game Medium Copy Task");
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
