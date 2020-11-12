@@ -6,12 +6,10 @@ import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
-import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
@@ -138,7 +136,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         LOG.debug("Initialized ReturningController");
         addMediaTypeEventHandlers();
 
-        RmiClient client = new RmiClient();
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -156,11 +153,11 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
         userSelect.setConverter(userConverter);
         try {
-            userSelect.setItems(FXCollections.observableArrayList(client.getAllUsers()));
+            userSelect
+                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
     private void addMediaTypeEventHandlers() {
@@ -175,7 +172,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
 
-            RmiClient client = new RmiClient();
+            RmiClient client = RmiClient.getInstance();
             boolean confirmedReturn = false;
             try {
                 switch (currentMediumType) {

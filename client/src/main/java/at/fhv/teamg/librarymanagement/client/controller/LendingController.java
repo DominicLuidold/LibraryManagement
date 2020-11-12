@@ -1,29 +1,18 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
-import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.BookDetailTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.BookMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdDetailTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
-import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -31,11 +20,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
@@ -153,7 +137,6 @@ public class LendingController implements Initializable, Parentable<SearchContro
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
 
-        RmiClient client = new RmiClient();
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -171,11 +154,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
         userSelect.setConverter(userConverter);
         try {
-            userSelect.setItems(FXCollections.observableArrayList(client.getAllUsers()));
+            userSelect
+                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -194,7 +177,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 .mediumCopyId(currentUuid)
                 .renewalCount(0);
 
-            RmiClient client = new RmiClient();
+            RmiClient client = RmiClient.getInstance();
 
             LendingDto confirmedLending = null;
             try {

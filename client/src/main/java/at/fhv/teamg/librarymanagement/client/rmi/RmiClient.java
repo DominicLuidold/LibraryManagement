@@ -27,10 +27,10 @@ public class RmiClient implements LibraryInterface {
     /**
      * Singleton Client for RMI.
      */
-    public   RmiClient() {
+    private RmiClient() {
         try {
             LibraryFactoryInterface libraryFactory =
-                    (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
+                (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
             library = libraryFactory.getLibrary();
         } catch (Exception e) {
             LOG.error(e);
@@ -112,19 +112,19 @@ public class RmiClient implements LibraryInterface {
 
     @Override
     public ReservationDto reserveGame(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveGame(reservationDto);
     }
 
     @Override
     public ReservationDto reserveBook(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveBook(reservationDto);
     }
 
     @Override
     public ReservationDto reserveDvd(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveDvd(reservationDto);
     }
 

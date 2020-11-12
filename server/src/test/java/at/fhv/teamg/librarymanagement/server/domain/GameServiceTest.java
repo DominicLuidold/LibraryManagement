@@ -36,6 +36,9 @@ public class GameServiceTest {
         when(mediumMock.getTitle()).thenReturn("Title");
         when(mediumMock.getStorageLocation()).thenReturn("Storage Location");
 
+        Topic topicEntityMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicEntityMock);
+
         Game gameMock = mock(Game.class);
         when(gameMock.getMedium()).thenReturn(mediumMock);
         when(gameMock.getId()).thenReturn(UUID.randomUUID());
