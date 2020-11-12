@@ -2,11 +2,13 @@ package at.fhv.teamg.librarymanagement.server.rmi;
 
 import at.fhv.teamg.librarymanagement.server.domain.BookService;
 import at.fhv.teamg.librarymanagement.server.domain.DvdService;
+import at.fhv.teamg.librarymanagement.server.domain.GameService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.time.LocalDate;
@@ -25,6 +27,7 @@ public class Cache {
     private final int minute = 1000 * 60;
     private List<BookDto> bookCache;
     private List<DvdDto> dvdCache;
+    private List<GameDto> gameCache;
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
     private final Timer timer = new Timer();
@@ -45,6 +48,10 @@ public class Cache {
 
         synchronized (lock) {
             dvdCache = new DvdService().getAllDvds();
+        }
+
+        synchronized (lock) {
+            gameCache = new GameService().getAllGames();
         }
 
         //startTimer();
@@ -105,6 +112,26 @@ public class Cache {
     }
 
     /**
+     * Search cached games.
+     *
+     * @param search search dto
+     * @return list of filtered games
+     */
+    public List<GameDto> searchGame(GameDto search) {
+        String title = search.getTitle();
+        String developer = search.getDeveloper();
+        String platforms = search.getPlatforms();
+        UUID topic = search.getTopic();
+
+        return gameCache.stream()
+            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().contains(title))
+            .filter(dvdDto -> developer.equals("") || dvdDto.getDeveloper().contains(developer))
+            .filter(dvdDto -> platforms.equals("") || dvdDto.getPlatforms().contains(platforms))
+            .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Invalidate book cache.
      */
     public void invalidateBookCache() {
@@ -124,6 +151,18 @@ public class Cache {
             LOG.info("updating dvds...");
             synchronized (lock) {
                 dvdCache = new DvdService().getAllDvds();
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate game cache.
+     */
+    public void invalidateGameCache() {
+        new Thread(() -> {
+            LOG.info("updating games...");
+            synchronized (lock) {
+                gameCache = new GameService().getAllGames();
             }
         }).start();
     }

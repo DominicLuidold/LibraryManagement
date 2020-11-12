@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.persistance.dao;
 
 import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,5 +70,9 @@ public class GameDao extends BaseDao<Game> {
         query.setParameter("topic", "%" + topic + "%");
 
         return new LinkedList<>(query.getResultList());
+    }
+
+    public List<Game> getAll() {
+        return super.getAll(Game.class);
     }
 }
