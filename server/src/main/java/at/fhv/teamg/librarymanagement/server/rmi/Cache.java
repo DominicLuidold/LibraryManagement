@@ -22,9 +22,10 @@ public class Cache {
     private List<BookDto> bookCache;
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
+    private final Timer timer = new Timer();
 
     private Cache() {
-        LOG.info("cache instance");
+        LOG.info("cache preload");
         synchronized (lock) {
             bookCache = new BookService().getAllBooks();
         }
@@ -38,6 +39,7 @@ public class Cache {
         }
 
         startTimer();
+        LOG.info("cache ready");
     }
 
     /**
@@ -82,7 +84,6 @@ public class Cache {
     }
 
     private void startTimer() {
-        Timer timer = new Timer();
         TimerTask updateBooks = new TimerTask() {
             @Override
             public void run() {

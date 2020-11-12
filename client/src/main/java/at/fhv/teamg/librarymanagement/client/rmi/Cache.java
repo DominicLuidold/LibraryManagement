@@ -12,9 +12,10 @@ import org.apache.logging.log4j.Logger;
 
 public class Cache {
     private static Cache instance;
-    private static final Logger LOG = LogManager.getLogger(LendingController.class);
+    private static final Logger LOG = LogManager.getLogger(Cache.class);
     private static final long MIN = 1000 * 60;
     private final Object lock = new Object();
+    Timer timer = new Timer();
     private List<UserDto> userCache;
     private List<TopicDto> topicCache;
 
@@ -73,8 +74,6 @@ public class Cache {
 
     private void startTimers() {
         LOG.info("preload");
-        Timer timer = new Timer();
-
         TimerTask updateTopics = new TimerTask() {
             @Override
             public void run() {
