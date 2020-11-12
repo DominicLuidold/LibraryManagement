@@ -1,10 +1,8 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
-import at.fhv.teamg.librarymanagement.client.controller.internal.GetAllUserTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.general.MediaTopicTask;
 import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
@@ -17,10 +15,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.fxml.FXML;
@@ -263,6 +258,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     /**
      * function to set the current book.
+     *
      * @param dto current book.
      */
     public void setCurrentBook(BookDto dto) {
@@ -274,6 +270,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     /**
      * function to set the current dvd.
+     *
      * @param dto current dvd.
      */
     public void setCurrentDvd(DvdDto dto) {
@@ -285,6 +282,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     /**
      * function to set the current game.
+     *
      * @param dto current game.
      */
     public void setCurrentGame(GameDto dto) {
@@ -372,12 +370,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     }
 
     private void loadAdditionalData() {
-        try {
-            this.topics = Cache.getInstance().getAllTopics();
-            this.allUserList = RmiClient.getInstance().getAllUsers();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        this.topics = Cache.getInstance().getAllTopics();
+        this.allUserList = Cache.getInstance().getAllUsers();
     }
 
     public String getMediumTitle() {

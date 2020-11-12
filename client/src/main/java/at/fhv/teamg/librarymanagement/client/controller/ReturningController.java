@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -138,7 +139,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         LOG.debug("Initialized ReturningController");
         addMediaTypeEventHandlers();
 
-        RmiClient client = RmiClient.getInstance();
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -155,12 +155,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         };
 
         userSelect.setConverter(userConverter);
-        try {
-            userSelect.setItems(FXCollections.observableArrayList(client.getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
+        userSelect.setItems(FXCollections.observableArrayList(Cache.getInstance().getAllUsers()));
     }
 
     private void addMediaTypeEventHandlers() {
