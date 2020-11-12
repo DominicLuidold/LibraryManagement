@@ -50,7 +50,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
     /**
      * Get all books from cache.
      *
-     * @return cached books
+     * @return all books
      */
     public List<BookDto> getAllBooks() {
         List<BookDto> bookDtos = new LinkedList<>();

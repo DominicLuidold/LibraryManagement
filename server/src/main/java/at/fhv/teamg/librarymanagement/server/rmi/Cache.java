@@ -1,11 +1,15 @@
 package at.fhv.teamg.librarymanagement.server.rmi;
 
 import at.fhv.teamg.librarymanagement.server.domain.BookService;
+import at.fhv.teamg.librarymanagement.server.domain.DvdService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,6 +24,7 @@ public class Cache {
     private final Object lock = new Object();
     private final int minute = 1000 * 60;
     private List<BookDto> bookCache;
+    private List<DvdDto> dvdCache;
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
     private final Timer timer = new Timer();
@@ -36,6 +41,10 @@ public class Cache {
 
         synchronized (lock) {
             userCache = new UserService().getAllUsers();
+        }
+
+        synchronized (lock) {
+            dvdCache = new DvdService().getAllDvds();
         }
 
         //startTimer();
@@ -66,12 +75,32 @@ public class Cache {
         String isbn13 = search.getIsbn13();
         UUID topic = search.getTopic();
 
-
         return bookCache.stream()
             .filter(bookDto -> title.equals("") || bookDto.getTitle().contains(title))
             .filter(bookDto -> author.equals("") || bookDto.getAuthor().contains(author))
             .filter(bookDto -> isbn13.equals("") || bookDto.getIsbn13().contains(isbn13))
             .filter(bookDto -> topic == null || bookDto.getTopic().equals(topic))
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Search cached dvds.
+     *
+     * @param search search dto
+     * @return list of filtered dvds
+     */
+    public List<DvdDto> searchDvd(DvdDto search) {
+        String title = search.getTitle();
+        String director = search.getDirector();
+        LocalDate releaseDate = search.getReleaseDate();
+        UUID topic = search.getTopic();
+
+        return dvdCache.stream()
+            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().contains(title))
+            .filter(dvdDto -> director.equals("") || dvdDto.getDirector().contains(director))
+            .filter(dvdDto -> releaseDate.equals(LocalDate.MIN)
+                || dvdDto.getReleaseDate().equals(releaseDate))
+            .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
 
@@ -87,6 +116,18 @@ public class Cache {
         }).start();
     }
 
+    /**
+     * Invalidate dvd cache.
+     */
+    public void invalidateDvdCache() {
+        new Thread(() -> {
+            LOG.info("updating dvds...");
+            synchronized (lock) {
+                dvdCache = new DvdService().getAllDvds();
+            }
+        }).start();
+    }
+
     public List<TopicDto> getAllTopics() {
         return topicCache;
     }
@@ -95,6 +136,10 @@ public class Cache {
         return userCache;
     }
 
+    /**
+     * Start timers to query db periodically for changes.
+     * Only required when db is accessed by multiple servers.
+     */
     private void startTimer() {
         TimerTask updateBooks = new TimerTask() {
             @Override

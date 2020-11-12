@@ -55,7 +55,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException {
-        return dvdService.search(dvdDto);
+        return cache.searchDvd(dvdDto);
     }
 
     @Override
@@ -145,7 +145,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public ReservationDto reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
         // same as above
-        return this.reserveGame(reservationDto);
+        ReservationDto result = this.reserveGame(reservationDto);
+        cache.invalidateDvdCache();
+        return result;
     }
 
     @Override
@@ -170,7 +172,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
         // same as above
-        return this.lendGame(lendingDto);
+        LendingDto result = this.lendGame(lendingDto);
+        cache.invalidateDvdCache();
+        return result;
     }
 
     @Override
@@ -187,7 +191,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
-        return lendingService.returnLending(copyDto);
+        Boolean result = lendingService.returnLending(copyDto);
+        cache.invalidateDvdCache();
+        return result;
     }
 
     @Override
