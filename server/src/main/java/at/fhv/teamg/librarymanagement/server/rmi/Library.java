@@ -136,7 +136,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public ReservationDto reserveBook(ReservationDto reservationDto)
         throws RemoteException {
         // same as above
-        return this.reserveGame(reservationDto);
+        ReservationDto result = this.reserveGame(reservationDto);
+        cache.invalidateBookCache();
+        return result;
     }
 
     @Override
@@ -160,7 +162,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public LendingDto lendBook(LendingDto lendingDto) throws RemoteException {
         // same as above
-        return this.lendGame(lendingDto);
+        LendingDto result = this.lendGame(lendingDto);
+        cache.invalidateBookCache();
+        return result;
     }
 
     @Override
@@ -176,7 +180,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public Boolean returnBook(MediumCopyDto copyDto) throws RemoteException {
-        return lendingService.returnLending(copyDto);
+        Boolean result = lendingService.returnLending(copyDto);
+        cache.invalidateBookCache();
+        return result;
     }
 
     @Override

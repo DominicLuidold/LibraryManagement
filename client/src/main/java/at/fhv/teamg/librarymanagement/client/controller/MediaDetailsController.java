@@ -9,7 +9,6 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.D
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -22,9 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -159,7 +156,11 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         LOG.debug("Initialized UserController");
 
         // Load Topics
-        this.topics = Cache.getInstance().getAllTopics();
+        try {
+            this.topics = RmiClient.getInstance().getAllTopics();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setCellFactories() {

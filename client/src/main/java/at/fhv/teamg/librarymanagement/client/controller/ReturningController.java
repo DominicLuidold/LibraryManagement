@@ -2,17 +2,14 @@ package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
-import at.fhv.teamg.librarymanagement.client.rmi.Cache;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
-import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
@@ -155,7 +152,12 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         };
 
         userSelect.setConverter(userConverter);
-        userSelect.setItems(FXCollections.observableArrayList(Cache.getInstance().getAllUsers()));
+        try {
+            userSelect
+                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addMediaTypeEventHandlers() {

@@ -38,7 +38,7 @@ public class Cache {
             userCache = new UserService().getAllUsers();
         }
 
-        startTimer();
+        //startTimer();
         LOG.info("cache ready");
     }
 
@@ -73,6 +73,18 @@ public class Cache {
             .filter(bookDto -> isbn13.equals("") || bookDto.getIsbn13().contains(isbn13))
             .filter(bookDto -> topic == null || bookDto.getTopic().equals(topic))
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Invalidate book cache.
+     */
+    public void invalidateBookCache() {
+        new Thread(() -> {
+            LOG.info("updating books...");
+            synchronized (lock) {
+                bookCache = new BookService().getAllBooks();
+            }
+        }).start();
     }
 
     public List<TopicDto> getAllTopics() {
