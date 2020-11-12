@@ -48,7 +48,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
     }
 
     /**
-     * Get all books from cache.
+     * Get all books.
      *
      * @return all books
      */

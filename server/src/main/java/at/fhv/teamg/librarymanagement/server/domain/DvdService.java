@@ -51,7 +51,7 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
     }
 
     /**
-     * Get all dvds from cache.
+     * Get all dvds.
      *
      * @return all books
      */

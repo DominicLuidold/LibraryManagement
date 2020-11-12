@@ -48,7 +48,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
     }
 
     /**
-     * Get all games from cache.
+     * Get all games.
      *
      * @return all games
      */
