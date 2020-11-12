@@ -37,6 +37,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final LendingService lendingService = new LendingService();
     private final TopicService topicService = new TopicService();
     private final UserService userService = new UserService();
+    private final Cache cache = Cache.getInstance();
 
     public Library() throws RemoteException {
         super();
@@ -49,7 +50,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
-        return bookService.search(bookDto);
+        return cache.searchBook(bookDto);
     }
 
     @Override
@@ -185,11 +186,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<TopicDto> getAllTopics() throws RemoteException {
-        return topicService.getAllTopics();
+        return cache.getAllTopics();
     }
 
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
-        return userService.getAllUsers();
+        return cache.getAllUsers();
     }
 }
