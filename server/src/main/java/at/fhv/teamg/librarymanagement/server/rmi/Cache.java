@@ -77,15 +77,17 @@ public class Cache {
      * @return list of filtered books
      */
     public List<BookDto> searchBook(BookDto search) {
-        String title = search.getTitle();
-        String author = search.getAuthor();
-        String isbn13 = search.getIsbn13();
+        String title = search.getTitle().toLowerCase();
+        String author = search.getAuthor().toLowerCase();
+        String isbn13 = search.getIsbn13().toLowerCase();
         UUID topic = search.getTopic();
 
         return bookCache.stream()
-            .filter(bookDto -> title.equals("") || bookDto.getTitle().contains(title))
-            .filter(bookDto -> author.equals("") || bookDto.getAuthor().contains(author))
-            .filter(bookDto -> isbn13.equals("") || bookDto.getIsbn13().contains(isbn13))
+            .filter(bookDto -> title.equals("") || bookDto.getTitle().toLowerCase().contains(title))
+            .filter(
+                bookDto -> author.equals("") || bookDto.getAuthor().toLowerCase().contains(author))
+            .filter(
+                bookDto -> isbn13.equals("") || bookDto.getIsbn13().toLowerCase().contains(isbn13))
             .filter(bookDto -> topic == null || bookDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
@@ -97,14 +99,15 @@ public class Cache {
      * @return list of filtered dvds
      */
     public List<DvdDto> searchDvd(DvdDto search) {
-        String title = search.getTitle();
-        String director = search.getDirector();
+        String title = search.getTitle().toLowerCase();
+        String director = search.getDirector().toLowerCase();
         LocalDate releaseDate = search.getReleaseDate();
         UUID topic = search.getTopic();
 
         return dvdCache.stream()
-            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().contains(title))
-            .filter(dvdDto -> director.equals("") || dvdDto.getDirector().contains(director))
+            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
+            .filter(dvdDto -> director.equals("") ||
+                dvdDto.getDirector().toLowerCase().contains(director))
             .filter(dvdDto -> releaseDate.equals(LocalDate.MIN)
                 || dvdDto.getReleaseDate().equals(releaseDate))
             .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
@@ -118,15 +121,17 @@ public class Cache {
      * @return list of filtered games
      */
     public List<GameDto> searchGame(GameDto search) {
-        String title = search.getTitle();
-        String developer = search.getDeveloper();
-        String platforms = search.getPlatforms();
+        String title = search.getTitle().toLowerCase();
+        String developer = search.getDeveloper().toLowerCase();
+        String platforms = search.getPlatforms().toLowerCase();
         UUID topic = search.getTopic();
 
         return gameCache.stream()
-            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().contains(title))
-            .filter(dvdDto -> developer.equals("") || dvdDto.getDeveloper().contains(developer))
-            .filter(dvdDto -> platforms.equals("") || dvdDto.getPlatforms().contains(platforms))
+            .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
+            .filter(dvdDto -> developer.equals("") ||
+                dvdDto.getDeveloper().toLowerCase().contains(developer))
+            .filter(dvdDto -> platforms.equals("") ||
+                dvdDto.getPlatforms().toLowerCase().contains(platforms))
             .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
