@@ -16,6 +16,8 @@ public class DvdDto implements Serializable {
     private final UUID topic;
     private final List<String> tags;
     private final String availability;
+    private final UUID mediumId;
+
 
     /* DVD properties */
     private final String actors;
@@ -38,6 +40,7 @@ public class DvdDto implements Serializable {
         this.durationMinutes = dvdDtoBuilder.durationMinutes;
         this.studio = dvdDtoBuilder.studio;
         this.director = dvdDtoBuilder.director;
+        this.mediumId = dvdDtoBuilder.mediumId;
     }
 
     public static class DvdDtoBuilder {
@@ -54,6 +57,8 @@ public class DvdDto implements Serializable {
         private String durationMinutes;
         private String studio;
         private String director;
+        private UUID mediumId;
+
 
         public DvdDtoBuilder() {
             // GUI might not be able to provide an id
@@ -118,6 +123,11 @@ public class DvdDto implements Serializable {
             return this;
         }
 
+        public DvdDtoBuilder mediumId(UUID mediumId) {
+            this.mediumId = mediumId;
+            return this;
+        }
+
         public DvdDto build() {
             return new DvdDto(this);
         }
@@ -169,5 +179,9 @@ public class DvdDto implements Serializable {
 
     public String getDirector() {
         return this.director;
+    }
+
+    public UUID getMediumId() {
+        return mediumId;
     }
 }
