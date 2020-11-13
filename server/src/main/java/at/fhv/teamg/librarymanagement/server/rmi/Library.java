@@ -237,6 +237,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
-        return null;
+        LoginDto loginDto1 = new LoginDto.LoginDtoBuilder()
+            .isValid(false)
+            .build();
+        return loginDto1;
     }
 }

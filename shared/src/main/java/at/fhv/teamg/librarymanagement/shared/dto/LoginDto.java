@@ -65,7 +65,7 @@ public class LoginDto implements Serializable {
             return this;
         }
 
-        public LoginDtoBuilder userRoleName(Boolean isValid) {
+        public LoginDtoBuilder isValid(Boolean isValid) {
             this.isValid = isValid;
             return this;
         }
