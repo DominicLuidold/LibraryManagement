@@ -60,35 +60,17 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<GameDto> result = detailService.getGameDetail(gameDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No Game details found");
-        return null;
+        return cache.getGameDetail(gameDto.getId());
     }
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<BookDto> result = detailService.getBookDetail(bookDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No Book details found");
-        return null;
+        return cache.getBookDetail(bookDto.getId());
     }
 
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<DvdDto> result = detailService.getDvdDetail(dvdDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No DVD details found");
-        return null;
+        return cache.getDvdDetail(dvdDto.getId());
     }
 
     @Override

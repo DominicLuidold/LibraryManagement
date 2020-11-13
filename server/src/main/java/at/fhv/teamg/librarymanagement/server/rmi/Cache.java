@@ -11,6 +11,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,9 +25,9 @@ public class Cache {
     private static Cache instance;
     private final Object lock = new Object();
     private final int minute = 1000 * 60;
-    private List<BookDto> bookCache;
-    private List<DvdDto> dvdCache;
-    private List<GameDto> gameCache;
+    private HashMap<UUID, BookDto> bookCache = new HashMap<>();
+    private HashMap<UUID, DvdDto> dvdCache = new HashMap<>();
+    private HashMap<UUID, GameDto> gameCache = new HashMap<>();
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
     private final Timer timer = new Timer();
@@ -34,7 +35,8 @@ public class Cache {
     private Cache() {
         LOG.info("cache preload");
         synchronized (lock) {
-            bookCache = new BookService().getAllBooks();
+            new BookService().getAllBooks()
+                .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
         }
 
         synchronized (lock) {
@@ -46,11 +48,12 @@ public class Cache {
         }
 
         synchronized (lock) {
-            dvdCache = new DvdService().getAllDvds();
+            new DvdService().getAllDvds().forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
         }
 
         synchronized (lock) {
-            gameCache = new GameService().getAllGames();
+            new GameService().getAllGames()
+                .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
         }
 
         //startTimer();
@@ -81,7 +84,7 @@ public class Cache {
         String isbn13 = search.getIsbn13();
         UUID topic = search.getTopic();
 
-        return bookCache.stream()
+        return bookCache.values().stream()
             .filter(bookDto -> title.equals("") || bookDto.getTitle().toLowerCase().contains(title))
             .filter(
                 bookDto -> author.equals("") || bookDto.getAuthor().toLowerCase().contains(author))
@@ -103,7 +106,7 @@ public class Cache {
         LocalDate releaseDate = search.getReleaseDate();
         UUID topic = search.getTopic();
 
-        return dvdCache.stream()
+        return dvdCache.values().stream()
             .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
             .filter(dvdDto -> director.equals("")
                 || dvdDto.getDirector().toLowerCase().contains(director))
@@ -125,7 +128,7 @@ public class Cache {
         String platforms = search.getPlatforms().toLowerCase();
         UUID topic = search.getTopic();
 
-        return gameCache.stream()
+        return gameCache.values().stream()
             .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
             .filter(dvdDto -> developer.equals("")
                 || dvdDto.getDeveloper().toLowerCase().contains(developer))
@@ -135,6 +138,18 @@ public class Cache {
             .collect(Collectors.toList());
     }
 
+    public BookDto getBookDetail(UUID uuid) {
+        return bookCache.getOrDefault(uuid, null);
+    }
+
+    public GameDto getGameDetail(UUID uuid) {
+        return gameCache.getOrDefault(uuid, null);
+    }
+
+    public DvdDto getDvdDetail(UUID uuid) {
+        return dvdCache.getOrDefault(uuid, null);
+    }
+
     /**
      * Invalidate book cache.
      */
@@ -142,7 +157,8 @@ public class Cache {
         new Thread(() -> {
             LOG.info("updating books...");
             synchronized (lock) {
-                bookCache = new BookService().getAllBooks();
+                new BookService().getAllBooks()
+                    .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
             }
         }).start();
     }
@@ -154,7 +170,8 @@ public class Cache {
         new Thread(() -> {
             LOG.info("updating dvds...");
             synchronized (lock) {
-                dvdCache = new DvdService().getAllDvds();
+                new DvdService().getAllDvds()
+                    .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
             }
         }).start();
     }
@@ -166,7 +183,8 @@ public class Cache {
         new Thread(() -> {
             LOG.info("updating games...");
             synchronized (lock) {
-                gameCache = new GameService().getAllGames();
+                new GameService().getAllGames()
+                    .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
             }
         }).start();
     }
@@ -189,7 +207,8 @@ public class Cache {
             public void run() {
                 LOG.info("updating books...");
                 synchronized (lock) {
-                    bookCache = new BookService().getAllBooks();
+                    new BookService().getAllBooks()
+                        .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
                 }
             }
         };
