@@ -38,20 +38,7 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
 
         List<DvdDto> dtoList = new LinkedList<>();
         entities.forEach(dvd -> {
-            DvdDto.DvdDtoBuilder builder = new DvdDto.DvdDtoBuilder(dvd.getId())
-                .availability(getAvailability(dvd.getMedium()))
-                .actors(dvd.getActors())
-                .ageRestriction(dvd.getAgeRestriction())
-                .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
-                .releaseDate(dvd.getMedium().getReleaseDate())
-                .storageLocation(dvd.getMedium().getStorageLocation())
-                .studio(dvd.getStudio())
-                .director(dvd.getDirector())
-                .title(dvd.getMedium().getTitle())
-                .topic(dvd.getMedium().getTopic().getId())
-                .mediumId(dvd.getMedium().getId());
-
-            dtoList.add(builder.build());
+            dtoList.add(Utils.createDvdDto(dvd, getAvailability(dvd.getMedium())));
         });
 
         return dtoList;

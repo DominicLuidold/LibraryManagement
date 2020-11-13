@@ -37,20 +37,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
 
         List<BookDto> dtoList = new LinkedList<>();
         entities.forEach(book -> {
-            BookDto.BookDtoBuilder builder = new BookDto.BookDtoBuilder(book.getId())
-                .author(book.getAuthor())
-                .availability(getAvailability(book.getMedium()))
-                .isbn10(book.getIsbn10())
-                .isbn13(book.getIsbn10())
-                .languageKey(book.getLanguageKey())
-                .publisher(book.getPublisher())
-                .releaseDate(book.getMedium().getReleaseDate())
-                .storageLocation(book.getMedium().getStorageLocation())
-                .title(book.getMedium().getTitle())
-                .topic(book.getMedium().getTopic().getId())
-                .mediumId(book.getMedium().getId());
-
-            dtoList.add(builder.build());
+            dtoList.add(Utils.createBookDto(book, getAvailability(book.getMedium())));
         });
 
         return dtoList;

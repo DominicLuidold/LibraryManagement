@@ -36,19 +36,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
 
         List<GameDto> dtoList = new LinkedList<>();
         entities.forEach(game -> {
-            GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                .availability(getAvailability(game.getMedium()))
-                .ageRestriction(game.getAgeRestriction())
-                .developer(game.getDeveloper())
-                .platforms(game.getPlatforms())
-                .publisher(game.getPublisher())
-                .releaseDate(game.getMedium().getReleaseDate())
-                .storageLocation(game.getMedium().getStorageLocation())
-                .title(game.getMedium().getTitle())
-                .topic(game.getMedium().getTopic().getId())
-                .mediumId(game.getMedium().getId());
-
-            dtoList.add(builder.build());
+            dtoList.add(Utils.createGameDto(game, getAvailability(game.getMedium())));
         });
 
         return dtoList;
