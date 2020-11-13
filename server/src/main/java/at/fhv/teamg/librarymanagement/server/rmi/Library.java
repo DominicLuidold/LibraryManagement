@@ -203,16 +203,22 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return lendingService.extendLending(mediumCopyDto);
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateBookCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 
     @Override
     public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return lendingService.extendLending(mediumCopyDto);
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateDvdCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 
     @Override
     public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return lendingService.extendLending(mediumCopyDto);
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 }
