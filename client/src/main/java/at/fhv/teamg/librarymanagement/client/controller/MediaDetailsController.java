@@ -487,8 +487,11 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 try {
                     List<ReservationDto> list =
                         RmiClient.getInstance().getAllBookReservations(this.currentBook);
-                    list.add(new ReservationDto.ReservationDtoBuilder(UUID.randomUUID()).userId(UUID.randomUUID()).mediumId(UUID.randomUUID()).startDate(
-                        LocalDate.now()).endDate(LocalDate.now()).build());
+                    list.add(new ReservationDto.ReservationDtoBuilder(UUID.randomUUID())
+                        .userName("Testi")
+                        .mediumName("test")
+                        .startDate(LocalDate.now())
+                        .endDate(LocalDate.now()).build());
 
                     this.tblReservations.setItems(FXCollections.observableList(
                         list
