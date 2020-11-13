@@ -14,6 +14,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -216,5 +217,20 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
         return cache.getAllUsers();
+    }
+
+    @Override
+    public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return lendingService.extendLending(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return lendingService.extendLending(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return lendingService.extendLending(mediumCopyDto);
     }
 }

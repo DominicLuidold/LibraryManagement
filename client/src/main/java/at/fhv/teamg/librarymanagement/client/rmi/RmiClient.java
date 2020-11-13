@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -12,14 +13,11 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RmiClient implements LibraryInterface {
-
     private static final Logger LOG = LogManager.getLogger(RmiClient.class);
     private static RmiClient instance;
     private LibraryInterface library;
@@ -166,5 +164,20 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
         return library.getAllUsers();
+    }
+
+    @Override
+    public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendBook(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendDvd(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendGame(mediumCopyDto);
     }
 }
