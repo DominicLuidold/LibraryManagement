@@ -5,7 +5,6 @@ import at.fhv.teamg.librarymanagement.server.domain.DvdService;
 import at.fhv.teamg.librarymanagement.server.domain.GameService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -79,7 +78,7 @@ public class Cache {
     public List<BookDto> searchBook(BookDto search) {
         String title = search.getTitle().toLowerCase();
         String author = search.getAuthor().toLowerCase();
-        String isbn13 = search.getIsbn13().toLowerCase();
+        String isbn13 = search.getIsbn13();
         UUID topic = search.getTopic();
 
         return bookCache.stream()
@@ -87,7 +86,7 @@ public class Cache {
             .filter(
                 bookDto -> author.equals("") || bookDto.getAuthor().toLowerCase().contains(author))
             .filter(
-                bookDto -> isbn13.equals("") || bookDto.getIsbn13().toLowerCase().contains(isbn13))
+                bookDto -> isbn13.equals("") || bookDto.getIsbn13().contains(isbn13))
             .filter(bookDto -> topic == null || bookDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
@@ -106,10 +105,10 @@ public class Cache {
 
         return dvdCache.stream()
             .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
-            .filter(dvdDto -> director.equals("") ||
-                dvdDto.getDirector().toLowerCase().contains(director))
+            .filter(dvdDto -> director.equals("")
+                || dvdDto.getDirector().toLowerCase().contains(director))
             .filter(dvdDto -> releaseDate.equals(LocalDate.MIN)
-                || dvdDto.getReleaseDate().equals(releaseDate))
+                || dvdDto.getReleaseDate().plusDays(1).isAfter(releaseDate))
             .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
@@ -128,10 +127,10 @@ public class Cache {
 
         return gameCache.stream()
             .filter(dvdDto -> title.equals("") || dvdDto.getTitle().toLowerCase().contains(title))
-            .filter(dvdDto -> developer.equals("") ||
-                dvdDto.getDeveloper().toLowerCase().contains(developer))
-            .filter(dvdDto -> platforms.equals("") ||
-                dvdDto.getPlatforms().toLowerCase().contains(platforms))
+            .filter(dvdDto -> developer.equals("")
+                || dvdDto.getDeveloper().toLowerCase().contains(developer))
+            .filter(dvdDto -> platforms.equals("")
+                || dvdDto.getPlatforms().toLowerCase().contains(platforms))
             .filter(dvdDto -> topic == null || dvdDto.getTopic().equals(topic))
             .collect(Collectors.toList());
     }
