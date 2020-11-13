@@ -1,11 +1,10 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.TopicDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
-import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;

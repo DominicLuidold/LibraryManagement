@@ -72,21 +72,6 @@ jacocoTestReport {
 }
 build.dependsOn jacocoTestReport
 
-// Uncomment when ready
-
-/*
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.8
-            }
-        }
-    }
-}
-check.dependsOn jacocoTestCoverageVerification
-*/
-
 /* ShadowJar configuration */
 shadowJar {
     archiveFileName = 'LibraryServer.jar'
