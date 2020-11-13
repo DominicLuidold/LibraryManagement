@@ -37,6 +37,9 @@ public class DvdServiceTest {
         when(mediumMock.getTitle()).thenReturn("Title");
         when(mediumMock.getStorageLocation()).thenReturn("Storage Location");
 
+        Topic topicEntityMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicEntityMock);
+
         Dvd dvdMock = mock(Dvd.class);
         when(dvdMock.getMedium()).thenReturn(mediumMock);
         when(dvdMock.getId()).thenReturn(UUID.randomUUID());

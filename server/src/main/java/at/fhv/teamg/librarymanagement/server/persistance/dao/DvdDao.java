@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.persistance.dao;
 
 import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -70,5 +71,9 @@ public class DvdDao extends BaseDao<Dvd> {
         query.setParameter("topic", "%" + topic + "%");
 
         return new LinkedList<>(query.getResultList());
+    }
+
+    public List<Dvd> getAll() {
+        return super.getAll(Dvd.class);
     }
 }

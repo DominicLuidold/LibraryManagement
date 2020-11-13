@@ -26,6 +26,7 @@ public class DetailService extends BaseMediaService {
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             builder.author(book.getAuthor())
+                .availability(getAvailability(book.getMedium()))
                 .isbn10(book.getIsbn10())
                 .isbn13(book.getIsbn10())
                 .languageKey(book.getLanguageKey())
@@ -33,8 +34,8 @@ public class DetailService extends BaseMediaService {
                 .releaseDate(book.getMedium().getReleaseDate())
                 .storageLocation(book.getMedium().getStorageLocation())
                 .title(book.getMedium().getTitle())
-                .topic(book.getMedium().getTopic().getId());
-            //TODO fix topic
+                .topic(book.getMedium().getTopic().getId())
+                .mediumId(book.getMedium().getId());
 
             return Optional.of(builder.build());
         }
@@ -56,6 +57,7 @@ public class DetailService extends BaseMediaService {
         if (dvdOptional.isPresent()) {
             Dvd dvd = dvdOptional.get();
             builder.actors(dvd.getActors())
+                .availability(getAvailability(dvd.getMedium()))
                 .ageRestriction(dvd.getAgeRestriction())
                 .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
                 .releaseDate(dvd.getMedium().getReleaseDate())
@@ -63,8 +65,8 @@ public class DetailService extends BaseMediaService {
                 .studio(dvd.getStudio())
                 .director(dvd.getDirector())
                 .title(dvd.getMedium().getTitle())
-                .topic(dvd.getMedium().getTopic().getId());
-            //TODO fix topic and director
+                .topic(dvd.getMedium().getTopic().getId())
+                .mediumId(dvd.getMedium().getId());
 
             return Optional.of(builder.build());
         }
@@ -86,14 +88,15 @@ public class DetailService extends BaseMediaService {
         if (gameOptional.isPresent()) {
             Game game = gameOptional.get();
             builder.ageRestriction(game.getAgeRestriction())
+                .availability(getAvailability(game.getMedium()))
                 .developer(game.getDeveloper())
                 .platforms(game.getPlatforms())
                 .publisher(game.getPublisher())
                 .releaseDate(game.getMedium().getReleaseDate())
                 .storageLocation(game.getMedium().getStorageLocation())
                 .title(game.getMedium().getTitle())
-                .topic(game.getMedium().getTopic().getId());
-            //TODO fix topic
+                .topic(game.getMedium().getTopic().getId())
+                .mediumId(game.getMedium().getId());
 
             return Optional.of(builder.build());
         }

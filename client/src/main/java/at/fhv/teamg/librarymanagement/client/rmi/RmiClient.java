@@ -25,7 +25,7 @@ public class RmiClient implements LibraryInterface {
     /**
      * Singleton Client for RMI.
      */
-    public RmiClient() {
+    private RmiClient() {
         try {
             LibraryFactoryInterface libraryFactory =
                 (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");

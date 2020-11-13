@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 public class BookServiceTest {
 
@@ -35,6 +36,9 @@ public class BookServiceTest {
         Medium mediumMock = mock(Medium.class);
         when(mediumMock.getTitle()).thenReturn("Title");
         when(mediumMock.getStorageLocation()).thenReturn("Storage Location");
+
+        Topic topicEntityMock = mock(Topic.class);
+        when(mediumMock.getTopic()).thenReturn(topicEntityMock);
 
         Book bookMock = mock(Book.class);
         when(bookMock.getMedium()).thenReturn(mediumMock);

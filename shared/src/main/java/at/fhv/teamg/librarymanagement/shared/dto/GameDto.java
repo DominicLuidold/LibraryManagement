@@ -22,6 +22,8 @@ public class GameDto implements Serializable {
     private final String developer;
     private final String ageRestriction;
     private final String platforms;
+    private final UUID mediumId;
+
 
     private GameDto(GameDtoBuilder gameDtoBuilder) {
         this.id = gameDtoBuilder.id;
@@ -36,6 +38,7 @@ public class GameDto implements Serializable {
         this.developer = gameDtoBuilder.developer;
         this.ageRestriction = gameDtoBuilder.ageRestriction;
         this.platforms = gameDtoBuilder.platforms;
+        this.mediumId = gameDtoBuilder.mediumId;
     }
 
     public static class GameDtoBuilder {
@@ -51,6 +54,8 @@ public class GameDto implements Serializable {
         private String developer;
         private String ageRestriction;
         private String platforms;
+        private UUID mediumId;
+
 
         public GameDtoBuilder() {
             // GUI might not be able to provide an id
@@ -110,6 +115,11 @@ public class GameDto implements Serializable {
             return this;
         }
 
+        public GameDtoBuilder mediumId(UUID mediumId) {
+            this.mediumId = mediumId;
+            return this;
+        }
+
         public GameDto build() {
             return new GameDto(this);
         }
@@ -157,5 +167,9 @@ public class GameDto implements Serializable {
 
     public String getPlatforms() {
         return this.platforms;
+    }
+
+    public UUID getMediumId() {
+        return mediumId;
     }
 }
