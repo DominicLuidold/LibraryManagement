@@ -2,12 +2,17 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
+import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
+import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class BookService extends BaseMediaService implements Searchable<BookDto> {
     /**
@@ -78,6 +83,74 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
         });
 
         return bookDtos;
+    }
+
+    /**
+     * Get Book by Medium Id.
+     *
+     * @param mediumId uuid
+     * @return BookDto
+     */
+    public Optional<BookDto> getBookByMediumId(UUID mediumId) {
+        Optional<Medium> medium = findMedium(mediumId);
+        if (medium.isPresent()) {
+            Book book = medium.get().getBook();
+            if (book != null) {
+                BookDto.BookDtoBuilder builder = new BookDto.BookDtoBuilder(book.getId())
+                    .author(book.getAuthor())
+                    .availability(getAvailability(book.getMedium()))
+                    .isbn10(book.getIsbn10())
+                    .isbn13(book.getIsbn10())
+                    .languageKey(book.getLanguageKey())
+                    .publisher(book.getPublisher())
+                    .releaseDate(book.getMedium().getReleaseDate())
+                    .storageLocation(book.getMedium().getStorageLocation())
+                    .title(book.getMedium().getTitle())
+                    .topic(book.getMedium().getTopic().getId())
+                    .mediumId(book.getMedium().getId());
+
+                return Optional.of(builder.build());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Get Book by MediumCopyId.
+     *
+     * @param mediumCopyId uuid
+     * @return BookDto
+     */
+    public Optional<BookDto> getBookByMediumCopyId(UUID mediumCopyId) {
+        Optional<MediumCopy> mediumCopy = findMediumCopy(mediumCopyId);
+        if (mediumCopy.isPresent()) {
+            Book book = mediumCopy.get().getMedium().getBook();
+            if (book != null) {
+                BookDto.BookDtoBuilder builder = new BookDto.BookDtoBuilder(book.getId())
+                    .author(book.getAuthor())
+                    .availability(getAvailability(book.getMedium()))
+                    .isbn10(book.getIsbn10())
+                    .isbn13(book.getIsbn10())
+                    .languageKey(book.getLanguageKey())
+                    .publisher(book.getPublisher())
+                    .releaseDate(book.getMedium().getReleaseDate())
+                    .storageLocation(book.getMedium().getStorageLocation())
+                    .title(book.getMedium().getTitle())
+                    .topic(book.getMedium().getTopic().getId())
+                    .mediumId(book.getMedium().getId());
+
+                return Optional.of(builder.build());
+            }
+        }
+        return Optional.empty();
+    }
+
+    protected Optional<Medium> findMedium(UUID uuid) {
+        return new MediumDao().find(uuid);
+    }
+
+    protected Optional<MediumCopy> findMediumCopy(UUID uuid) {
+        return new MediumCopyDao().find(uuid);
     }
 
     protected List<Book> getAll() {

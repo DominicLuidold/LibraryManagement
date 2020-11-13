@@ -13,6 +13,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -151,7 +152,7 @@ public class Cache {
     }
 
     /**
-     * Invalidate book cache.
+     * Invalidate all books in cache.
      */
     public void invalidateBookCache() {
         new Thread(() -> {
@@ -159,6 +160,44 @@ public class Cache {
             synchronized (lock) {
                 new BookService().getAllBooks()
                     .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe book in cache by Medium id.
+     *
+     * @param mediumId uuid
+     */
+    public void invalidateBookCacheMedium(UUID mediumId) {
+        new Thread(() -> {
+            LOG.info("updating book by medium id...");
+            synchronized (lock) {
+                Optional<BookDto> bookDto = new BookService().getBookByMediumId(mediumId);
+                if (bookDto.isPresent()) {
+                    bookCache.replace(bookDto.get().getId(), bookDto.get());
+                } else {
+                    LOG.error("Book no found");
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe book in cache by MediumCopy id.
+     *
+     * @param mediumCopyId uuid
+     */
+    public void invalidateBookCacheMediumCopy(UUID mediumCopyId) {
+        new Thread(() -> {
+            LOG.info("updating book by medium copy id...");
+            synchronized (lock) {
+                Optional<BookDto> bookDto = new BookService().getBookByMediumCopyId(mediumCopyId);
+                if (bookDto.isPresent()) {
+                    bookCache.replace(bookDto.get().getId(), bookDto.get());
+                } else {
+                    LOG.error("Book no found");
+                }
             }
         }).start();
     }
