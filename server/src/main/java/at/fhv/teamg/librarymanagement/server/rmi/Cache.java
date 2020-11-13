@@ -254,7 +254,7 @@ public class Cache {
     }
 
     /**
-     * Invalidate game cache.
+     * Invalidate all games in cache.
      */
     public void invalidateGameCache() {
         new Thread(() -> {
@@ -262,6 +262,44 @@ public class Cache {
             synchronized (lock) {
                 new GameService().getAllGames()
                     .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe game in cache by Medium id.
+     *
+     * @param mediumId uuid
+     */
+    public void invalidateGameCacheMedium(UUID mediumId) {
+        new Thread(() -> {
+            LOG.info("updating game by medium id...");
+            synchronized (lock) {
+                Optional<GameDto> gameDto = new GameService().getGameByMediumId(mediumId);
+                if (gameDto.isPresent()) {
+                    gameCache.replace(gameDto.get().getId(), gameDto.get());
+                } else {
+                    LOG.error("Game no found");
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe game in cache by MediumCopy id.
+     *
+     * @param mediumCopyId uuid
+     */
+    public void invalidateGameCacheMediumCopy(UUID mediumCopyId) {
+        new Thread(() -> {
+            LOG.info("updating game by medium copy id...");
+            synchronized (lock) {
+                Optional<GameDto> gameDto = new GameService().getGameByMediumCopyId(mediumCopyId);
+                if (gameDto.isPresent()) {
+                    gameCache.replace(gameDto.get().getId(), gameDto.get());
+                } else {
+                    LOG.error("Game no found");
+                }
             }
         }).start();
     }

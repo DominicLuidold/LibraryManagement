@@ -3,11 +3,14 @@ package at.fhv.teamg.librarymanagement.server.domain;
 import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class GameService extends BaseMediaService implements Searchable<GameDto> {
     /**
@@ -75,6 +78,64 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         });
 
         return gameDtos;
+    }
+
+    /**
+     * Get Game by Medium Id.
+     *
+     * @param mediumId uuid
+     * @return GameDto
+     */
+    public Optional<GameDto> getGameByMediumId(UUID mediumId) {
+        Optional<Medium> medium = findMediumById(mediumId);
+        if (medium.isPresent()) {
+            Game game = medium.get().getGame();
+            if (game != null) {
+                GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
+                    .availability(getAvailability(game.getMedium()))
+                    .ageRestriction(game.getAgeRestriction())
+                    .developer(game.getDeveloper())
+                    .platforms(game.getPlatforms())
+                    .publisher(game.getPublisher())
+                    .releaseDate(game.getMedium().getReleaseDate())
+                    .storageLocation(game.getMedium().getStorageLocation())
+                    .title(game.getMedium().getTitle())
+                    .topic(game.getMedium().getTopic().getId())
+                    .mediumId(game.getMedium().getId());
+
+                return Optional.of(builder.build());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Get Game by MediumCopyId.
+     *
+     * @param mediumCopyId uuid
+     * @return GameDto
+     */
+    public Optional<GameDto> getGameByMediumCopyId(UUID mediumCopyId) {
+        Optional<MediumCopy> mediumCopy = findMediumCopyById(mediumCopyId);
+        if (mediumCopy.isPresent()) {
+            Game game = mediumCopy.get().getMedium().getGame();
+            if (game != null) {
+                GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
+                    .availability(getAvailability(game.getMedium()))
+                    .ageRestriction(game.getAgeRestriction())
+                    .developer(game.getDeveloper())
+                    .platforms(game.getPlatforms())
+                    .publisher(game.getPublisher())
+                    .releaseDate(game.getMedium().getReleaseDate())
+                    .storageLocation(game.getMedium().getStorageLocation())
+                    .title(game.getMedium().getTitle())
+                    .topic(game.getMedium().getTopic().getId())
+                    .mediumId(game.getMedium().getId());
+
+                return Optional.of(builder.build());
+            }
+        }
+        return Optional.empty();
     }
 
     protected List<Game> getAll() {
