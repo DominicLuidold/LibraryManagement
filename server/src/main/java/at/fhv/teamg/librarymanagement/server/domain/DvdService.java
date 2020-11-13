@@ -38,6 +38,7 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
         List<DvdDto> dtoList = new LinkedList<>();
         entities.forEach(dvd -> {
             DvdDto.DvdDtoBuilder builder = new DvdDto.DvdDtoBuilder(dvd.getId())
+                .availability(getAvailability(dvd.getMedium()))
                 .actors(dvd.getActors())
                 .ageRestriction(dvd.getAgeRestriction())
                 .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
@@ -65,6 +66,7 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
 
         getAll().forEach(dvd -> {
             DvdDto.DvdDtoBuilder builder = new DvdDto.DvdDtoBuilder(dvd.getId())
+                .availability(getAvailability(dvd.getMedium()))
                 .actors(dvd.getActors())
                 .ageRestriction(dvd.getAgeRestriction())
                 .durationMinutes(String.valueOf(dvd.getDurationMinutes()))

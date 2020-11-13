@@ -35,6 +35,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         List<GameDto> dtoList = new LinkedList<>();
         entities.forEach(game -> {
             GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
+                .availability(getAvailability(game.getMedium()))
                 .ageRestriction(game.getAgeRestriction())
                 .developer(game.getDeveloper())
                 .platforms(game.getPlatforms())
@@ -61,6 +62,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
 
         getAll().forEach(game -> {
             GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
+                .availability(getAvailability(game.getMedium()))
                 .ageRestriction(game.getAgeRestriction())
                 .developer(game.getDeveloper())
                 .platforms(game.getPlatforms())

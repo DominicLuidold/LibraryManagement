@@ -36,6 +36,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
         entities.forEach(book -> {
             BookDto.BookDtoBuilder builder = new BookDto.BookDtoBuilder(book.getId())
                 .author(book.getAuthor())
+                .availability(getAvailability(book.getMedium()))
                 .isbn10(book.getIsbn10())
                 .isbn13(book.getIsbn10())
                 .languageKey(book.getLanguageKey())
@@ -63,6 +64,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
         getAll().forEach(book -> {
             BookDto.BookDtoBuilder builder = new BookDto.BookDtoBuilder(book.getId())
                 .author(book.getAuthor())
+                .availability(getAvailability(book.getMedium()))
                 .isbn10(book.getIsbn10())
                 .isbn13(book.getIsbn10())
                 .languageKey(book.getLanguageKey())
