@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server.domain;
+package at.fhv.teamg.librarymanagement.server.domain.common;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;

@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
