@@ -38,11 +38,16 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
         List<DvdDto> dtoList = new LinkedList<>();
         entities.forEach(dvd -> {
             DvdDto.DvdDtoBuilder builder = new DvdDto.DvdDtoBuilder(dvd.getId())
-                .title(dvd.getMedium().getTitle())
+                .actors(dvd.getActors())
+                .ageRestriction(dvd.getAgeRestriction())
+                .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
+                .releaseDate(dvd.getMedium().getReleaseDate())
                 .storageLocation(dvd.getMedium().getStorageLocation())
+                .studio(dvd.getStudio())
                 .director(dvd.getDirector())
-                .availability(getAvailability(dvd.getMedium()))
-                .topic(dvd.getMedium().getTopic().getId());
+                .title(dvd.getMedium().getTitle())
+                .topic(dvd.getMedium().getTopic().getId())
+                .mediumId(dvd.getMedium().getId());
 
             dtoList.add(builder.build());
         });
@@ -60,11 +65,16 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
 
         getAll().forEach(dvd -> {
             DvdDto.DvdDtoBuilder builder = new DvdDto.DvdDtoBuilder(dvd.getId())
-                .title(dvd.getMedium().getTitle())
+                .actors(dvd.getActors())
+                .ageRestriction(dvd.getAgeRestriction())
+                .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
+                .releaseDate(dvd.getMedium().getReleaseDate())
                 .storageLocation(dvd.getMedium().getStorageLocation())
+                .studio(dvd.getStudio())
                 .director(dvd.getDirector())
-                .availability(getAvailability(dvd.getMedium()))
-                .topic(dvd.getMedium().getTopic().getId());
+                .title(dvd.getMedium().getTitle())
+                .topic(dvd.getMedium().getTopic().getId())
+                .mediumId(dvd.getMedium().getId());
 
             dvdDtos.add(builder.build());
         });

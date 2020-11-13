@@ -33,8 +33,8 @@ public class DetailService extends BaseMediaService {
                 .releaseDate(book.getMedium().getReleaseDate())
                 .storageLocation(book.getMedium().getStorageLocation())
                 .title(book.getMedium().getTitle())
-                .topic(book.getMedium().getTopic().getId());
-            //TODO fix topic
+                .topic(book.getMedium().getTopic().getId())
+                .mediumId(book.getMedium().getId());
 
             return Optional.of(builder.build());
         }
@@ -63,8 +63,8 @@ public class DetailService extends BaseMediaService {
                 .studio(dvd.getStudio())
                 .director(dvd.getDirector())
                 .title(dvd.getMedium().getTitle())
-                .topic(dvd.getMedium().getTopic().getId());
-            //TODO fix topic and director
+                .topic(dvd.getMedium().getTopic().getId())
+                .mediumId(dvd.getMedium().getId());
 
             return Optional.of(builder.build());
         }
@@ -92,8 +92,8 @@ public class DetailService extends BaseMediaService {
                 .releaseDate(game.getMedium().getReleaseDate())
                 .storageLocation(game.getMedium().getStorageLocation())
                 .title(game.getMedium().getTitle())
-                .topic(game.getMedium().getTopic().getId());
-            //TODO fix topic
+                .topic(game.getMedium().getTopic().getId())
+                .mediumId(game.getMedium().getId());
 
             return Optional.of(builder.build());
         }
