@@ -13,6 +13,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
@@ -232,5 +233,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
         return lendingService.extendLending(mediumCopyDto);
+    }
+
+    @Override
+    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
+        return null;
     }
 }

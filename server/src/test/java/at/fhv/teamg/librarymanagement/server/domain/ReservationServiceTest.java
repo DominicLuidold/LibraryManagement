@@ -16,7 +16,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
-import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;

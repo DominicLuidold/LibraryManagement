@@ -3,8 +3,12 @@ package at.fhv.teamg.librarymanagement.client.controller;
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -88,6 +92,14 @@ public class LoginController implements Initializable {
     public void processLoginCredentials() {
         LOG.debug("Login btn pressed");
         Window owner = this.submitButton.getScene().getWindow();
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+                .username(usernameField.getText())
+                .password(usernameField.getText())
+                .build();
+
+        LoginDto loggedInUser = RmiClient.getInstance().loginUser(loginUser);
+
+
         if (!this.isValid) {
             LOG.info("Login input is not valid (missing required fields)");
             StringBuilder sb = new StringBuilder();
