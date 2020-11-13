@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
+import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
@@ -62,19 +63,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         List<GameDto> gameDtos = new LinkedList<>();
 
         getAll().forEach(game -> {
-            GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                .availability(getAvailability(game.getMedium()))
-                .ageRestriction(game.getAgeRestriction())
-                .developer(game.getDeveloper())
-                .platforms(game.getPlatforms())
-                .publisher(game.getPublisher())
-                .releaseDate(game.getMedium().getReleaseDate())
-                .storageLocation(game.getMedium().getStorageLocation())
-                .title(game.getMedium().getTitle())
-                .topic(game.getMedium().getTopic().getId())
-                .mediumId(game.getMedium().getId());
-
-            gameDtos.add(builder.build());
+            gameDtos.add(Utils.createGameDto(game, getAvailability(game.getMedium())));
         });
 
         return gameDtos;
@@ -91,19 +80,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         if (medium.isPresent()) {
             Game game = medium.get().getGame();
             if (game != null) {
-                GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                    .availability(getAvailability(game.getMedium()))
-                    .ageRestriction(game.getAgeRestriction())
-                    .developer(game.getDeveloper())
-                    .platforms(game.getPlatforms())
-                    .publisher(game.getPublisher())
-                    .releaseDate(game.getMedium().getReleaseDate())
-                    .storageLocation(game.getMedium().getStorageLocation())
-                    .title(game.getMedium().getTitle())
-                    .topic(game.getMedium().getTopic().getId())
-                    .mediumId(game.getMedium().getId());
-
-                return Optional.of(builder.build());
+                return Optional.of(Utils.createGameDto(game, getAvailability(game.getMedium())));
             }
         }
         return Optional.empty();
@@ -120,19 +97,7 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         if (mediumCopy.isPresent()) {
             Game game = mediumCopy.get().getMedium().getGame();
             if (game != null) {
-                GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                    .availability(getAvailability(game.getMedium()))
-                    .ageRestriction(game.getAgeRestriction())
-                    .developer(game.getDeveloper())
-                    .platforms(game.getPlatforms())
-                    .publisher(game.getPublisher())
-                    .releaseDate(game.getMedium().getReleaseDate())
-                    .storageLocation(game.getMedium().getStorageLocation())
-                    .title(game.getMedium().getTitle())
-                    .topic(game.getMedium().getTopic().getId())
-                    .mediumId(game.getMedium().getId());
-
-                return Optional.of(builder.build());
+                return Optional.of(Utils.createGameDto(game, getAvailability(game.getMedium())));
             }
         }
         return Optional.empty();
