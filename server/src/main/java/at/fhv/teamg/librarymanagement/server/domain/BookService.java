@@ -92,7 +92,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
      * @return BookDto
      */
     public Optional<BookDto> getBookByMediumId(UUID mediumId) {
-        Optional<Medium> medium = findMedium(mediumId);
+        Optional<Medium> medium = findMediumById(mediumId);
         if (medium.isPresent()) {
             Book book = medium.get().getBook();
             if (book != null) {
@@ -122,7 +122,7 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
      * @return BookDto
      */
     public Optional<BookDto> getBookByMediumCopyId(UUID mediumCopyId) {
-        Optional<MediumCopy> mediumCopy = findMediumCopy(mediumCopyId);
+        Optional<MediumCopy> mediumCopy = findMediumCopyById(mediumCopyId);
         if (mediumCopy.isPresent()) {
             Book book = mediumCopy.get().getMedium().getBook();
             if (book != null) {
@@ -143,14 +143,6 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
             }
         }
         return Optional.empty();
-    }
-
-    protected Optional<Medium> findMedium(UUID uuid) {
-        return new MediumDao().find(uuid);
-    }
-
-    protected Optional<MediumCopy> findMediumCopy(UUID uuid) {
-        return new MediumCopyDao().find(uuid);
     }
 
     protected List<Book> getAll() {

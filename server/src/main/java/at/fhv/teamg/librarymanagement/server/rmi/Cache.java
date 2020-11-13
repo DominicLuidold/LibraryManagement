@@ -203,7 +203,7 @@ public class Cache {
     }
 
     /**
-     * Invalidate dvd cache.
+     * Invalidate all dvds in cache.
      */
     public void invalidateDvdCache() {
         new Thread(() -> {
@@ -211,6 +211,44 @@ public class Cache {
             synchronized (lock) {
                 new DvdService().getAllDvds()
                     .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe dvd in cache by Medium id.
+     *
+     * @param mediumId uuid
+     */
+    public void invalidateDvdCacheMedium(UUID mediumId) {
+        new Thread(() -> {
+            LOG.info("updating dvd by medium id...");
+            synchronized (lock) {
+                Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumId(mediumId);
+                if (dvdDto.isPresent()) {
+                    dvdCache.replace(dvdDto.get().getId(), dvdDto.get());
+                } else {
+                    LOG.error("Dvd no found");
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * Invalidate singe dvd in cache by MediumCopy id.
+     *
+     * @param mediumCopyId uuid
+     */
+    public void invalidateDvdCacheMediumCopy(UUID mediumCopyId) {
+        new Thread(() -> {
+            LOG.info("updating dvd by medium copy id...");
+            synchronized (lock) {
+                Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumCopyId(mediumCopyId);
+                if (dvdDto.isPresent()) {
+                    dvdCache.replace(dvdDto.get().getId(), dvdDto.get());
+                } else {
+                    LOG.error("Dvd no found");
+                }
             }
         }).start();
     }
