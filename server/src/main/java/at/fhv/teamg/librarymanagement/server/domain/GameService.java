@@ -35,11 +35,16 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         List<GameDto> dtoList = new LinkedList<>();
         entities.forEach(game -> {
             GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                .title(game.getMedium().getTitle())
-                .storageLocation(game.getMedium().getStorageLocation())
-                .platforms(game.getPlatforms())
                 .availability(getAvailability(game.getMedium()))
-                .topic(game.getMedium().getTopic().getId());
+                .ageRestriction(game.getAgeRestriction())
+                .developer(game.getDeveloper())
+                .platforms(game.getPlatforms())
+                .publisher(game.getPublisher())
+                .releaseDate(game.getMedium().getReleaseDate())
+                .storageLocation(game.getMedium().getStorageLocation())
+                .title(game.getMedium().getTitle())
+                .topic(game.getMedium().getTopic().getId())
+                .mediumId(game.getMedium().getId());
 
             dtoList.add(builder.build());
         });
@@ -57,11 +62,16 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
 
         getAll().forEach(game -> {
             GameDto.GameDtoBuilder builder = new GameDto.GameDtoBuilder(game.getId())
-                .title(game.getMedium().getTitle())
-                .storageLocation(game.getMedium().getStorageLocation())
-                .platforms(game.getPlatforms())
                 .availability(getAvailability(game.getMedium()))
-                .topic(game.getMedium().getTopic().getId());
+                .ageRestriction(game.getAgeRestriction())
+                .developer(game.getDeveloper())
+                .platforms(game.getPlatforms())
+                .publisher(game.getPublisher())
+                .releaseDate(game.getMedium().getReleaseDate())
+                .storageLocation(game.getMedium().getStorageLocation())
+                .title(game.getMedium().getTitle())
+                .topic(game.getMedium().getTopic().getId())
+                .mediumId(game.getMedium().getId());
 
             gameDtos.add(builder.build());
         });
