@@ -28,6 +28,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
@@ -255,6 +256,24 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
             )
         );
+
+        this.tblResults.setRowFactory(row -> new TableRow<>() {
+            @Override
+            protected void updateItem(MediumCopyDto item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    if (getTableView().getSelectionModel().getSelectedItems().contains(item)) {
+                        setStyle("");
+                    } else if (item.isAvailable() == true) {
+                        setStyle("-fx-background-color: lightseagreen");
+                    } else if (item.isAvailable() == false) {
+                        setStyle("-fx-background-color: lightcoral");
+                    }
+                }
+            }
+        });
     }
 
     private void addMediaTypeEventHandlers() {
