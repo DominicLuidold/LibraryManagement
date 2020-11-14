@@ -14,6 +14,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -60,35 +61,17 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<GameDto> result = detailService.getGameDetail(gameDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No Game details found");
-        return null;
+        return cache.getGameDetail(gameDto.getId());
     }
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<BookDto> result = detailService.getBookDetail(bookDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No Book details found");
-        return null;
+        return cache.getBookDetail(bookDto.getId());
     }
 
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
-        // we're using Java8, so no .orElseThrow(), AND optional is not serializable, yay...
-        Optional<DvdDto> result = detailService.getDvdDetail(dvdDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("No DVD details found");
-        return null;
+        return cache.getDvdDetail(dvdDto.getId());
     }
 
     @Override
@@ -134,7 +117,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public ReservationDto reserveGame(ReservationDto reservationDto)
         throws RemoteException {
         ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateGameCache();
+        cache.invalidateGameCacheMedium(reservationDto.getMediumId());
         return result;
     }
 
@@ -143,7 +126,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         throws RemoteException {
         // same as above
         ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateBookCache();
+        cache.invalidateBookCacheMedium(reservationDto.getMediumId());
         return result;
     }
 
@@ -152,7 +135,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         throws RemoteException {
         // same as above
         ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateDvdCache();
+        cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
         return result;
     }
 
@@ -169,42 +152,42 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public LendingDto lendGame(LendingDto lendingDto) throws RemoteException {
         LendingDto result = this.lend(lendingDto);
-        cache.invalidateGameCache();
+        cache.invalidateGameCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
     }
 
     @Override
     public LendingDto lendBook(LendingDto lendingDto) throws RemoteException {
         LendingDto result = this.lend(lendingDto);
-        cache.invalidateBookCache();
+        cache.invalidateBookCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
     }
 
     @Override
     public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
         LendingDto result = this.lend(lendingDto);
-        cache.invalidateDvdCache();
+        cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
     }
 
     @Override
     public Boolean returnGame(MediumCopyDto copyDto) throws RemoteException {
         Boolean result = lendingService.returnLending(copyDto);
-        cache.invalidateGameCache();
+        cache.invalidateGameCacheMediumCopy(copyDto.getId());
         return result;
     }
 
     @Override
     public Boolean returnBook(MediumCopyDto copyDto) throws RemoteException {
         Boolean result = lendingService.returnLending(copyDto);
-        cache.invalidateBookCache();
+        cache.invalidateBookCacheMediumCopy(copyDto.getId());
         return result;
     }
 
     @Override
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
         Boolean result = lendingService.returnLending(copyDto);
-        cache.invalidateDvdCache();
+        cache.invalidateDvdCacheMediumCopy(copyDto.getId());
         return result;
     }
 
@@ -216,5 +199,26 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
         return cache.getAllUsers();
+    }
+
+    @Override
+    public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateBookCacheMediumCopy(mediumCopyDto.getId());
+        return result;
+    }
+
+    @Override
+    public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateDvdCacheMediumCopy(mediumCopyDto.getId());
+        return result;
+    }
+
+    @Override
+    public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        MessageDto result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 }
