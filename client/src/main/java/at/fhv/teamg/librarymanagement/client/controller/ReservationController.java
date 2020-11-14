@@ -263,7 +263,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentBook(BookDto dto) {
         this.currentBook = dto;
         this.type = MediumType.BOOK;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
             dto.getReleaseDate());
     }
 
@@ -275,7 +275,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentDvd(DvdDto dto) {
         this.currentDvd = dto;
         this.type = MediumType.DVD;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
             dto.getReleaseDate());
     }
 
@@ -287,7 +287,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentGame(GameDto dto) {
         this.currentGame = dto;
         this.type = MediumType.GAME;
-        setGenericParams(dto.getId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
+        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
             dto.getReleaseDate());
     }
 

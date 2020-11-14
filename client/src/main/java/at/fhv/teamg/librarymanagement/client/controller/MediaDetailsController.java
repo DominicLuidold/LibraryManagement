@@ -19,7 +19,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -487,16 +486,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 try {
                     List<ReservationDto> list =
                         RmiClient.getInstance().getAllBookReservations(this.currentBook);
-                    list.add(new ReservationDto.ReservationDtoBuilder(UUID.randomUUID())
-                        .userName("Testi")
-                        .mediumName("test")
-                        .startDate(LocalDate.now())
-                        .endDate(LocalDate.now()).build());
-
-                    this.tblReservations.setItems(FXCollections.observableList(
-                        list
-                        )
-                    );
+                    this.tblReservations.setItems(FXCollections.observableList(list));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
