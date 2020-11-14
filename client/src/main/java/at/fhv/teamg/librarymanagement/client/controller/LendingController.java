@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -11,6 +12,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,10 +22,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.TextFields;
 
 public class LendingController implements Initializable, Parentable<SearchController> {
     private static final Logger LOG = LogManager.getLogger(LendingController.class);
@@ -36,6 +40,9 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private DvdDto currentDvd;
     private GameDto currentGame;
     private UUID currentUuid;
+
+    private UserDropdown dropdown;
+    private List<UserDto> allUserList;
 
     @FXML
     private AnchorPane detailsPane;
@@ -129,6 +136,9 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private ComboBox<UserDto> userSelect;
 
     @FXML
+    private TextField txtUserSelect;
+
+    @FXML
     private Label confirm;
 
     @Override
@@ -136,8 +146,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
         this.resourceBundle = resources;
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
+        loadAdditionalData();
+        dropdown = new UserDropdown(allUserList);
+        TextFields.bindAutoCompletion(txtUserSelect, dropdown.getAllUserString());
 
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
+        /*StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
                 if (userDto == null) {
@@ -150,15 +163,15 @@ public class LendingController implements Initializable, Parentable<SearchContro
             public UserDto fromString(String user) {
                 return new UserDto.UserDtoBuilder().name(user).build();
             }
-        };
+        };*/
 
-        userSelect.setConverter(userConverter);
+        /*userSelect.setConverter(userConverter);
         try {
             userSelect
                 .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -168,7 +181,8 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 confirm.setText("select user first");
                 return;
             }
-            UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
+            //UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
+            UUID userId = dropdown.getUserID(txtUserSelect.getText().trim());
 
             LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
             builder.userId(userId)
@@ -212,6 +226,14 @@ public class LendingController implements Initializable, Parentable<SearchContro
             this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
+    }
+
+    private void loadAdditionalData() {
+        try {
+            this.allUserList = RmiClient.getInstance().getAllUsers();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
