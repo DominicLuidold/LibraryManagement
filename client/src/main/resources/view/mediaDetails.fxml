@@ -174,12 +174,7 @@
                                                             <PropertyValueFactory property="endDate" />
                                                         </cellValueFactory>
                                                     </TableColumn>
-                                                    <TableColumn fx:id="columnMediumId" prefWidth="120.0" text="Medium ID" >
-                                                        <cellValueFactory>
-                                                            <PropertyValueFactory property="mediumName" />
-                                                        </cellValueFactory>
-                                                    </TableColumn>
-                                                    <TableColumn fx:id="columnUserId" prefWidth="120.0" text="User ID" >
+                                                    <TableColumn fx:id="columnUserId" prefWidth="120.0" text="User" >
                                                         <cellValueFactory>
                                                             <PropertyValueFactory property="userName" />
                                                         </cellValueFactory>
