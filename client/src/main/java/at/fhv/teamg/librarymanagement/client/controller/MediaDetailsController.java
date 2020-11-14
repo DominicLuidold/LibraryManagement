@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
@@ -26,9 +27,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
@@ -171,6 +174,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Lend button has been pressed");
 
+                    if (!dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is not available",
+                            "Cannot lend a medium that is already lend to another customer"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
@@ -207,6 +220,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Book details button has been pressed");
 
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot extend a medium that is not lend"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
@@ -226,6 +249,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 "Return",
                 (MediumCopyDto dto) -> {
                     LOG.debug("Return button has been pressed");
+
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot return a medium that is not lend"
+                        );
+                        return dto;
+                    }
 
                     // change view
                     Parentable<?> controller =
@@ -256,6 +289,24 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
             )
         );
+
+        this.tblResults.setRowFactory(row -> new TableRow<>() {
+            @Override
+            protected void updateItem(MediumCopyDto item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    if (getTableView().getSelectionModel().getSelectedItems().contains(item)) {
+                        setStyle("");
+                    } else if (item.isAvailable() == true) {
+                        setStyle("-fx-background-color: lightseagreen");
+                    } else if (item.isAvailable() == false) {
+                        setStyle("-fx-background-color: lightcoral");
+                    }
+                }
+            }
+        });
     }
 
     private void addMediaTypeEventHandlers() {
