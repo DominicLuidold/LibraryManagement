@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
@@ -25,6 +26,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -171,6 +173,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Lend button has been pressed");
 
+                    if (!dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is not available",
+                            "Cannot lend a medium that is already lend to another customer"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
@@ -207,6 +219,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Book details button has been pressed");
 
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot extend a medium that is not lend"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
@@ -226,6 +248,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 "Return",
                 (MediumCopyDto dto) -> {
                     LOG.debug("Return button has been pressed");
+
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot return a medium that is not lend"
+                        );
+                        return dto;
+                    }
 
                     // change view
                     Parentable<?> controller =
