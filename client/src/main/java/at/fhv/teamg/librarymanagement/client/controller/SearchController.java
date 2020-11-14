@@ -14,7 +14,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import com.jfoenix.controls.JFXDatePicker;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -122,26 +121,10 @@ public class SearchController implements Initializable, Parentable<TabPaneContro
         task.setOnSucceeded(event -> {
             System.out.println("Loaded all Topics");
             List<TopicDto> result = task.getValue();
-            if (result == null) {
-                System.err.println("No Topics found. Server Team messed up.");
-                result = new ArrayList<>();
-                // TODO: remove this once server team has implemented that
-                result.add(new TopicDto.TopicDtoBuilder()
-                    .id(UUID.randomUUID())
-                    .name("Topic1")
-                    .build());
-                result.add(new TopicDto.TopicDtoBuilder()
-                    .id(UUID.randomUUID())
-                    .name("Topic2")
-                    .build());
-                result.add(new TopicDto.TopicDtoBuilder()
-                    .id(UUID.randomUUID())
-                    .name("Topic3")
-                    .build());
-            }
-            for (TopicDto topic : result) {
-                System.out.println(topic.toString());
-            }
+
+            // Required for de-selecting/removing the topic search parameter
+            result.add(0, new TopicDto.TopicDtoBuilder().name("").build());
+
             this.txtBookTopic.setItems(FXCollections.observableList(result));
             this.txtGameTopic.setItems(FXCollections.observableList(result));
             this.txtDvdTopic.setItems(FXCollections.observableList(result));
