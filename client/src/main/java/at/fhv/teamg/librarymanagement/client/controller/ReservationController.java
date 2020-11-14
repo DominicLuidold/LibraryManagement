@@ -3,6 +3,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -35,10 +37,11 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private ResourceBundle resourceBundle;
 
     private List<UserDto> allUserList;
-    private ArrayList<String> allUsers = new ArrayList<>();
+    private UserDropdown dropdown;
+    //private ArrayList<String> allUsers = new ArrayList<>();
 
     //map approach
-    //private HashMap<UUID, String> usersMap = new HashMap<>();
+    private HashMap<UUID, UserDto> usersMap = new HashMap<UUID, UserDto>();
 
     private BookDto currentBook = null;
     private DvdDto currentDvd = null;
@@ -150,10 +153,11 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
         loadAdditionalData();
-
-        this.createUsersString(allUserList);
-
-        TextFields.bindAutoCompletion(txtUser, allUsers);
+        dropdown = new UserDropdown(allUserList);
+        //this.createUsersString(allUserList);
+        //fillMap(allUserList);
+        TextFields.bindAutoCompletion(txtUser, dropdown.getAllUserString());
+        //TextFields.bindAutoCompletion(txtUser, allUsers);
         LOG.debug("Initialized ReservationController");
     }
 
@@ -161,21 +165,24 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     /*private void fillMap(List<UserDto> users) {
         usersMap.clear();
         for (UserDto dto : users) {
-            usersMap.put(dto.getId(), dto.getName());
+            usersMap.put(dto.getId(), dto);
         }
     }*/
 
-    private void createUsersString(List<UserDto> usersList) {
+    /*private void createUsersString(List<UserDto> usersList) {
         allUsers = new ArrayList<>();
+        *//*for (HashMap.Entry<UUID, UserDto> entry: usersMap.entrySet()){
+            allUsers.add(entry)
+        }*//*
         for (UserDto user : usersList) {
             allUsers.add(String.format("%s (%s)", user.getName(), user.getUsername()));
         }
-    }
+    }*/
 
     private void addMediaTypeEventHandlers() {
         this.btnOK.setOnAction(e -> {
-            if (getUserName().length() != 0) {
-                userUuidToReserve = getUserID(getUserName());
+            if (txtUser.getText().trim().length() != 0) {
+                userUuidToReserve = dropdown.getUserID(txtUser.getText().trim());
 
                 ReservationDto.ReservationDtoBuilder dtoBuilder =
                     new ReservationDto.ReservationDtoBuilder();
@@ -242,18 +249,18 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         return null;
     }*/
 
-    private String getUserName() {
+    /*private String getUserName() {
         return this.txtUser.getText().trim();
-    }
+    }*/
 
-    private UUID getUserID(String userName) {
+    /*private UUID getUserID(String userName) {
         for (UserDto user : allUserList) {
             if ((user.getName() + " (" + user.getUsername() + ")").equals(userName)) {
                 return user.getId();
             }
         }
         return null;
-    }
+    }*/
 
     /**
      * function to set the current book.
