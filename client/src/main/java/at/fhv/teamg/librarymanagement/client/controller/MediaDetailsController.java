@@ -17,6 +17,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -382,13 +383,19 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private void bindGenericProperties(
         String title,
         String storageLocation,
-        String topic,
-        String releaseDate
+        UUID topicId,
+        LocalDate releaseDate
     ) {
         this.txtTitle.textProperty().bind(new SimpleStringProperty(title));
         this.txtLocation.textProperty().bind(new SimpleStringProperty(storageLocation));
-        this.txtTopic.textProperty().bind(new SimpleStringProperty(topic));
-        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
+        this.txtTopic.textProperty().bind(new SimpleStringProperty(
+            this.topics.stream()
+                .filter(top -> topicId.equals(top.getId()))
+                .findAny().orElse(null).getName()
+        ));
+        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(
+            releaseDate != null ? releaseDate.toString() : ""
+        ));
     }
 
     private void bindBookProperties(
@@ -448,11 +455,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentBook.getTitle(),
                 this.currentBook.getStorageLocation(),
-                this.topics.stream().filter(top -> this.currentBook.getTopic().equals(top.getId()))
-                    .findAny().orElse(null).getName(),
-                this.currentBook.getReleaseDate() != null
-                    ? this.currentBook.getReleaseDate().toString()
-                    : ""
+                this.currentBook.getTopic(),
+                this.currentBook.getReleaseDate()
             );
 
             this.bindBookProperties(
@@ -512,10 +516,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentDvd.getTitle(),
                 this.currentDvd.getStorageLocation(),
-                this.currentDvd.getTopic().toString(),
-                this.currentDvd.getReleaseDate() != null
-                    ? this.currentDvd.getReleaseDate().toString()
-                    : ""
+                this.currentDvd.getTopic(),
+                this.currentDvd.getReleaseDate()
             );
 
             this.bindDvdProperties(
@@ -562,10 +564,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentGame.getTitle(),
                 this.currentGame.getStorageLocation(),
-                this.currentGame.getTopic().toString(),
-                this.currentGame.getReleaseDate() != null
-                    ? this.currentGame.getReleaseDate().toString()
-                    : ""
+                this.currentGame.getTopic(),
+                this.currentGame.getReleaseDate()
             );
 
             this.bindGameProperties(
