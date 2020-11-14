@@ -1,10 +1,7 @@
 package at.fhv.teamg.librarymanagement.server;
 
-import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
-import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
