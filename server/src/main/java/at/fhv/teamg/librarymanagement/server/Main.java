@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server;
 
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Main {
      * @param args A string array that will most-likely be empty for ad infinitum
      */
     public static void main(String[] args) {
+        Cache.getInstance();
         LOG.info("Project initialized successfully");
         // Testing
         //Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();

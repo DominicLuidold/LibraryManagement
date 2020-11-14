@@ -64,26 +64,13 @@ jacocoTestReport {
         classDirectories.from = files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                     '**/persistance/*',
+                    '**/rmi/*',
+                    '**/server/*Main*',
             ])
         })
     }
 }
 build.dependsOn jacocoTestReport
-
-// Uncomment when ready
-
-/*
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.8
-            }
-        }
-    }
-}
-check.dependsOn jacocoTestCoverageVerification
-*/
 
 /* ShadowJar configuration */
 shadowJar {

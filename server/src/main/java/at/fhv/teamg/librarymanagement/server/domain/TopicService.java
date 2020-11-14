@@ -6,7 +6,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class TopicService extends BaseMediaService {
     /**

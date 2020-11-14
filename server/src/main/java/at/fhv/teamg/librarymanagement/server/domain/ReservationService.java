@@ -6,6 +6,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
@@ -104,6 +105,12 @@ public class ReservationService extends BaseMediaService {
         Optional<Medium> medium = findMediumById(reservationDto.getMediumId());
         if (!medium.isPresent()) {
             return Optional.empty();
+        }
+
+        for (MediumCopy mediumCopy : medium.get().getCopies()) {
+            if (mediumCopy.isAvailable()) {
+                return Optional.empty();
+            }
         }
 
         Optional<User> user = findUserById(reservationDto.getUserId());

@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -392,6 +391,45 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
     }
 
+    private void bindBookProperties(
+        String author,
+        String isbn10,
+        String isbn13,
+        String publisher,
+        String language
+    ) {
+        this.txtBookAuthor.textProperty().bind(new SimpleStringProperty(author));
+        this.txtBookIsbn10.textProperty().bind(new SimpleStringProperty(isbn10));
+        this.txtBookIsbn13.textProperty().bind(new SimpleStringProperty(isbn13));
+        this.txtBookPublisher.textProperty().bind(new SimpleStringProperty(publisher));
+        this.txtBookLanguage.textProperty().bind(new SimpleStringProperty(language));
+    }
+
+    private void bindDvdProperties(
+        String director,
+        String duration,
+        String actors,
+        String studio,
+        String ageRestriction
+    ) {
+        this.txtDvdDirector.textProperty().bind(new SimpleStringProperty(director));
+        this.txtDvdDuration.textProperty().bind(new SimpleStringProperty(duration));
+        this.txtDvdActors.textProperty().bind(new SimpleStringProperty(actors));
+        this.txtDvdStudio.textProperty().bind(new SimpleStringProperty(studio));
+        this.txtDvdAgeRestriction.textProperty().bind(new SimpleStringProperty(ageRestriction));
+    }
+
+    private void bindGameProperties(
+        String publisher,
+        String developer,
+        String ageRestriction,
+        String platforms
+    ) {
+        this.txtGamePublisher.textProperty().bind(new SimpleStringProperty(publisher));
+        this.txtGameDeveloper.textProperty().bind(new SimpleStringProperty(developer));
+        this.txtGameAgeRestriction.textProperty().bind(new SimpleStringProperty(ageRestriction));
+        this.txtGamePlatforms.textProperty().bind(new SimpleStringProperty(platforms));
+    }
 
     private void loadCurrentBook() {
         this.currentMediumType = MediumType.BOOK;
@@ -417,6 +455,14 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     : ""
             );
 
+            this.bindBookProperties(
+                this.currentBook.getAuthor(),
+                this.currentBook.getIsbn10(),
+                this.currentBook.getIsbn13(),
+                this.currentBook.getPublisher(),
+                this.currentBook.getLanguageKey()
+            );
+
             BookMediumCopyTask task2 = new BookMediumCopyTask(
                 new BookDto.BookDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
@@ -424,6 +470,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
@@ -432,6 +479,18 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         });
         thread.start();
 
+    }
+
+    private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
+        boolean isAvailable = true;
+        for (MediumCopyDto dto : copies) {
+            // if a copy is available, disable button
+            if (dto.getLendTill() == null) {
+                isAvailable = false;
+                break;
+            }
+        }
+        this.btnReserve.setVisible(isAvailable);
     }
 
     public DvdDto getCurrentDvd() {
@@ -458,6 +517,15 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     ? this.currentDvd.getReleaseDate().toString()
                     : ""
             );
+
+            this.bindDvdProperties(
+                this.currentDvd.getDirector(),
+                this.currentDvd.getDurationMinutes(),
+                this.currentDvd.getActors(),
+                this.currentDvd.getStudio(),
+                this.currentDvd.getAgeRestriction()
+            );
+
             DvdMediumCopyTask task2 = new DvdMediumCopyTask(
                 new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
@@ -465,6 +533,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
@@ -499,6 +568,13 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     : ""
             );
 
+            this.bindGameProperties(
+                this.currentGame.getPublisher(),
+                this.currentGame.getDeveloper(),
+                this.currentGame.getAgeRestriction(),
+                this.currentGame.getPlatforms()
+            );
+
             GameMediumCopyTask task2 = new GameMediumCopyTask(
                 new GameDto.GameDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
@@ -506,6 +582,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }

@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -12,14 +13,11 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RmiClient implements LibraryInterface {
-
     private static final Logger LOG = LogManager.getLogger(RmiClient.class);
     private static RmiClient instance;
     private LibraryInterface library;
@@ -27,10 +25,10 @@ public class RmiClient implements LibraryInterface {
     /**
      * Singleton Client for RMI.
      */
-    public   RmiClient() {
+    private RmiClient() {
         try {
             LibraryFactoryInterface libraryFactory =
-                    (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
+                (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
             library = libraryFactory.getLibrary();
         } catch (Exception e) {
             LOG.error(e);
@@ -112,19 +110,19 @@ public class RmiClient implements LibraryInterface {
 
     @Override
     public ReservationDto reserveGame(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveGame(reservationDto);
     }
 
     @Override
     public ReservationDto reserveBook(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveBook(reservationDto);
     }
 
     @Override
     public ReservationDto reserveDvd(ReservationDto reservationDto)
-            throws RemoteException {
+        throws RemoteException {
         return library.reserveDvd(reservationDto);
     }
 
@@ -166,5 +164,20 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
         return library.getAllUsers();
+    }
+
+    @Override
+    public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendBook(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendDvd(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.extendGame(mediumCopyDto);
     }
 }
