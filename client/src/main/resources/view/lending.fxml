@@ -19,7 +19,7 @@
 <?import org.controlsfx.control.ListSelectionView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.MenuButton?>
-<AnchorPane fx:id="detailsPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane fx:id="lendingPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhv.teamg.librarymanagement.client.controller.LendingController">
     <children>
         <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"

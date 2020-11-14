@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
@@ -19,6 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -45,7 +47,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private List<UserDto> allUserList;
 
     @FXML
-    private AnchorPane detailsPane;
+    private AnchorPane lendingPane;
 
     // Generic
     @FXML
@@ -178,7 +180,9 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
             if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                confirm.setText("select user first");
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+                    this.lendingPane.getScene().getWindow(), "NoUserSelected",
+                    "Please select a user first.");
                 return;
             }
             //UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
@@ -214,7 +218,10 @@ public class LendingController implements Initializable, Parentable<SearchContro
             }
 
             if (confirmedLending != null) {
-                confirm.setText("Lending confirmed");
+                AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+                    this.lendingPane.getScene().getWindow(), "Lending",
+                    "Lending successful.");
+                return;
             } else {
                 confirm.setText("Something went wrong");
             }
