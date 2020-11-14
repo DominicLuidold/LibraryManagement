@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -134,6 +135,10 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private Label lblGamePlatforms;
     @FXML
     private Label lblGamePlatformsContent;
+    @FXML
+    private Label lblGamePublisher;
+    @FXML
+    private Label lblGamePublisherContent;
 
     //Functional
     @FXML
@@ -263,8 +268,21 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentBook(BookDto dto) {
         this.currentBook = dto;
         this.type = MediumType.BOOK;
-        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
-            dto.getReleaseDate());
+        enableLabelsForMediumType(this.type);
+        setGenericParams(
+            dto.getMediumId(),
+            dto.getTitle(),
+            dto.getStorageLocation(),
+            dto.getTopic(),
+            dto.getReleaseDate()
+        );
+        bindBookProperties(
+            dto.getAuthor(),
+            dto.getIsbn10(),
+            dto.getIsbn13(),
+            dto.getPublisher(),
+            dto.getLanguageKey()
+        );
     }
 
     /**
@@ -275,8 +293,21 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentDvd(DvdDto dto) {
         this.currentDvd = dto;
         this.type = MediumType.DVD;
-        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
-            dto.getReleaseDate());
+        enableLabelsForMediumType(this.type);
+        setGenericParams(
+            dto.getMediumId(),
+            dto.getTitle(),
+            dto.getStorageLocation(),
+            dto.getTopic(),
+            dto.getReleaseDate()
+        );
+        bindDvdProperties(
+            dto.getDirector(),
+            dto.getDurationMinutes(),
+            dto.getActors(),
+            dto.getStudio(),
+            dto.getAgeRestriction()
+        );
     }
 
     /**
@@ -287,8 +318,20 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     public void setCurrentGame(GameDto dto) {
         this.currentGame = dto;
         this.type = MediumType.GAME;
-        setGenericParams(dto.getMediumId(), dto.getTitle(), dto.getStorageLocation(), dto.getTopic(),
-            dto.getReleaseDate());
+        enableLabelsForMediumType(this.type);
+        setGenericParams(
+            dto.getMediumId(),
+            dto.getTitle(),
+            dto.getStorageLocation(),
+            dto.getTopic(),
+            dto.getReleaseDate()
+        );
+        bindGameProperties(
+            dto.getPublisher(),
+            dto.getDeveloper(),
+            dto.getAgeRestriction(),
+            dto.getPlatforms()
+        );
     }
 
     private void setGenericParams(UUID uuid, String title, String loc, UUID topicUuid,
@@ -366,6 +409,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.lblGamePlatformsContent.setVisible(visible);
         this.lblGameAgeRestriction.setVisible(visible);
         this.lblGameAgeRestrictionContent.setVisible(visible);
+        this.lblGamePublisher.setVisible(visible);
+        this.lblGamePublisherContent.setVisible(visible);
     }
 
     private void loadAdditionalData() {
@@ -375,6 +420,50 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private void bindBookProperties(
+        String author,
+        String isbn10,
+        String isbn13,
+        String publisher,
+        String language
+    ) {
+        this.lblBookAuthorContent.textProperty().bind(new SimpleStringProperty(author));
+        this.lblBookIsbn10Content.textProperty().bind(new SimpleStringProperty(isbn10));
+        this.lblBookIsbn13Content.textProperty().bind(new SimpleStringProperty(isbn13));
+        this.lblBookPublisherContent.textProperty().bind(new SimpleStringProperty(publisher));
+        this.lblBookLanguageContent.textProperty().bind(new SimpleStringProperty(language));
+    }
+
+    private void bindDvdProperties(
+        String director,
+        String duration,
+        String actors,
+        String studio,
+        String ageRestriction
+    ) {
+        this.lblDvdDirectorContent.textProperty().bind(new SimpleStringProperty(director));
+        this.lblDvdDurationContent.textProperty().bind(new SimpleStringProperty(duration));
+        this.lblDvdActorsContent.textProperty().bind(new SimpleStringProperty(actors));
+        this.lblDvdStudioContent.textProperty().bind(new SimpleStringProperty(studio));
+        this.lblDvdAgeRestrictionContent.textProperty().bind(new SimpleStringProperty(
+            ageRestriction)
+        );
+    }
+
+    private void bindGameProperties(
+        String publisher,
+        String developer,
+        String ageRestriction,
+        String platforms
+    ) {
+        this.lblGamePublisherContent.textProperty().bind(new SimpleStringProperty(publisher));
+        this.lblGameDeveloperContent.textProperty().bind(new SimpleStringProperty(developer));
+        this.lblGameAgeRestrictionContent.textProperty().bind(new SimpleStringProperty(
+            ageRestriction)
+        );
+        this.lblGamePlatformsContent.textProperty().bind(new SimpleStringProperty(platforms));
     }
 
     public String getMediumTitle() {

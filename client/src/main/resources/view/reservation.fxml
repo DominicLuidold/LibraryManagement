@@ -94,6 +94,9 @@
                                         <Label fx:id="lblGamePlatforms" visible="false" text="Platforms:" GridPane.rowIndex="3"/>
                                         <Label fx:id="lblGamePlatformsContent" visible="false" text="${controller.currentGame.platforms}" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
 
+                                        <Label fx:id="lblGamePublisher" visible="false" text="Publisher:" GridPane.rowIndex="7"/>
+                                        <Label fx:id="lblGamePublisherContent" visible="false" text="${controller.currentGame.publisher}" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="1"/>
+
                                     </children>
                                 </GridPane>
                             </children>
