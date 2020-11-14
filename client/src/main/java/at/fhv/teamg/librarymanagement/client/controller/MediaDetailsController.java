@@ -484,9 +484,10 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
                 // Get Reservations
                 try {
-                    List<ReservationDto> list =
-                        RmiClient.getInstance().getAllBookReservations(this.currentBook);
-                    this.tblReservations.setItems(FXCollections.observableList(list));
+                    this.tblReservations.setItems(FXCollections.observableList(
+                        RmiClient.getInstance().getAllBookReservations(this.currentBook)
+                        )
+                    );
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
