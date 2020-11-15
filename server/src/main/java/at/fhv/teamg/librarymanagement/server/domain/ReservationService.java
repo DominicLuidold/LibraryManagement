@@ -86,8 +86,10 @@ public class ReservationService extends BaseMediaService {
 
             builder.endDate(reservation.getEndDate())
                 .mediumId(medium.getId())
+                .mediumName(medium.getTitle())
                 .startDate(reservation.getStartDate())
-                .userId(reservation.getUser().getId());
+                .userId(reservation.getUser().getId())
+                .userName(reservation.getUser().getName());
 
             reservations.add(builder.build());
         });

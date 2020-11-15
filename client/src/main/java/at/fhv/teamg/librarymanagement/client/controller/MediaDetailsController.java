@@ -15,7 +15,9 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
@@ -147,10 +149,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private TableColumn<MediumCopyDto, Button> columnExtend;
     @FXML
     private TableColumn<MediumCopyDto, Button> columnReturn;
-    @FXML // TODO use generics
+    @FXML
+    private TableColumn<UserDto, Button> columnUserId;
+    @FXML
     private TableView<MediumCopyDto> tblResults;
+    @FXML
+    private TableView<ReservationDto> tblReservations;
 
     private List<TopicDto> topics = new LinkedList<>();
+
+    private List<ReservationDto> reservations = new LinkedList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -529,6 +537,15 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
+                // Get Reservations
+                try {
+                    this.tblReservations.setItems(FXCollections.observableList(
+                        RmiClient.getInstance().getAllBookReservations(this.currentBook)
+                        )
+                    );
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             });
             thread2.start();
         });
@@ -590,6 +607,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
+
+                // Get Reservations
+                try {
+                    this.tblReservations.setItems(FXCollections.observableList(
+                        RmiClient.getInstance().getAllDvdReservations(this.currentDvd)
+                        )
+                    );
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             });
             thread2.start();
         });
@@ -636,6 +663,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
+                }
+
+                // Get Reservations
+                try {
+                    this.tblReservations.setItems(FXCollections.observableList(
+                        RmiClient.getInstance().getAllGameReservations(this.currentGame)
+                        )
+                    );
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             });
             thread2.start();
