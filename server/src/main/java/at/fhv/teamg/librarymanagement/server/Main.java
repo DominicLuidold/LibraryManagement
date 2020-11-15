@@ -18,10 +18,9 @@ public class Main {
      */
     public static void main(String[] args) {
         Cache.getInstance();
-        LOG.info("Project initialized successfully");
         // Testing
         //Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();
         RmiServer rmiServer = new RmiServer();
-
+        LOG.info("Project initialized successfully");
     }
 }

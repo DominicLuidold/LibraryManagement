@@ -16,6 +16,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import org.controlsfx.control.SegmentedButton?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <AnchorPane fx:id="detailsPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhv.teamg.librarymanagement.client.controller.MediaDetailsController">
     <children>
@@ -113,30 +115,75 @@
                                 </GridPane>
                             </children>
                         </AnchorPane>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                        <AnchorPane>
                             <children>
-                                <TableView fx:id="tblResults" visible="true" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0"
-                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <columns>
-                                        <TableColumn fx:id="columnCopyId" prefWidth="200.0" text="Copy ID" >
-                                            <cellValueFactory>
-                                                <PropertyValueFactory property="id" />
-                                            </cellValueFactory>
-                                        </TableColumn>
-                                        <TableColumn fx:id="columnLendTill" prefWidth="110.0" text="Lend Till" >
-                                            <cellValueFactory>
-                                                <PropertyValueFactory property="lendTill" />
-                                            </cellValueFactory>
-                                        </TableColumn>
-                                        <TableColumn fx:id="columnLend" prefWidth="120.0" text="Lend" >
-                                        </TableColumn>
-                                        <TableColumn fx:id="columnExtend" prefWidth="120.0" text="Extend" >
-                                        </TableColumn>
-                                        <TableColumn fx:id="columnReturn" prefWidth="100" text="Return">
-                                        </TableColumn>
-                                    </columns>
-                                </TableView>
+                                <SplitPane  dividerPositions="0.5" orientation="VERTICAL" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
+                                    <padding>
+                                        <Insets top="5" right="5" bottom="5" left="5" />
+                                    </padding>
+                                    <VBox fillWidth="true">
+                                        <children>
+                                            <Label text="Medium copies">
+                                                <font>
+                                                    <Font size="18" />
+                                                </font>
+                                            </Label>
+                                            <TableView fx:id="tblResults" visible="true" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0">
+                                                <columns>
+                                                    <TableColumn fx:id="columnCopyId" prefWidth="200.0" text="Copy ID" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="id" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnLendTill" prefWidth="110.0" text="Lend Till" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="lendTill" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnLend" prefWidth="120.0" text="Lend" >
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnExtend" prefWidth="120.0" text="Extend" >
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnReturn" prefWidth="100" text="Return">
+                                                    </TableColumn>
+                                                </columns>
+                                            </TableView>
+                                        </children>
+                                    </VBox>
+                                    <VBox fillWidth="true">
+                                        <children>
+                                            <Label text="Reservations">
+                                                <font>
+                                                    <Font size="18" />
+                                                </font>
+                                            </Label>
+                                            <TableView fx:id="tblReservations" visible="true" layoutX="62.0" layoutY="77.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0">
+                                                <columns>
+                                                    <TableColumn fx:id="columnReservationId" prefWidth="200.0" text="Reservation ID" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="id" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnStartDate" prefWidth="110.0" text="Start Date" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="startDate" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnEndDate" prefWidth="110.0" text="End Date" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="endDate" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnUserId" prefWidth="120.0" text="User" >
+                                                        <cellValueFactory>
+                                                            <PropertyValueFactory property="userName" />
+                                                        </cellValueFactory>
+                                                    </TableColumn>
+                                                </columns>
+                                            </TableView>
+                                        </children>
+                                    </VBox>
+                                </SplitPane>
                             </children>
                         </AnchorPane>
                     </items>

@@ -7,10 +7,13 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
@@ -131,11 +134,20 @@ public class LendingController implements Initializable, Parentable<SearchContro
     @FXML
     private Label confirm;
 
+    private List<TopicDto> topics = new LinkedList<>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
+
+        // Get all topics
+        try {
+            this.topics = RmiClient.getInstance().getAllTopics();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
@@ -222,6 +234,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(BookDto bookDto) {
         currentMediumType = MediumType.BOOK;
         this.enableFieldsForMediumType(MediumType.BOOK);
+        this.bindGenericProperties(
+            bookDto.getTitle(),
+            bookDto.getStorageLocation(),
+            bookDto.getTopic(),
+            bookDto.getReleaseDate()
+        );
         currentBook = bookDto;
     }
 
@@ -233,6 +251,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(GameDto gameDto) {
         currentMediumType = MediumType.GAME;
         this.enableFieldsForMediumType(MediumType.GAME);
+        this.bindGenericProperties(
+            gameDto.getTitle(),
+            gameDto.getStorageLocation(),
+            gameDto.getTopic(),
+            gameDto.getReleaseDate()
+        );
         currentGame = gameDto;
     }
 
@@ -244,11 +268,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(DvdDto dvdDto) {
         currentMediumType = MediumType.DVD;
         this.enableFieldsForMediumType(MediumType.DVD);
-        System.out.println("###########");
-        System.out.println(dvdDto.getStorageLocation());
-        System.out.println(dvdDto.getTitle());
-        System.out.println(dvdDto.getDirector());
-        System.out.println("###########");
+        this.bindGenericProperties(
+            dvdDto.getTitle(),
+            dvdDto.getStorageLocation(),
+            dvdDto.getTopic(),
+            dvdDto.getReleaseDate()
+        );
         currentDvd = dvdDto;
     }
 
@@ -315,20 +340,24 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private void bindGenericProperties(
         String title,
         String storageLocation,
-        String topic,
-        String releaseDate
+        UUID topicId,
+        LocalDate releaseDate
     ) {
         this.txtTitle.textProperty().bind(new SimpleStringProperty(title));
         this.txtLocation.textProperty().bind(new SimpleStringProperty(storageLocation));
-        this.txtTopic.textProperty().bind(new SimpleStringProperty(topic));
-        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
+        this.txtTopic.textProperty().bind(new SimpleStringProperty(
+            this.topics.stream()
+                .filter(top -> topicId.equals(top.getId()))
+                .findAny().orElse(null).getName()
+        ));
+        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(
+            releaseDate != null ? releaseDate.toString() : ""
+        ));
     }
-
 
     public DvdDto getCurrentDvd() {
         return currentDvd;
     }
-
 
     public GameDto getCurrentGame() {
         return currentGame;
