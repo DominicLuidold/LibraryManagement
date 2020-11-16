@@ -1,6 +1,10 @@
 package at.fhv.teamg.librarymanagement.server;
 
+import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,12 +17,11 @@ public class Main {
      * @param args A string array that will most-likely be empty for ad infinitum
      */
     public static void main(String[] args) {
-        //Cache.getInstance();
-        LOG.info("Project initialized successfully");
+        Cache.getInstance();
         // Testing
         //Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();
         RmiServer rmiServer = new RmiServer();
-
+        LOG.info("Project initialized successfully");
         /* Test Userlogin
         LoginDto login = new LoginDto.LoginDtoBuilder()
             .username("tmo1465@students.fhv.at")
