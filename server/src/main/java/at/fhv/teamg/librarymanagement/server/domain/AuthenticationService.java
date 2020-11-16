@@ -29,7 +29,6 @@ public class AuthenticationService {
             .username(loginUser.getUsername())
             .isValid(isValid)
             .build();
-
         return loggedInUser;
     }
 }

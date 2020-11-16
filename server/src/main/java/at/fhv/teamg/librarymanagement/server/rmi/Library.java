@@ -19,6 +19,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -239,6 +240,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
         LoginDto loginDto1 = new LoginDto.LoginDtoBuilder()
             .isValid(true)
+            .userRoleName(UserRoleName.Librarian)
             .build();
         return loginDto1;
     }
