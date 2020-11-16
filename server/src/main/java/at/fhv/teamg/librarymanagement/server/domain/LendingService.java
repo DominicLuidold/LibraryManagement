@@ -6,6 +6,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
@@ -26,7 +27,7 @@ public class LendingService extends BaseMediaService {
      */
     public Optional<LendingDto> createLending(LendingDto lendingDto) {
         Optional<MediumCopy> mediumCopy = findMediumCopyById(lendingDto.getMediumCopyId());
-        if (!mediumCopy.isPresent()) {
+        if (mediumCopy.isEmpty()) {
             return Optional.empty();
         }
 
@@ -35,7 +36,7 @@ public class LendingService extends BaseMediaService {
         }
 
         Optional<User> user = findUserById(lendingDto.getUserId());
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             return Optional.empty();
         }
 
@@ -48,7 +49,7 @@ public class LendingService extends BaseMediaService {
         lending.setUser(user.get());
         lending.setRenewalCount(lendingDto.getRenewalCount());
 
-        if (!updateLending(lending).isPresent()) {
+        if (updateLending(lending).isEmpty()) {
             return Optional.empty();
         }
 
@@ -78,7 +79,7 @@ public class LendingService extends BaseMediaService {
         // TODO
         //  - use code from this::extendLending() once interface changes to avoid code duplication
         Optional<MediumCopy> mediumCopyOptional = findMediumCopyById(mediumCopyDto.getId());
-        if (!mediumCopyOptional.isPresent()) {
+        if (mediumCopyOptional.isEmpty()) {
             return false;
         }
 
@@ -88,18 +89,18 @@ public class LendingService extends BaseMediaService {
         }
 
         Optional<Lending> lendingOptional = getCurrentLending(mediumCopy.getLending());
-        if (!lendingOptional.isPresent()) {
+        if (lendingOptional.isEmpty()) {
             return false;
         }
 
         Lending lending = lendingOptional.get();
         lending.setReturnDate(LocalDate.now());
-        if (!updateLending(lending).isPresent()) {
+        if (updateLending(lending).isEmpty()) {
             return false;
         }
 
         mediumCopy.setAvailable(true);
-        if (!updateMediumCopy(mediumCopy).isPresent()) {
+        if (updateMediumCopy(mediumCopy).isEmpty()) {
             return false;
         }
 
@@ -113,9 +114,9 @@ public class LendingService extends BaseMediaService {
      * @param mediumCopyDto The medium copy to extend the lend for
      * @return {@link MessageDto} containing the status of the operation and a message
      */
-    public MessageDto extendLending(MediumCopyDto mediumCopyDto) {
+    public MessageDto<EmptyDto> extendLending(MediumCopyDto mediumCopyDto) {
         Optional<MediumCopy> mediumCopyOptional = findMediumCopyById(mediumCopyDto.getId());
-        if (!mediumCopyOptional.isPresent()) {
+        if (mediumCopyOptional.isEmpty()) {
             return Utils.createMessageResponse(
                 "Could not find specified medium copy",
                 MessageDto.MessageType.FAILURE
@@ -138,7 +139,7 @@ public class LendingService extends BaseMediaService {
         }
 
         Optional<Lending> lendingOptional = getCurrentLending(mediumCopy.getLending());
-        if (!lendingOptional.isPresent()) {
+        if (lendingOptional.isEmpty()) {
             return Utils.createMessageResponse(
                 "Cannot find current lending to extend",
                 MessageDto.MessageType.ERROR
@@ -155,7 +156,7 @@ public class LendingService extends BaseMediaService {
 
         lending.setRenewalCount(lending.getRenewalCount() + 1);
         lending.setEndDate(lending.getEndDate().plusDays(EXTENDING_DURATION_IN_DAYS));
-        if (!updateLending(lending).isPresent()) {
+        if (updateLending(lending).isEmpty()) {
             return Utils.createMessageResponse(
                 "Updating lending information has failed",
                 MessageDto.MessageType.ERROR

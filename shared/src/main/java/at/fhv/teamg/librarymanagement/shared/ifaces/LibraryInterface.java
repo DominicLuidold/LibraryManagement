@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.shared.ifaces;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
@@ -60,9 +61,9 @@ public interface LibraryInterface extends Remote {
 
     List<UserDto> getAllUsers() throws RemoteException;
 
-    MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException;
+    MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException;
 
-    MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
+    MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
 
-    MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException;
+    MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException;
 }

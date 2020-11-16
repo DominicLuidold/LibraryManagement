@@ -1,9 +1,10 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class TopicDto implements Serializable {
+public class TopicDto implements Dto, Serializable {
     private static final long serialVersionUID = -1609930578380138693L;
     private final UUID id;
     private final String name;

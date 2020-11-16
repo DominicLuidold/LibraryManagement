@@ -7,6 +7,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 
 /**
  * A class containing common functionalities that can be used without any specific context.
@@ -20,8 +21,11 @@ public class Utils {
      * @param type    The type of response
      * @return A MessageDto
      */
-    public static MessageDto createMessageResponse(String message, MessageDto.MessageType type) {
-        return new MessageDto.MessageDtoBuilder()
+    public static <T extends Dto> MessageDto<T> createMessageResponse(
+        String message,
+        MessageDto.MessageType type
+    ) {
+        return new MessageDto.MessageDtoBuilder<T>()
             .withMessage(message)
             .withType(type)
             .build();
