@@ -163,6 +163,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
             e.printStackTrace();
         }
 
+        /*
         StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
