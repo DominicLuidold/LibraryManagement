@@ -9,10 +9,10 @@
         <Logger name="at.fhv.teamg.librarymanagement" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
+        <Logger name="org.hibernate" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.hibernate" level="ERROR">
+        <Logger name="com.mchange.v2.c3p0" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="debug">
