@@ -27,8 +27,9 @@ public class RmiClient implements LibraryInterface {
      */
     private RmiClient() {
         try {
-            LibraryFactoryInterface libraryFactory =
-                (LibraryFactoryInterface) Naming.lookup("rmi://localhost:9988/libraryfactory");
+            LibraryFactoryInterface libraryFactory = (LibraryFactoryInterface) Naming.lookup(
+                "rmi://vsts-team007.westeurope.cloudapp.azure.com/libraryfactory"
+            );
             library = libraryFactory.getLibrary();
         } catch (Exception e) {
             LOG.error(e);

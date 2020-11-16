@@ -7,22 +7,20 @@ import java.rmi.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class RmiServer {
     private static final Logger LOG = LogManager.getLogger(RmiServer.class);
 
     /**
-    * Start the RMI Server for serving the Java Client a Library Service.
-    */
+     * Start the RMI Server for serving the Java Client a Library Service.
+     */
     public RmiServer() {
         LOG.debug("Start up RMI Server");
         try {
-            LocateRegistry.createRegistry(9988);
+            LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
             LibraryFactoryInterface remote = new LibraryFactory();
-            Naming.rebind("rmi://localhost:9988/libraryfactory", remote);
+            Naming.rebind("rmi://localhost/libraryfactory", remote);
             System.out.println("Server is ready");
             LOG.debug("RMI Server is ready.");
-
         } catch (Exception e) {
             LOG.error("RMI Server failed: " + e);
         }
