@@ -38,8 +38,9 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private GameDto currentGame;
     private UUID currentUuid;
 
-    private String currentUser;
-    private List<LendingDto> allLendings;
+    private String currentUser = "";
+    private List<UserDto> allUsers = null;
+    private List<MediumCopyDto> allMediumCopies = null;
 
     @FXML
     private AnchorPane detailsPane;
@@ -139,9 +140,8 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
         LOG.debug("Initialized ReturningController");
-        addMediaTypeEventHandlers();
         loadAdditionalData();
-        this.currentUser = "Max Mustermann - no finished";
+        addMediaTypeEventHandlers();
         /*StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
@@ -213,13 +213,63 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         });
     }
 
-    public void loadAdditionalData(){
+    private void loadAdditionalData() {
+        System.out.println("LOAD ADD DATA");
+        System.out.println("current uuid " + currentUuid);
+        System.out.println("list before: " + allMediumCopies);
         //TODO GetAllLendings or get lending.userName needed
+        //List<MediumCopyDto> allMediumCopies = null;
+        System.out.println("book: " + currentBook);
+        try {
+            switch (currentMediumType) {
+                case BOOK:
+                    System.out.println("BOOK RETURN");
+                    this.allMediumCopies = RmiClient.getInstance().getAllBookCopies(currentBook);
+                    System.out.println(allMediumCopies.toString());
+                    break;
+                case DVD:
+                    this.allMediumCopies = RmiClient.getInstance().getAllDvdCopies(currentDvd);
+                    break;
+                case GAME:
+                    this.allMediumCopies = RmiClient.getInstance().getAllGameCopies(currentGame);
+                    break;
+                default:
+                    LOG.error("No medium type");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("list after: " + allMediumCopies);
+        if (this.allMediumCopies != null) {
+            for (MediumCopyDto medium : this.allMediumCopies) {
+                if (medium.getId().equals(currentUuid)) {
+                    System.out.println(medium.getId() + " AND " + currentUuid);
+                    System.out.println("User to be set........");
+                    setUserName(currentUuid);
+                    return;
+                }
+            }
+        }
         /*try {
-            this.allLendings = RmiClient.getInstance().
+            this.allLendings = RmiClient.getInstance().getAll
         } catch (RemoteException e){
             e.printStackTrace();
         }*/
+    }
+
+    private void setUserName(UUID uuid) {
+        try {
+            allUsers = RmiClient.getInstance().getAllUsers();
+            for (UserDto user : allUsers) {
+                if (user.getId().equals(uuid)) {
+                    this.currentUser = user.getName() + " (" + user.getUsername() + ")";
+                    return;
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
