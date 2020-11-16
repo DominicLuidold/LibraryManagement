@@ -31,10 +31,10 @@ steps:
     sonarQubeRunAnalysis: false
 
   - task: CopyFiles@2
-    displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
+    displayName: 'Copy JAR file to: $(build.artifactstagingdirectory)/server'
     inputs:
       SourceFolder: '$(system.defaultworkingdirectory)'
-      Contents: '**/*.jar'
+      Contents: '**/LibraryServer.jar'
       TargetFolder: '$(build.artifactstagingdirectory)/server'
       CleanTargetFolder: true
       OverWrite: true
