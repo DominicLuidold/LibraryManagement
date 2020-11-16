@@ -22,7 +22,7 @@ steps:
     gradleWrapperFile: 'server/gradlew'
     gradleOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
+    jdkVersionOption: '1.11'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: 'server/**/TEST-*.xml'
@@ -31,10 +31,10 @@ steps:
     sonarQubeRunAnalysis: false
 
 - task: CopyFiles@2
-  displayName: 'Copy JAR files to: $(build.artifactstagingdirectory)/server'
+  displayName: 'Copy JAR file to: $(build.artifactstagingdirectory)/server'
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**/*.jar'
+    Contents: '**/LibraryServer.jar'
     TargetFolder: '$(build.artifactstagingdirectory)/server'
     CleanTargetFolder: true
     OverWrite: true

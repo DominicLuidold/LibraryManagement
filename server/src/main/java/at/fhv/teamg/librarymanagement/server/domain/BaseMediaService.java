@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
+import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.TopicDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
@@ -31,6 +32,10 @@ public abstract class BaseMediaService {
 
     protected Optional<MediumCopy> findMediumCopyById(UUID id) {
         return new MediumCopyDao().find(id);
+    }
+
+    protected Optional<Medium> findMediumById(UUID uuid) {
+        return new MediumDao().find(uuid);
     }
 
     /**

@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import java.time.LocalDate;
@@ -21,6 +23,10 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class DvdServiceTest {
+    private static final UUID validMediumId = UUID.randomUUID();
+    private static final UUID notValidMediumId = UUID.randomUUID();
+    private static final UUID validMediumCopyId = UUID.randomUUID();
+    private static final UUID notValidMediumCopyId = UUID.randomUUID();
 
     @Test
     void search_shouldReturnDtoList() {
@@ -61,5 +67,69 @@ public class DvdServiceTest {
 
         assertFalse(result.isEmpty(), "Search result should not be an empty list");
         assertEquals(result.size(), 1, "Search result should contain one entry");
+    }
+
+    @Test
+    void getAllDvds_shouldReturnList() {
+        Dvd dvdMock = mock(Dvd.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        when(dvdMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+
+        List<Dvd> dvdList = new LinkedList<>();
+        dvdList.add(dvdMock);
+
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(dvdList).when(dvdService).getAll();
+
+        assertFalse(dvdService.getAllDvds().isEmpty());
+    }
+
+    @Test
+    void getDvdByMediumId_shouldReturnDto() {
+        Dvd dvdMock = mock(Dvd.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        when(dvdMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+        when(mediumMock.getDvd()).thenReturn(dvdMock);
+
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(Optional.of(mediumMock)).when(dvdService).findMediumById(validMediumId);
+
+        assertTrue(dvdService.getDvdByMediumId(validMediumId).isPresent());
+    }
+
+    @Test
+    void getDvdByMediumId_shouldReturnEmpty() {
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(Optional.empty()).when(dvdService).findMediumById(notValidMediumId);
+        assertFalse(dvdService.getDvdByMediumId(notValidMediumId).isPresent());
+    }
+
+    @Test
+    void getDvdByMediumCopyId_shouldReturnDto() {
+        Dvd dvdMock = mock(Dvd.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(dvdMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+        when(mediumMock.getDvd()).thenReturn(dvdMock);
+        when(mediumCopyMock.getMedium()).thenReturn(mediumMock);
+
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(dvdService)
+            .findMediumCopyById(validMediumCopyId);
+
+        assertTrue(dvdService.getDvdByMediumCopyId(validMediumCopyId).isPresent());
+    }
+
+    @Test
+    void getDvdByMediumCopyId_shouldReturnEmpty() {
+        DvdService dvdService = spy(DvdService.class);
+        doReturn(Optional.empty()).when(dvdService).findMediumCopyById(notValidMediumCopyId);
+        assertFalse(dvdService.getDvdByMediumCopyId(notValidMediumCopyId).isPresent());
     }
 }

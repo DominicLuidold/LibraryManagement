@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import java.util.LinkedList;
@@ -20,6 +22,10 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class GameServiceTest {
+    private static final UUID validMediumId = UUID.randomUUID();
+    private static final UUID notValidMediumId = UUID.randomUUID();
+    private static final UUID validMediumCopyId = UUID.randomUUID();
+    private static final UUID notValidMediumCopyId = UUID.randomUUID();
 
     @Test
     void search_shouldReturnDtoList() {
@@ -59,5 +65,69 @@ public class GameServiceTest {
 
         assertFalse(result.isEmpty(), "Search result should not be an empty list");
         assertEquals(result.size(), 1, "Search result should contain one entry");
+    }
+
+    @Test
+    void getAllGames_shouldReturnList() {
+        Game gameMock = mock(Game.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        when(gameMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+
+        List<Game> gameList = new LinkedList<>();
+        gameList.add(gameMock);
+
+        GameService gameService = spy(GameService.class);
+        doReturn(gameList).when(gameService).getAll();
+
+        assertFalse(gameService.getAllGames().isEmpty());
+    }
+
+    @Test
+    void getGameByMediumId_shouldReturnDto() {
+        Game gameMock = mock(Game.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        when(gameMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+        when(mediumMock.getGame()).thenReturn(gameMock);
+
+        GameService gameService = spy(GameService.class);
+        doReturn(Optional.of(mediumMock)).when(gameService).findMediumById(validMediumId);
+
+        assertTrue(gameService.getGameByMediumId(validMediumId).isPresent());
+    }
+
+    @Test
+    void getGameByMediumId_shouldReturnEmpty() {
+        GameService gameService = spy(GameService.class);
+        doReturn(Optional.empty()).when(gameService).findMediumById(notValidMediumId);
+        assertFalse(gameService.getGameByMediumId(notValidMediumId).isPresent());
+    }
+
+    @Test
+    void getGameByMediumCopyId_shouldReturnDto() {
+        Game gameMock = mock(Game.class);
+        Medium mediumMock = mock(Medium.class);
+        Topic topicMock = mock(Topic.class);
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(gameMock.getMedium()).thenReturn(mediumMock);
+        when(mediumMock.getTopic()).thenReturn(topicMock);
+        when(mediumMock.getGame()).thenReturn(gameMock);
+        when(mediumCopyMock.getMedium()).thenReturn(mediumMock);
+
+        GameService gameService = spy(GameService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(gameService)
+            .findMediumCopyById(validMediumCopyId);
+
+        assertTrue(gameService.getGameByMediumCopyId(validMediumCopyId).isPresent());
+    }
+
+    @Test
+    void getGameByMediumCopyId_shouldReturnEmpty() {
+        GameService gameService = spy(GameService.class);
+        doReturn(Optional.empty()).when(gameService).findMediumCopyById(notValidMediumCopyId);
+        assertFalse(gameService.getGameByMediumCopyId(notValidMediumCopyId).isPresent());
     }
 }
