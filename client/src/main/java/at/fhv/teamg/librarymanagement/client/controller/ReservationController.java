@@ -42,7 +42,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     //private ArrayList<String> allUsers = new ArrayList<>();
 
     //map approach
-    private HashMap<UUID, UserDto> usersMap = new HashMap<UUID, UserDto>();
+    //private HashMap<UUID, UserDto> usersMap = new HashMap<UUID, UserDto>();
 
     private BookDto currentBook = null;
     private DvdDto currentDvd = null;
