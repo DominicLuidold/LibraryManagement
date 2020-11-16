@@ -5,10 +5,12 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.Naming;
@@ -28,9 +30,11 @@ public class RmiClient implements LibraryInterface {
     private RmiClient() {
         try {
             LibraryFactoryInterface libraryFactory = (LibraryFactoryInterface) Naming.lookup(
-                "rmi://vsts-team007.westeurope.cloudapp.azure.com/libraryfactory"
+                "rmi://localhost/libraryfactory"
             );
             library = libraryFactory.getLibrary();
+            IMessageClient messageClient = new MessageClient(library.getAllMessages());
+            library.registerForMessages(messageClient);
         } catch (Exception e) {
             LOG.error(e);
         }
@@ -180,5 +184,15 @@ public class RmiClient implements LibraryInterface {
     @Override
     public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
         return library.extendGame(mediumCopyDto);
+    }
+
+    @Override
+    public void registerForMessages(IMessageClient client) throws RemoteException {
+        library.registerForMessages(client);
+    }
+
+    @Override
+    public List<Message> getAllMessages() throws RemoteException {
+        return library.getAllMessages();
     }
 }

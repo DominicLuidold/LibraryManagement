@@ -14,15 +14,20 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +44,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final TopicService topicService = new TopicService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
+
+    private static final List<IMessageClient> clients = new LinkedList<>();
+    private static final List<Message> messages = new LinkedList<>();
 
     public Library() throws RemoteException {
         super();
@@ -167,6 +175,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
         LendingDto result = this.lend(lendingDto);
         cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
+        addMessage(new Message(
+            UUID.randomUUID(),
+            "Test Message lend dvd",
+            Message.Status.Open,
+            LocalDateTime.now()
+        ));
         return result;
     }
 
@@ -188,6 +202,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
         Boolean result = lendingService.returnLending(copyDto);
         cache.invalidateDvdCacheMediumCopy(copyDto.getId());
+        addMessage(new Message(
+            UUID.randomUUID(),
+            "Test Message return dvd",
+            Message.Status.Open,
+            LocalDateTime.now()
+        ));
         return result;
     }
 
@@ -220,5 +240,40 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         MessageDto result = lendingService.extendLending(mediumCopyDto);
         cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
         return result;
+    }
+
+    @Override
+    public void registerForMessages(IMessageClient client) throws RemoteException {
+        clients.add(client);
+    }
+
+    @Override
+    public List<Message> getAllMessages() throws RemoteException {
+        return messages;
+    }
+
+    private static void updateClient(IMessageClient client, Message message) {
+        try {
+            client.update(message);
+        } catch (RemoteException e) {
+            LOG.info("Client timeout -> remove from list");
+        }
+    }
+
+    private static void addMessage(Message message) {
+        messages.add(message);
+        clients.forEach(client -> updateClient(client, message));
+    }
+
+    private static void updateMessage(Message message) {
+        messages.stream()
+            .filter(m -> m.id.equals(message.id))
+            .findFirst()
+            .ifPresent(m -> {
+                m.dateTime = message.dateTime;
+                m.message = message.message;
+                m.status = message.status;
+                clients.forEach(client -> updateClient(client, m));
+            });
     }
 }
