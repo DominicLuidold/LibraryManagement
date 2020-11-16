@@ -118,7 +118,7 @@ public class ReservationService extends BaseMediaService {
             return Optional.empty();
         }
 
-        if (!user.get().getRole().getName().equals(UserRoleName.Customer)) {
+        if (!user.get().getRole().getName().equals(UserRoleName.CUSTOMER)) {
             return Optional.empty();
         }
 

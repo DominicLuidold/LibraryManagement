@@ -15,8 +15,7 @@ public class LdapConnector {
     public static boolean authenticateJndi(String username, String password) {
         Properties props = new Properties();
         props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        props.put(
-            Context.PROVIDER_URL, serverUrlFH);
+        props.put(Context.PROVIDER_URL, serverUrlFH);
         props.put(Context.SECURITY_PRINCIPAL, username);
         props.put(Context.SECURITY_CREDENTIALS, password);
 

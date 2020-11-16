@@ -2,12 +2,9 @@ package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
-import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
-import com.mysql.jdbc.log.Log;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,8 +69,8 @@ public class UserService {
         );
 
         LoginDto loggedInUser = new LoginDto.LoginDtoBuilder()
-            .username(loginUser.getUsername())
-            .isValid(isValid)
+            .withUsername(loginUser.getUsername())
+            .withIsValid(isValid)
             .build();
 
         if (!isValid) {
@@ -100,11 +97,11 @@ public class UserService {
         if (foundUser.isPresent()) {
             User user = foundUser.get();
             LoginDto foundLoginDto = new LoginDto.LoginDtoBuilder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .userRoleName(user.getRole().getName())
-                .externalLibrary(user.isExternalLibrary())
-                .isValid(true)
+                .withid(user.getId())
+                .withUsername(user.getUsername())
+                .withUserRoleName(user.getRole().getName())
+                .withIsExternalLibrary(user.isExternalLibrary())
+                .withIsValid(true)
                 .build();
             return Optional.of(foundLoginDto);
         }

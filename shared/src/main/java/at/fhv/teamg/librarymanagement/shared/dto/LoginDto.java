@@ -12,7 +12,7 @@ public class LoginDto implements Serializable {
     private final String password;
     private final boolean externalLibrary;
     private final UserRoleName userRoleName;
-    private final Boolean isValid;
+    private final boolean isValid;
 
     /**
      * Dto for Loginuser.
@@ -34,38 +34,38 @@ public class LoginDto implements Serializable {
         private String password;
         private boolean externalLibrary;
         private UserRoleName userRoleName;
-        private Boolean isValid;
+        private boolean isValid;
 
         public LoginDtoBuilder() {
             // GUI might not be able to provide an id
         }
 
-        public LoginDtoBuilder id(UUID id) {
+        public LoginDtoBuilder withid(UUID id) {
             this.id = id;
             return this;
         }
 
-        public LoginDtoBuilder username(String username) {
+        public LoginDtoBuilder withUsername(String username) {
             this.username = username;
             return this;
         }
 
-        public LoginDtoBuilder password(String password) {
+        public LoginDtoBuilder withPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public LoginDtoBuilder externalLibrary(Boolean externalLibrary) {
+        public LoginDtoBuilder withIsExternalLibrary(boolean externalLibrary) {
             this.externalLibrary = externalLibrary;
             return this;
         }
 
-        public LoginDtoBuilder userRoleName(UserRoleName userRoleName) {
+        public LoginDtoBuilder withUserRoleName(UserRoleName userRoleName) {
             this.userRoleName = userRoleName;
             return this;
         }
 
-        public LoginDtoBuilder isValid(Boolean isValid) {
+        public LoginDtoBuilder withIsValid(Boolean isValid) {
             this.isValid = isValid;
             return this;
         }
@@ -95,7 +95,7 @@ public class LoginDto implements Serializable {
         return userRoleName;
     }
 
-    public Boolean getIsValid() {
+    public boolean getIsValid() {
         return isValid;
     }
 
