@@ -22,15 +22,5 @@ public class Main {
         //Persistence.createEntityManagerFactory("LibraryManagement").createEntityManager();
         RmiServer rmiServer = new RmiServer();
         LOG.info("Project initialized successfully");
-        /* Test Userlogin
-        LoginDto login = new LoginDto.LoginDtoBuilder()
-            .username("tmo1465@students.fhv.at")
-            .password("")
-            .build();
-        UserService userService = new UserService();
-        LoginDto loginDto = userService.authenticateUser(login);
-        System.out.println("autuser is " + loginDto.getIsValid() + loginDto.toString());
-
-         */
     }
 }
