@@ -165,6 +165,9 @@
                                     </Label>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <padding>
+                                            <Insets top="20" right="20" bottom="20" left="20"/>
+                                        </padding>
                                         <columnConstraints>
                                             <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
                                             <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
@@ -175,8 +178,9 @@
                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                         </rowConstraints>
                                         <children>
+                                            <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUserSelect" promptText="User"
-                                                       GridPane.rowIndex="0"></TextField>
+                                                       GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
                                             <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
                                             <Button fx:id="btnCancel" prefWidth="100" prefHeight="40"
                                                     defaultButton="false"

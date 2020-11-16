@@ -6,10 +6,12 @@ import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,6 +37,9 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private DvdDto currentDvd;
     private GameDto currentGame;
     private UUID currentUuid;
+
+    private String currentUser;
+    private List<LendingDto> allLendings;
 
     @FXML
     private AnchorPane detailsPane;
@@ -125,7 +130,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private Button btnCancel;
 
     @FXML
-    private ComboBox<UserDto> userSelect;
+    private Label userSelect;
 
     @FXML
     private Label confirm;
@@ -135,8 +140,9 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         this.resourceBundle = resources;
         LOG.debug("Initialized ReturningController");
         addMediaTypeEventHandlers();
-
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
+        loadAdditionalData();
+        this.currentUser = "Max Mustermann - no finished";
+        /*StringConverter<UserDto> userConverter = new StringConverter<>() {
             @Override
             public String toString(UserDto userDto) {
                 if (userDto == null) {
@@ -149,23 +155,23 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             public UserDto fromString(String user) {
                 return new UserDto.UserDtoBuilder().name(user).build();
             }
-        };
+        };*/
 
-        userSelect.setConverter(userConverter);
+        /*userSelect.setConverter(userConverter);
         try {
             userSelect
                 .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void addMediaTypeEventHandlers() {
         this.btnReturn.setOnAction(e -> {
-            if (userSelect.getSelectionModel().getSelectedItem() == null) {
+            /*if (userSelect.getSelectionModel().getSelectedItem() == null) {
                 confirm.setText("Please select a user first!");
                 return;
-            }
+            }*/
 
             System.out.println(currentUuid);
 
@@ -205,6 +211,15 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             this.parentController.getParentController().removeTab(TabPaneEntry.RETURNING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
+    }
+
+    public void loadAdditionalData(){
+        //TODO GetAllLendings or get lending.userName needed
+        /*try {
+            this.allLendings = RmiClient.getInstance().
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }*/
     }
 
     /**
@@ -329,6 +344,10 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
     public void setCurrentUuid(UUID currentUuid) {
         this.currentUuid = currentUuid;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
     }
 
     @Override

@@ -118,7 +118,7 @@
                                     </Label>
                                     <GridPane>
                                         <padding>
-                                            <Insets top="10" right="20" bottom="20" left="20"/>
+                                            <Insets top="20" right="20" bottom="20" left="20"/>
                                         </padding>
                                         <columnConstraints>
                                             <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
