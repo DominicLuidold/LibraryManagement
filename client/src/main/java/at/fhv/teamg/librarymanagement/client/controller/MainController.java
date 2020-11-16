@@ -129,6 +129,7 @@ public class MainController implements Initializable {
         );
 
         result.add(TabPaneEntry.SEARCH);
+        result.add(TabPaneEntry.MESSAGES);
 
         if (result.isEmpty()) {
             LOG.debug("No Tabs allowed. Adding unsupported tab as backup");
