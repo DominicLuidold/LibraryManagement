@@ -110,8 +110,8 @@ public class LoginController implements Initializable {
 
 
         LoginDto loginUser = new LoginDto.LoginDtoBuilder()
-                .username(usernameField.getText())
-                .password(usernameField.getText())
+                .withUsername(usernameField.getText())
+                .withPassword(passwordField.getText())
                 .build();
 
         UserLoginTask loginTask = new UserLoginTask(loginUser, this.pane);

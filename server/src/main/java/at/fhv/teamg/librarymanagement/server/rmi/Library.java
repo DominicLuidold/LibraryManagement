@@ -247,8 +247,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         /*
          * Admin can perform all Actions.
          */
-        if (userRoleNeeded.equals(UserRoleName.ADMIN)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.ADMIN)) {
+        if (userRoleNeeded.equals(UserRoleName.Admin)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
                 return true;
             }
         }
@@ -256,9 +256,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         /*
          * Libararian can perfrom Lending and Reservations.
          */
-        if (userRoleNeeded.equals(UserRoleName.LIBRARIAN)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.LIBRARIAN)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.ADMIN)
+        if (userRoleNeeded.equals(UserRoleName.Librarian)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
             ) {
                 return true;
             }
@@ -267,10 +267,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         /*
          * Customer are "Guest User" can only search.
          */
-        if (userRoleNeeded.equals(UserRoleName.CUSTOMER)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.CUSTOMER)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.LIBRARIAN)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.ADMIN)
+        if (userRoleNeeded.equals(UserRoleName.Customer)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
             ) {
                 return true;
             }

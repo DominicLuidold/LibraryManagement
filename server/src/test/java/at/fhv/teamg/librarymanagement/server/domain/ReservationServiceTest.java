@@ -153,7 +153,7 @@ public class ReservationServiceTest {
         when(mediumMock.getCopies()).thenReturn(mediumCopies);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
-        when(userRoleMock.getName()).thenReturn(UserRoleName.CUSTOMER);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
 
         ReservationService reservationService = spy(ReservationService.class);
         doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
@@ -179,7 +179,7 @@ public class ReservationServiceTest {
         when(mediumMock.getId()).thenReturn(validMediumId);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
-        when(userRoleMock.getName()).thenReturn(UserRoleName.ADMIN);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Admin);
 
         ReservationService reservationService = spy(ReservationService.class);
         doReturn(Optional.empty()).when(reservationService).findMediumById(notValidMediumId);
@@ -212,7 +212,7 @@ public class ReservationServiceTest {
         ReservationDto validReservation = builder.build();
         assertFalse(reservationService.createReservation(validReservation).isPresent());
 
-        when(userRoleMock.getName()).thenReturn(UserRoleName.CUSTOMER);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
         doReturn(Optional.empty()).when(reservationService)
             .updateReservation(any(Reservation.class));
 
