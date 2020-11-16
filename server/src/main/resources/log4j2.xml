@@ -9,9 +9,6 @@
         <Logger name="at.fhv.teamg.librarymanagement" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
-            <AppenderRef ref="LogToConsole"/>
-        </Logger>
         <Logger name="org.hibernate" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>

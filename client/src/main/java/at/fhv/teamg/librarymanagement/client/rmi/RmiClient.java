@@ -33,8 +33,6 @@ public class RmiClient implements LibraryInterface {
                 "rmi://localhost/libraryfactory"
             );
             library = libraryFactory.getLibrary();
-            IMessageClient messageClient = new MessageClient(library.getAllMessages());
-            library.registerForMessages(messageClient);
         } catch (Exception e) {
             LOG.error(e);
         }

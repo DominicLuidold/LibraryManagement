@@ -9,15 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class MessageClient extends UnicastRemoteObject implements IMessageClient {
-    List<Message> messages = new LinkedList<>();
+    List<Message> messages;
+    List<IMessageSubscriber> subscribers = new LinkedList<>();
 
-    protected MessageClient(List<Message> messages) throws RemoteException {
+    public MessageClient() throws RemoteException {
         super();
-        this.messages = messages;
-        System.out.println("initial messages");
-        this.messages.forEach(message ->
-            System.out.println(message.dateTime + "\t" + message.message + "\t" + message.status)
-        );
+        messages = RmiClient.getInstance().getAllMessages();
+    }
+
+    public void subscribe(IMessageSubscriber sub) {
+        subscribers.add(sub);
+        sub.update(messages);
     }
 
     @Override
@@ -37,6 +39,6 @@ public class MessageClient extends UnicastRemoteObject implements IMessageClient
             messages.add(message);
         }
 
-        System.out.println(message.dateTime + "\t" + message.message + "\t" + message.status);
+        subscribers.forEach(sub -> sub.update(messages));
     }
 }

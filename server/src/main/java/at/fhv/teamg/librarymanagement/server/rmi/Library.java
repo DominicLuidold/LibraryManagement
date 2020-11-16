@@ -244,6 +244,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public void registerForMessages(IMessageClient client) throws RemoteException {
+        LOG.info("new message subscriber");
         clients.add(client);
     }
 
@@ -253,11 +254,14 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     private static void updateClient(IMessageClient client, Message message) {
-        try {
-            client.update(message);
-        } catch (RemoteException e) {
-            LOG.info("Client timeout -> remove from list");
-        }
+        new Thread(() -> {
+            try {
+                client.update(message);
+            } catch (RemoteException e) {
+                LOG.info("Client can not be messaged -> remove from list");
+                clients.remove(client);
+            }
+        }).start();
     }
 
     private static void addMessage(Message message) {
