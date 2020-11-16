@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class MediumCopyService extends BaseMediaService {
     private final LendingService lendingService;
@@ -86,14 +87,17 @@ public class MediumCopyService extends BaseMediaService {
                 new MediumCopyDto.MediumCopyDtoBuilder(copy.getId());
 
             LocalDate lendTill = null;
+            UUID lendingUser = null;
             Optional<Lending> possibleLending = lendingService.getCurrentLending(copy.getLending());
             if (possibleLending.isPresent()) {
                 lendTill = possibleLending.get().getEndDate();
+                lendingUser = possibleLending.get().getUser().getId();
             }
 
             builder.isAvailable(copy.isAvailable())
                 .mediumID(medium.getId())
-                .lendTill(lendTill);
+                .lendTill(lendTill)
+                .currentLendingUser(lendingUser);
 
             copies.add(builder.build());
         });

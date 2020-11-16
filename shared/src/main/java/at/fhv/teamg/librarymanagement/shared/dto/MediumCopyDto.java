@@ -11,12 +11,14 @@ public class MediumCopyDto implements Serializable {
     private final boolean isAvailable;
     private final LocalDate lendTill;
     private final UUID mediumID;
+    private final UUID currentLendingUser;
 
     private MediumCopyDto(MediumCopyDtoBuilder builder) {
         this.id = builder.id;
         this.isAvailable = builder.isAvailable;
         this.lendTill = builder.lendTill;
         this.mediumID = builder.mediumID;
+        this.currentLendingUser = builder.currentLendingUser;
     }
 
     public static class MediumCopyDtoBuilder {
@@ -24,6 +26,7 @@ public class MediumCopyDto implements Serializable {
         private boolean isAvailable;
         private LocalDate lendTill;
         private UUID mediumID;
+        private UUID currentLendingUser;
 
         public MediumCopyDtoBuilder() {
             // GUI might not be able to provide an id
@@ -48,6 +51,11 @@ public class MediumCopyDto implements Serializable {
             return this;
         }
 
+        public MediumCopyDtoBuilder currentLendingUser(UUID mediumID) {
+            this.currentLendingUser = mediumID;
+            return this;
+        }
+
         public MediumCopyDto build() {
             return new MediumCopyDto(this);
         }
@@ -67,5 +75,9 @@ public class MediumCopyDto implements Serializable {
 
     public UUID getMediumID() {
         return mediumID;
+    }
+
+    public UUID getCurrentLendingUser() {
+        return currentLendingUser;
     }
 }
