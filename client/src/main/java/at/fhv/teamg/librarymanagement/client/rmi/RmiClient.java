@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
@@ -192,5 +193,10 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<Message> getAllMessages() throws RemoteException {
         return library.getAllMessages();
+    }
+
+    @Override
+    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
+        return library.loginUser(loginDto);
     }
 }

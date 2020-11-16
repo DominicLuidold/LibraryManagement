@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server.persistance.enums;
+package at.fhv.teamg.librarymanagement.shared.enums;
 
 public enum UserRoleName {
     Customer,

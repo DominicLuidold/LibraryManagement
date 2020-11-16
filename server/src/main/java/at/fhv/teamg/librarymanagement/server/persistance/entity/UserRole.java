@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.persistance.entity;
 
-import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;

@@ -13,12 +13,14 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
@@ -44,6 +46,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final TopicService topicService = new TopicService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
+    private LoginDto loggedInUser;
 
     private static final List<IMessageClient> clients = new LinkedList<>();
     private static final List<Message> messages = new LinkedList<>();
@@ -279,5 +282,45 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
                 m.status = message.status;
                 clients.forEach(client -> updateClient(client, m));
             });
+    }
+
+    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
+        loggedInUser = userService.authenticateUser(loginDto);
+        return loggedInUser;
+    }
+
+    private boolean isValid(UserRoleName userRoleNeeded) {
+        /*
+         * Admin can perform all Actions.
+         */
+        if (userRoleNeeded.equals(UserRoleName.Admin)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
+                return true;
+            }
+        }
+
+        /*
+         * Libararian can perfrom Lending and Reservations.
+         */
+        if (userRoleNeeded.equals(UserRoleName.Librarian)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+            ) {
+                return true;
+            }
+        }
+
+        /*
+         * Customer are "Guest User" can only search.
+         */
+        if (userRoleNeeded.equals(UserRoleName.Customer)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

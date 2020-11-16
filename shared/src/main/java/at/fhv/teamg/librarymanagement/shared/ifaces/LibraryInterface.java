@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
@@ -70,4 +71,6 @@ public interface LibraryInterface extends Remote {
     void registerForMessages(IMessageClient client) throws RemoteException;
 
     List<Message> getAllMessages() throws RemoteException;
+
+    LoginDto loginUser(LoginDto loginDto) throws RemoteException;
 }
