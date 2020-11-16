@@ -199,7 +199,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 }
 
                 if (confirmedLending != null) {
-                    confirm.setText("Lending successfull");
+                    confirm.setText("Lending successful");
                     return;
                 } else {
                     confirm.setText("Something went wrong");
@@ -207,7 +207,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 }
 
             } else {
-                confirm.setText("No valid user found.");
+                confirm.setText("No valid user found");
                 return;
             }
         });

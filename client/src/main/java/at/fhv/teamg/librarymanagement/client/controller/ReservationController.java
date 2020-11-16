@@ -150,6 +150,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private Button btnOK;
     @FXML
     private Button btnCancel;
+    @FXML
+    private Label confirm;
 
 
     @Override
@@ -189,16 +191,53 @@ public class ReservationController implements Initializable, Parentable<MediaDet
             if (txtUser.getText().trim().length() != 0) {
                 userUuidToReserve = dropdown.getUserID(txtUser.getText().trim());
 
-                ReservationDto.ReservationDtoBuilder dtoBuilder =
-                    new ReservationDto.ReservationDtoBuilder();
+                if (userUuidToReserve != null) {
+                    ReservationDto.ReservationDtoBuilder dtoBuilder =
+                        new ReservationDto.ReservationDtoBuilder();
 
-                if (this.type.equals(MediumType.BOOK)) {
+                    RmiClient client = RmiClient.getInstance();
+                    ReservationDto resDto = null;
+
+
+                    try {
+                        switch (this.type) {
+                            case BOOK:
+                                resDto = client.reserveBook(buildReservation(dtoBuilder));
+                                break;
+                            case DVD:
+                                resDto = client.reserveDvd(buildReservation(dtoBuilder));
+                                break;
+                            case GAME:
+                                resDto = client.reserveGame(buildReservation(dtoBuilder));
+                                break;
+                            default:
+                                LOG.error("no medium type");
+                        }
+                    } catch (RemoteException remoteException) {
+                        remoteException.printStackTrace();
+                    }
+
+                    System.out.println("####### RESERVATION: " + resDto + "########");
+
+                    if (resDto != null) {
+                        confirm.setText("Reservation successful");
+                        return;
+                    } else {
+                        confirm.setText("Something went wrong");
+                        return;
+                    }
+                } else {
+                    confirm.setText("No valid user found");
+                    return;
+                }
+                /*if (this.type.equals(MediumType.BOOK)) {
                     ReservationDto resDto = buildReservation(dtoBuilder);
                     try {
                         RmiClient.getInstance().reserveBook(resDto);
-                        AlertHelper.showAlert(Alert.AlertType.INFORMATION,
+
+                        *//*AlertHelper.showAlert(Alert.AlertType.INFORMATION,
                             this.reservationPane.getScene().getWindow(), "Reservation",
-                            "Reservation successful.");
+                            "Reservation successful.");*//*
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -222,7 +261,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
-                }
+                }*/
             }
         });
 
