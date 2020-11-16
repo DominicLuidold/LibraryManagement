@@ -156,88 +156,60 @@ public class LendingController implements Initializable, Parentable<SearchContro
         dropdown = new UserDropdown(allUserList);
         TextFields.bindAutoCompletion(txtUserSelect, dropdown.getAllUserString());
 
-        // Get all topics
-        try {
-            this.topics = RmiClient.getInstance().getAllTopics();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        /*
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
-            @Override
-            public String toString(UserDto userDto) {
-                if (userDto == null) {
-                    return "Select User";
-                }
-                return userDto.getName() + " (" + userDto.getUsername() + ")";
-            }
-
-            @Override
-            public UserDto fromString(String user) {
-                return new UserDto.UserDtoBuilder().name(user).build();
-            }
-        };*/
-
-        /*userSelect.setConverter(userConverter);
-        try {
-            userSelect
-                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }*/
     }
 
 
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
-            if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                AlertHelper.showAlert(Alert.AlertType.INFORMATION,
-                    this.lendingPane.getScene().getWindow(), "NoUserSelected",
-                    "Please select a user first.");
+            if (txtUserSelect.getText().trim().length() == 0) {
+                confirm.setText("Select a user first.");
                 return;
             }
-            //UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
+
             UUID userId = dropdown.getUserID(txtUserSelect.getText().trim());
 
-            LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
-            builder.userId(userId)
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
-                .mediumCopyId(currentUuid)
-                .renewalCount(0);
+            if (userId != null) {
+                LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
+                builder.userId(userId)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now())
+                    .mediumCopyId(currentUuid)
+                    .renewalCount(0);
 
-            RmiClient client = RmiClient.getInstance();
+                RmiClient client = RmiClient.getInstance();
 
-            LendingDto confirmedLending = null;
-            try {
-                switch (currentMediumType) {
-                    case DVD:
-                        confirmedLending = client.lendDvd(builder.build());
-                        break;
-                    case BOOK:
-                        confirmedLending = client.lendBook(builder.build());
-                        break;
-                    case GAME:
-                        confirmedLending = client.lendGame(builder.build());
-                        break;
-                    default:
-                        LOG.error("no medium type");
+                LendingDto confirmedLending = null;
+                try {
+                    switch (currentMediumType) {
+                        case DVD:
+                            confirmedLending = client.lendDvd(builder.build());
+                            break;
+                        case BOOK:
+                            confirmedLending = client.lendBook(builder.build());
+                            break;
+                        case GAME:
+                            confirmedLending = client.lendGame(builder.build());
+                            break;
+                        default:
+                            LOG.error("no medium type");
+                    }
+
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
                 }
 
-            } catch (RemoteException remoteException) {
-                remoteException.printStackTrace();
-            }
+                if (confirmedLending != null) {
+                    confirm.setText("Lending successfull");
+                    return;
+                } else {
+                    confirm.setText("Something went wrong");
+                    return;
+                }
 
-            if (confirmedLending != null) {
-                AlertHelper.showAlert(Alert.AlertType.INFORMATION,
-                    this.lendingPane.getScene().getWindow(), "Lending",
-                    "Lending successful.");
-                return;
             } else {
-                confirm.setText("Something went wrong");
+                confirm.setText("No valid user found.");
+                return;
             }
-
         });
 
         this.btnCancel.setOnAction(e -> {
@@ -245,11 +217,13 @@ public class LendingController implements Initializable, Parentable<SearchContro
             this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
+
     }
 
     private void loadAdditionalData() {
         try {
             this.allUserList = RmiClient.getInstance().getAllUsers();
+            this.topics = RmiClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
