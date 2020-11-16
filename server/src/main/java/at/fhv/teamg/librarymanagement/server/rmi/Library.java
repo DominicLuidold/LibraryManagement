@@ -9,6 +9,7 @@ import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.TopicService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -41,6 +42,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final TopicService topicService = new TopicService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
+    private LoginDto loggedInUser;
 
     public Library() throws RemoteException {
         super();
@@ -238,10 +240,45 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
-        LoginDto loginDto1 = new LoginDto.LoginDtoBuilder()
-            .isValid(true)
-            .userRoleName(UserRoleName.Librarian)
-            .build();
-        return loginDto1;
+        loggedInUser = userService.authenticateUser(loginDto);
+        return loggedInUser;
+    }
+
+    private boolean isValid(UserRoleName userRoleNeedet) {
+        /*
+         * Admin can perform all Actions.
+         */
+        if (userRoleNeedet.equals(UserRoleName.Admin)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
+                return true;
+            }
+            return false;
+        }
+
+        /*
+         * Libararian can perfrom Lending and Reservations.
+         */
+        if (userRoleNeedet.equals(UserRoleName.Librarian)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        /*
+         * Customer are "Guest User" can only search.
+         */
+        if (userRoleNeedet.equals(UserRoleName.Customer)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+            ) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

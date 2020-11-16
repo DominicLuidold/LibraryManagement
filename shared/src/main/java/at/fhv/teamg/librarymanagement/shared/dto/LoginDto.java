@@ -45,13 +45,13 @@ public class LoginDto implements Serializable {
             return this;
         }
 
-        public LoginDtoBuilder username(String password) {
-            this.password = password;
+        public LoginDtoBuilder username(String username) {
+            this.username = username;
             return this;
         }
 
-        public LoginDtoBuilder password(String username) {
-            this.username = username;
+        public LoginDtoBuilder password(String password) {
+            this.password = password;
             return this;
         }
 
