@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
-import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -34,23 +31,17 @@ public class TopicServiceTest {
 
     @Test
     void findTopicById_shouldReturnDto() {
-        TopicDto.TopicDtoBuilder builder = new TopicDto.TopicDtoBuilder();
-        builder.id(validTopicId);
-
         TopicService topicService = spy(TopicService.class);
         doReturn(Optional.of(mock(Topic.class))).when(topicService).findTopicById(validTopicId);
 
-        assertTrue(topicService.findTopicById(builder.build()).isPresent());
+        assertTrue(topicService.findTopicById(validTopicId).isPresent());
     }
 
     @Test
     void findTopicById_shouldReturnEmpty() {
-        TopicDto.TopicDtoBuilder builder = new TopicDto.TopicDtoBuilder();
-        builder.id(notValidTopicId);
-
         TopicService topicService = spy(TopicService.class);
         doReturn(Optional.empty()).when(topicService).findTopicById(notValidTopicId);
 
-        assertFalse(topicService.findTopicById(builder.build()).isPresent());
+        assertFalse(topicService.findTopicById(notValidTopicId).isPresent());
     }
 }
