@@ -161,7 +161,7 @@ public class MainController implements Initializable {
 
         this.tabPaneController.initializeTabMenu();
         this.userHeaderMenuController.setUserShortcut(currentUser.getUsername());
-        this.userHeaderMenuController.setUserTxtRole(" | " + userRole);
+        this.userHeaderMenuController.setUserTxtRole(userRole.toString());
 
     }
 
