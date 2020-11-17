@@ -106,15 +106,16 @@ public class ReservationService extends BaseMediaService {
      * @return Newly created Reservation
      */
     public MessageDto<ReservationDto> createReservation(ReservationDto reservationDto) {
-        Optional<Medium> medium = findMediumById(reservationDto.getMediumId());
-        if (medium.isEmpty()) {
+        Optional<Medium> mediumOptional = findMediumById(reservationDto.getMediumId());
+        if (mediumOptional.isEmpty()) {
             return Utils.createMessageResponse(
                 "Could not find specified medium",
                 MessageDto.MessageType.FAILURE
             );
         }
 
-        for (MediumCopy mediumCopy : medium.get().getCopies()) {
+        Medium medium = mediumOptional.get();
+        for (MediumCopy mediumCopy : medium.getCopies()) {
             if (mediumCopy.isAvailable()) {
                 return Utils.createMessageResponse(
                     "Selected medium has available copies",
@@ -123,27 +124,37 @@ public class ReservationService extends BaseMediaService {
             }
         }
 
-        Optional<User> user = findUserById(reservationDto.getUserId());
-        if (user.isEmpty()) {
+        Optional<User> userOptional = findUserById(reservationDto.getUserId());
+        if (userOptional.isEmpty()) {
             return Utils.createMessageResponse(
                 "Could not process provided user information",
                 MessageDto.MessageType.ERROR
             );
         }
 
-        if (!user.get().getRole().getName().equals(UserRoleName.Customer)) {
+        User user = userOptional.get();
+        if (!user.getRole().getName().equals(UserRoleName.Customer)) {
             return Utils.createMessageResponse(
                 "User is not allowed to reserve a medium",
                 MessageDto.MessageType.FAILURE
             );
         }
 
+        for (Reservation reservation : user.getReservations()) {
+            if (medium.getId().equals(reservation.getMedium().getId())) {
+                return Utils.createMessageResponse(
+                    "Only one reservation per user is allowed",
+                    MessageDto.MessageType.FAILURE
+                );
+            }
+        }
+
         Reservation reservation = new Reservation();
         reservation.setId(UUID.randomUUID());
         reservation.setEndDate(reservationDto.getEndDate());
         reservation.setStartDate(reservationDto.getStartDate());
-        reservation.setMedium(medium.get());
-        reservation.setUser(user.get());
+        reservation.setMedium(medium);
+        reservation.setUser(user);
 
         if (updateReservation(reservation).isEmpty()) {
             return Utils.createMessageResponse(
