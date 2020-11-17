@@ -37,10 +37,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         super();
     }
 
-    @Override
-    public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
-        return cache.searchGame(gameDto);
-    }
+    /* #### SEARCH #### */
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
@@ -53,9 +50,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
-        return cache.getGameDetail(gameDto.getId());
+    public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
+        return cache.searchGame(gameDto);
     }
+
+    /* #### DETAILS #### */
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
@@ -68,9 +67,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException {
-        return mediumCopyService.getCopies(gameDto);
+    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
+        return cache.getGameDetail(gameDto.getId());
     }
+
+    /* #### GET ALL #### */
 
     @Override
     public List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException {
@@ -80,6 +81,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public List<MediumCopyDto> getAllDvdCopies(DvdDto dvdDto) throws RemoteException {
         return mediumCopyService.getCopies(dvdDto);
+    }
+
+    @Override
+    public List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException {
+        return mediumCopyService.getCopies(gameDto);
     }
 
     @Override

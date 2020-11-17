@@ -16,23 +16,29 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface LibraryInterface extends Remote {
-    List<GameDto> searchGame(GameDto gameDto) throws RemoteException;
+    /* #### SEARCH #### */
 
     List<BookDto> searchBook(BookDto bookDto) throws RemoteException;
 
     List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException;
 
-    GameDto getGameDetail(GameDto gameDto) throws RemoteException;
+    List<GameDto> searchGame(GameDto gameDto) throws RemoteException;
+
+    /* #### DETAILS #### */
 
     BookDto getBookDetail(BookDto bookDto) throws RemoteException;
 
     DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException;
 
-    List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException;
+    GameDto getGameDetail(GameDto gameDto) throws RemoteException;
+
+    /* #### GET ALL #### */
 
     List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException;
 
     List<MediumCopyDto> getAllDvdCopies(DvdDto dvdDto) throws RemoteException;
+
+    List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException;
 
     List<TopicDto> getAllTopics() throws RemoteException;
 
