@@ -29,15 +29,17 @@ import org.apache.logging.log4j.Logger;
 public class Library extends UnicastRemoteObject implements LibraryInterface {
     private static final Logger LOG = LogManager.getLogger(Library.class);
     private static final long serialVersionUID = -443483629739057113L;
+
+    private static final List<MessageClientInterface> clients = new LinkedList<>();
+    private static final List<Message> messages = new LinkedList<>();
+
     private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
     private final ReservationService reservationService = new ReservationService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
-    private LoginDto loggedInUser;
 
-    private static final List<MessageClientInterface> clients = new LinkedList<>();
-    private static final List<Message> messages = new LinkedList<>();
+    private LoginDto loggedInUser;
 
     public Library() throws RemoteException {
         super();
@@ -212,9 +214,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /* #### LOGIN #### */
 
-    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
-        loggedInUser = userService.authenticateUser(loginDto);
-        return loggedInUser;
+    public MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException {
+        return userService.authenticateUser(loginDto);
     }
 
     /* #### MESSAGING #### */

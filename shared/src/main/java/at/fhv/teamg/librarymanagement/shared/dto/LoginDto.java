@@ -1,10 +1,11 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class LoginDto implements Serializable {
+public class LoginDto implements Dto, Serializable {
     private static final long serialVersionUID = 1326320486087070517L;
 
     private final UUID id;
@@ -14,12 +15,7 @@ public class LoginDto implements Serializable {
     private final UserRoleName userRoleName;
     private final boolean isValid;
 
-    /**
-     * Dto for Loginuser.
-     *
-     * @param builder builds the DTO
-     */
-    public LoginDto(LoginDtoBuilder builder) {
+    private LoginDto(LoginDtoBuilder builder) {
         id = builder.id;
         username = builder.username;
         password = builder.password;
@@ -40,7 +36,7 @@ public class LoginDto implements Serializable {
             // GUI might not be able to provide an id
         }
 
-        public LoginDtoBuilder withid(UUID id) {
+        public LoginDtoBuilder withId(UUID id) {
             this.id = id;
             return this;
         }

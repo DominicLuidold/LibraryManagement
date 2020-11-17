@@ -81,7 +81,7 @@ public interface LibraryInterface extends Remote {
 
     /* #### LOGIN #### */
 
-    LoginDto loginUser(LoginDto loginDto) throws RemoteException;
+    MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException;
 
     /* #### MESSAGING #### */
 
