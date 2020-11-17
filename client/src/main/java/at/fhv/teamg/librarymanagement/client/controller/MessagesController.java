@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
-import at.fhv.teamg.librarymanagement.client.rmi.MessageClientInterface;
+import at.fhv.teamg.librarymanagement.client.rmi.MessageClient;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import java.net.URL;
@@ -29,9 +29,9 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
         this.resourceBundle = resources;
         LOG.debug("Initialized MessagesController");
 
-        MessageClientInterface messageClient = null;
+        MessageClient messageClient = null;
         try {
-            messageClient = new MessageClientInterface();
+            messageClient = new MessageClient();
             messageClient.onUpdate(
                 messages -> messagesTable.setItems(FXCollections.observableList(messages))
             );
