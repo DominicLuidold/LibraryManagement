@@ -155,7 +155,7 @@
                             </padding>
                             <children>
                                 <VBox fillWidth="true">
-                                    <Label text="Add a reservation">
+                                    <Label text="Add a lending">
                                         <padding>
                                             <Insets top="20" right="20" bottom="10" left="20"/>
                                         </padding>
@@ -181,17 +181,16 @@
                                             <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUserSelect" promptText="User"
                                                        GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
-                                            <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40"
                                                     defaultButton="false"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1"
                                                     GridPane.columnIndex="0"
-                                                    GridPane.rowIndex="2" text="Back" GridPane.halignment="LEFT"/>
+                                                    GridPane.rowIndex="1" text="Back" GridPane.halignment="LEFT"/>
                                             <Button fx:id="btnReserve" prefWidth="100" prefHeight="40"
                                                     defaultButton="true"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1"
                                                     GridPane.columnIndex="1"
-                                                    GridPane.rowIndex="2" text="Lend" GridPane.halignment="LEFT"/>
+                                                    GridPane.rowIndex="1" text="Lend" GridPane.halignment="LEFT"/>
                                         </children>
                                     </GridPane>
                                 </VBox>

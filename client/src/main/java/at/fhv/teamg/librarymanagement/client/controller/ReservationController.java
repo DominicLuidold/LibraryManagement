@@ -145,8 +145,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private Button btnReserve;
     @FXML
     private Button btnBack;
-    @FXML
-    private Label confirm;
 
 
     @Override
@@ -193,7 +191,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
                     if (response != null) {
                         if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
-                            confirm.setText(response.getMessage());
                             AlertHelper.showAlert(
                                 Alert.AlertType.CONFIRMATION,
                                 this.reservationPane.getScene().getWindow(),
@@ -201,7 +198,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                                 response.getMessage()
                             );
                         } else {
-                            confirm.setText(response.getMessage());
                             AlertHelper.showAlert(
                                 Alert.AlertType.ERROR,
                                 this.reservationPane.getScene().getWindow(),
@@ -210,7 +206,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                             );
                         }
                     } else {
-                        confirm.setText("Something went wrong");
                         AlertHelper.showAlert(
                             Alert.AlertType.ERROR,
                             this.reservationPane.getScene().getWindow(),
@@ -219,7 +214,6 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                         );
                     }
                 } else {
-                    confirm.setText("No valid user found");
                     AlertHelper.showAlert(
                         Alert.AlertType.ERROR,
                         this.reservationPane.getScene().getWindow(),
@@ -229,6 +223,14 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                     return;
                 }
 
+            } else {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.reservationPane.getScene().getWindow(),
+                    "No user selected",
+                    "Select a user first."
+                );
+                return;
             }
         });
 

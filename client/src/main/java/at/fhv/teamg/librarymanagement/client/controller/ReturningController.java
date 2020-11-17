@@ -132,8 +132,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     @FXML
     private Label userSelect;
 
-    @FXML
-    private Label confirm;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -171,7 +169,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
             if (response != null) {
                 if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
-                    confirm.setText(response.getMessage());
                     AlertHelper.showAlert(
                         Alert.AlertType.CONFIRMATION,
                         this.returningPane.getScene().getWindow(),
@@ -179,7 +176,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                         response.getMessage()
                     );
                 } else {
-                    confirm.setText(response.getMessage());
                     AlertHelper.showAlert(
                         Alert.AlertType.ERROR,
                         this.returningPane.getScene().getWindow(),
@@ -188,7 +184,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                     );
                 }
             } else {
-                confirm.setText("Something went wrong");
                 AlertHelper.showAlert(
                     Alert.AlertType.ERROR,
                     this.returningPane.getScene().getWindow(),

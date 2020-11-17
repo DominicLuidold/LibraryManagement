@@ -135,14 +135,9 @@ public class LendingController implements Initializable, Parentable<SearchContro
     @FXML
     private Button btnBack;
 
-    @FXML
-    private ComboBox<UserDto> userSelect;
 
     @FXML
     private TextField txtUserSelect;
-
-    @FXML
-    private Label confirm;
 
     private List<TopicDto> topics = new LinkedList<>();
 
@@ -161,7 +156,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
             if (txtUserSelect.getText().trim().length() == 0) {
-                confirm.setText("Select a user first.");
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "No user selected",
+                    "Select a user first."
+                );
                 return;
             }
 
@@ -199,7 +199,6 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
                 if (response != null) {
                     if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
-                        confirm.setText(response.getMessage());
                         AlertHelper.showAlert(
                             Alert.AlertType.CONFIRMATION,
                             this.lendingPane.getScene().getWindow(),
@@ -207,7 +206,6 @@ public class LendingController implements Initializable, Parentable<SearchContro
                             response.getMessage()
                         );
                     } else {
-                        confirm.setText(response.getMessage());
                         AlertHelper.showAlert(
                             Alert.AlertType.ERROR,
                             this.lendingPane.getScene().getWindow(),
@@ -216,7 +214,6 @@ public class LendingController implements Initializable, Parentable<SearchContro
                         );
                     }
                 } else {
-                    confirm.setText("Something went wrong");
                     AlertHelper.showAlert(
                         Alert.AlertType.ERROR,
                         this.lendingPane.getScene().getWindow(),
@@ -226,7 +223,6 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 }
 
             } else {
-                confirm.setText("No valid user found");
                 AlertHelper.showAlert(
                     Alert.AlertType.ERROR,
                     this.lendingPane.getScene().getWindow(),

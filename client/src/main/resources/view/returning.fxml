@@ -177,13 +177,12 @@
                                         <children>
                                             <Label text="User: " GridPane.rowIndex="0"/>
                                             <Label fx:id="userSelect" text="${controller.currentUser}" GridPane.rowIndex="0" GridPane.columnIndex="1"></Label>
-                                            <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0"
-                                                    GridPane.rowIndex="2" text="Back" GridPane.halignment="LEFT"/>
-                                            <Button fx:id="btnReturn" prefWidth="300" prefHeight="40" defaultButton="true"
+                                                    GridPane.rowIndex="1" text="Back" GridPane.halignment="LEFT"/>
+                                            <Button fx:id="btnReturn" prefWidth="100" prefHeight="40" defaultButton="true"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1"
-                                                    GridPane.rowIndex="2" text="Return" GridPane.halignment="LEFT"/>
+                                                    GridPane.rowIndex="1" text="Return medium" GridPane.halignment="LEFT"/>
 
                                         </children>
                                     </GridPane>
