@@ -1,6 +1,8 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import at.fhv.teamg.librarymanagement.client.controller.internal.UserLoginTask;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -35,6 +37,7 @@ public class LoginController implements Initializable {
     private static final Logger LOG = LogManager.getLogger(LoginController.class);
 
     private final ValidationSupport validationSupport = new ValidationSupport();
+    private LoginDto loggedInUser;
 
     @FXML
     private AnchorPane pane;
@@ -53,15 +56,15 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         ValidationDecoration cssDecorator = new StyleClassValidationDecoration(
-            "error",
-            "warning"
+                "error",
+                "warning"
         );
         this.validationSupport.setValidationDecorator(cssDecorator);
         this.validationSupport.registerValidator(this.usernameField,
-            Validator.createEmptyValidator(resources.getString("login.error.username.missing"))
+                Validator.createEmptyValidator(resources.getString("login.error.username.missing"))
         );
         this.validationSupport.registerValidator(this.passwordField,
-            Validator.createEmptyValidator(resources.getString("login.error.password.missing"))
+                Validator.createEmptyValidator(resources.getString("login.error.password.missing"))
         );
         this.validationSupport.validationResultProperty().addListener((o, oldVal, newVal) -> {
             this.isValid = newVal.getErrors().isEmpty();
@@ -73,13 +76,13 @@ public class LoginController implements Initializable {
         // https://stackoverflow.com/a/29058225
         final BooleanProperty firstTime = new SimpleBooleanProperty(true);
         this.usernameField.focusedProperty().addListener(
-            (observable, oldValue, newValue)
-                -> {
-                if (Boolean.TRUE.equals(newValue) && firstTime.get()) {
-                    this.grid.requestFocus();
-                    firstTime.setValue(false);
-                }
-            });
+                (observable, oldValue, newValue)
+                        -> {
+                    if (Boolean.TRUE.equals(newValue) && firstTime.get()) {
+                        this.grid.requestFocus();
+                        firstTime.setValue(false);
+                    }
+                });
     }
 
     /**
@@ -88,6 +91,7 @@ public class LoginController implements Initializable {
     public void processLoginCredentials() {
         LOG.debug("Login btn pressed");
         Window owner = this.submitButton.getScene().getWindow();
+
         if (!this.isValid) {
             LOG.info("Login input is not valid (missing required fields)");
             StringBuilder sb = new StringBuilder();
@@ -96,20 +100,41 @@ public class LoginController implements Initializable {
                 sb.append("\n");
             }
             AlertHelper.showAlert(
-                Alert.AlertType.ERROR,
-                owner,
-                this.resources.getString("login.error.missing.fields.title"),
-                sb.toString()
+                    Alert.AlertType.ERROR,
+                    owner,
+                    this.resources.getString("login.error.missing.fields.title"),
+                    sb.toString()
             );
             return;
         }
 
-        LOG.debug(
-            "Login with Username: {} and Password {}",
-            this.usernameField.getText(),
-            "************"
-        );
-        this.loadMainScene();
+
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+                .withUsername(usernameField.getText())
+                .withPassword(passwordField.getText())
+                .build();
+
+        UserLoginTask loginTask = new UserLoginTask(loginUser, this.pane);
+        Thread thread = new Thread(loginTask, "User login Task");
+        thread.start();
+        loginTask.setOnSucceeded(event -> {
+            loggedInUser = loginTask.getValue();
+            LOG.debug(
+                    "Login with Username: {} and Password {}",
+                    this.usernameField.getText(),
+                    "************"
+            );
+
+            if (loggedInUser.getIsValid()) {
+                this.loadMainScene();
+            } else {
+                AlertHelper.showAlert(
+                        Alert.AlertType.ERROR, owner,
+                        this.resources.getString("login.error.failed.title"),
+                        this.resources.getString("login.error.failed.title")
+                );
+            }
+        });
 
     }
 
@@ -118,9 +143,9 @@ public class LoginController implements Initializable {
         try {
             ResourceBundle bundle = ResourceBundle.getBundle("bundles.language", locale);
             MainController controller = MainController.switchSceneTo(
-                "/view/mainWindow.fxml",
-                bundle,
-                this.submitButton
+                    "/view/mainWindow.fxml",
+                    bundle,
+                    this.submitButton
             );
             controller.setLoginUser(); // TODO: add user
             LOG.debug("MainController is fully loaded now :-)");
@@ -128,10 +153,10 @@ public class LoginController implements Initializable {
             LOG.error("Cannot load main scene", e);
             Stage owner = (Stage) this.submitButton.getScene().getWindow();
             AlertHelper.showAlert(
-                Alert.AlertType.ERROR,
-                owner,
-                this.resources.getString("login.error.failed.title"),
-                this.resources.getString("login.error.technical.problems")
+                    Alert.AlertType.ERROR,
+                    owner,
+                    this.resources.getString("login.error.failed.title"),
+                    this.resources.getString("login.error.technical.problems")
             );
         }
     }
