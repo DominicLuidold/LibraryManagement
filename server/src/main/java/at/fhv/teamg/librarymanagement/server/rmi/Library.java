@@ -11,14 +11,18 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
+import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +36,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
     private LoginDto loggedInUser;
+
+    private static final List<MessageClientInterface> clients = new LinkedList<>();
+    private static final List<Message> messages = new LinkedList<>();
 
     public Library() throws RemoteException {
         super();
@@ -207,6 +214,54 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     /* #### LOGIN #### */
 
     @Override
+    public void registerForMessages(MessageClientInterface client) throws RemoteException {
+        LOG.info("new message subscriber");
+        clients.add(client);
+    }
+
+    @Override
+    public List<Message> getAllMessages() throws RemoteException {
+        return messages;
+    }
+
+    private static void updateClient(MessageClientInterface client, Message message) {
+        new Thread(() -> {
+            try {
+                client.update(message);
+            } catch (RemoteException e) {
+                LOG.info("Client can not be messaged -> remove from list");
+                clients.remove(client);
+            }
+        }).start();
+    }
+
+    /**
+     * Add a new message.
+     *
+     * @param message the new message
+     */
+    public static void addMessage(Message message) {
+        messages.add(message);
+        clients.forEach(client -> updateClient(client, message));
+    }
+
+    /**
+     * Update an existing message.
+     *
+     * @param message message with the same id of an already existing message
+     */
+    public static void updateMessage(Message message) {
+        messages.stream()
+            .filter(m -> m.id.equals(message.id))
+            .findFirst()
+            .ifPresent(m -> {
+                m.dateTime = message.dateTime;
+                m.message = message.message;
+                m.status = message.status;
+                clients.forEach(client -> updateClient(client, m));
+            });
+    }
+
     public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
         loggedInUser = userService.authenticateUser(loginDto);
         return loggedInUser;
