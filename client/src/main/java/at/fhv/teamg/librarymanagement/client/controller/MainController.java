@@ -135,7 +135,11 @@ public class MainController implements Initializable {
         );
 
         result.add(TabPaneEntry.SEARCH);
-        result.add(TabPaneEntry.MESSAGES);
+
+        if (roleName.equals(UserRoleName.Admin) || roleName.equals(UserRoleName.Librarian)) {
+            LOG.debug("Adding Messages tab because current user role is {}", roleName);
+            result.add(TabPaneEntry.MESSAGES);
+        }
 
         if (result.isEmpty()) {
             LOG.debug("No Tabs allowed. Adding unsupported tab as backup");
