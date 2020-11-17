@@ -5,7 +5,6 @@ import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.LogManager;
@@ -22,24 +21,9 @@ public class OverdueTask extends Thread {
             if (lending.getEndDate().isBefore(LocalDate.now())
                 && lending.getReturnDate() == null) {
                 count.incrementAndGet();
-                StringBuilder builder = new StringBuilder();
-                builder.append("Overdue ")
-                    .append(lending.getMediumCopy().getMedium().getType().getName())
-                    .append(" (")
-                    .append(
-                        lending.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                    )
-                    .append(") ")
-                    .append(lending.getMediumCopy().getMedium().getTitle())
-                    .append(" by User ")
-                    .append(lending.getUser().getName())
-                    .append(" (")
-                    .append(lending.getUser().getUsername())
-                    .append(")");
-
                 Library.addMessage(new Message(
                     UUID.randomUUID(),
-                    builder.toString(),
+                    Util.createOverdueMessage(lending),
                     Message.Status.Open,
                     LocalDateTime.now()
                 ));
