@@ -24,7 +24,7 @@
         <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                     AnchorPane.topAnchor="0.0">
             <children>
-                <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                <SplitPane fx:id="splitPane" dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -109,7 +109,7 @@
                                         <Label fx:id="lblGamePlatforms" visible="false" text="Platforms" GridPane.rowIndex="7"/>
                                         <Label fx:id="txtGamePlatforms" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" text="${controller.currentGame.platforms}"/>
 
-                                        <Button fx:id="btnCancel" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0" GridPane.rowIndex="9" text="Cancel" GridPane.halignment="LEFT"/>
+                                        <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0" GridPane.rowIndex="9" text="Back" GridPane.halignment="LEFT"/>
                                         <Button fx:id="btnReserve" visible="false" prefWidth="300" prefHeight="40" defaultButton="true" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1" GridPane.rowIndex="9" text="Reserve" GridPane.halignment="LEFT"/>
                                     </children>
                                 </GridPane>
@@ -150,7 +150,7 @@
                                             </TableView>
                                         </children>
                                     </VBox>
-                                    <VBox fillWidth="true">
+                                    <VBox fx:id="vboxReservations" fillWidth="true">
                                         <children>
                                             <Label text="Reservations">
                                                 <font>

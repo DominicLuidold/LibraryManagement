@@ -18,6 +18,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
@@ -32,10 +33,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -137,7 +140,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
 
     @FXML
     private TableColumn<MediumCopyDto, String> columnCopyId;
@@ -155,6 +158,10 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private TableView<MediumCopyDto> tblResults;
     @FXML
     private TableView<ReservationDto> tblReservations;
+    @FXML
+    private VBox vboxReservations;
+    @FXML
+    private SplitPane splitPane;
 
     private List<TopicDto> topics = new LinkedList<>();
 
@@ -173,6 +180,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
     }
 
     private void setCellFactories() {
@@ -345,8 +353,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             }
         });
 
-        this.btnCancel.setOnAction(e -> {
-            System.out.println("Cancel button pressed");
+        this.btnBack.setOnAction(e -> {
+            System.out.println("Back button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.MEDIA_DETAIL);
             this.parentController.getParentController().selectTab(TabPaneEntry.SEARCH);
         });
@@ -381,6 +389,23 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 break;
             default:
                 break;
+        }
+
+        // Disable Actions for non-librarian and admin
+        UserRoleName role = this.getParentController() // SearchController
+            .getParentController() // TabPaneController
+            .getParentController() // MainController
+            .getUserRole();
+        boolean isReadOnly = MainController.isReadOnly(role);
+        if (isReadOnly) {
+            LOG.debug("Disabling columns lend, return, extend, button reserve,"
+                + " reservation table because current user role is {}", role);
+            this.columnLend.setVisible(false);
+            this.columnReturn.setVisible(false);
+            this.columnExtend.setVisible(false);
+            this.btnReserve.setVisible(false);
+            this.tblReservations.setVisible(false);
+            this.vboxReservations.setVisible(false);
         }
     }
 
