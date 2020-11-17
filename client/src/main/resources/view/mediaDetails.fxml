@@ -109,7 +109,7 @@
                                         <Label fx:id="lblGamePlatforms" visible="false" text="Platforms" GridPane.rowIndex="7"/>
                                         <Label fx:id="txtGamePlatforms" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" text="${controller.currentGame.platforms}"/>
 
-                                        <Button fx:id="btnCancel" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0" GridPane.rowIndex="9" text="Cancel" GridPane.halignment="LEFT"/>
+                                        <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0" GridPane.rowIndex="9" text="Back" GridPane.halignment="LEFT"/>
                                         <Button fx:id="btnReserve" visible="false" prefWidth="300" prefHeight="40" defaultButton="true" GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1" GridPane.rowIndex="9" text="Reserve" GridPane.halignment="LEFT"/>
                                     </children>
                                 </GridPane>

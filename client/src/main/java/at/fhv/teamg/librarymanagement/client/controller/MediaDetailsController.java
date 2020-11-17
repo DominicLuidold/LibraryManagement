@@ -140,7 +140,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
 
     @FXML
     private TableColumn<MediumCopyDto, String> columnCopyId;
@@ -348,8 +348,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             }
         });
 
-        this.btnCancel.setOnAction(e -> {
-            System.out.println("Cancel button pressed");
+        this.btnBack.setOnAction(e -> {
+            System.out.println("Back button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.MEDIA_DETAIL);
             this.parentController.getParentController().selectTab(TabPaneEntry.SEARCH);
         });
