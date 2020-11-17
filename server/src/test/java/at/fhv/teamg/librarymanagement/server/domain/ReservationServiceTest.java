@@ -142,21 +142,30 @@ public class ReservationServiceTest {
     }
 
     @Test
-    void createReservation_shouldReturnDto() {
+    void createReservation_shouldReturnSuccess() {
         MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
         Set<MediumCopy> mediumCopies = new HashSet<>();
         mediumCopies.add(mediumCopyMock);
 
         Medium mediumMock = mock(Medium.class);
-        User userMock = mock(User.class);
-        UserRole userRoleMock = mock(UserRole.class);
-        Reservation reservationMock = mock(Reservation.class);
-
-        when(mediumCopyMock.isAvailable()).thenReturn(false);
         when(mediumMock.getId()).thenReturn(validMediumId);
         when(mediumMock.getCopies()).thenReturn(mediumCopies);
+
+        Medium otherMediumMock = mock(Medium.class);
+        when(otherMediumMock.getId()).thenReturn(notValidMediumId);
+
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getMedium()).thenReturn(otherMediumMock);
+        Set<Reservation> mockedReservations = new HashSet<>();
+        mockedReservations.add(reservationMock);
+
+        User userMock = mock(User.class);
+        UserRole userRoleMock = mock(UserRole.class);
+
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(mockedReservations);
         when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
 
         ReservationService reservationService = spy(ReservationService.class);
@@ -189,6 +198,7 @@ public class ReservationServiceTest {
         when(mediumMock.getId()).thenReturn(validMediumId);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(new HashSet<>());
         when(userRoleMock.getName()).thenReturn(UserRoleName.Admin);
 
         ReservationService reservationService = spy(ReservationService.class);
@@ -261,6 +271,45 @@ public class ReservationServiceTest {
         // Service
         ReservationService reservationService = spy(ReservationService.class);
         doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder.endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+
+        // Assertions
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void createReservation_shouldReturnFailure_whenUserAlreadyHasReservation() {
+        // Mocks
+        Medium mediumMock = mock(Medium.class);
+        Reservation reservationMock = mock(Reservation.class);
+
+        Set<Reservation> mockedReservations = new HashSet<>();
+        mockedReservations.add(reservationMock);
+
+        User userMock = mock(User.class);
+        UserRole userRoleMock = mock(UserRole.class);
+
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(reservationMock.getMedium()).thenReturn(mediumMock);
+        when(userMock.getId()).thenReturn(validUserId);
+        when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(mockedReservations);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(Optional.of(userMock)).when(reservationService).findUserById(validUserId);
 
         ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
         builder.endDate(LocalDate.now())

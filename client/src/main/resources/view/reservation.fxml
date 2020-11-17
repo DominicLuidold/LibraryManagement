@@ -118,7 +118,7 @@
                                     </Label>
                                     <GridPane>
                                         <padding>
-                                            <Insets top="10" right="20" bottom="20" left="20"/>
+                                            <Insets top="20" right="20" bottom="20" left="20"/>
                                         </padding>
                                         <columnConstraints>
                                             <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
@@ -131,8 +131,8 @@
                                         <children>
                                             <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUser" promptText="User" GridPane.rowIndex="0" GridPane.halignment="CENTER" GridPane.columnIndex="1"></TextField>
-                                            <Button fx:id="btnCancel" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.rowIndex="1" text="Cancel" GridPane.halignment="LEFT" />
-                                            <Button fx:id="btnOK" prefWidth="300" prefHeight="40" defaultButton="true" GridPane.rowIndex="1" text="OK" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                            <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.rowIndex="1" GridPane.columnIndex="0" text="Back" GridPane.halignment="LEFT" />
+                                            <Button fx:id="btnReserve" prefWidth="100" prefHeight="40" defaultButton="true" GridPane.rowIndex="1" text="Reserve" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
                                         </children>
                                     </GridPane>
                                 </VBox>

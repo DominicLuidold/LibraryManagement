@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
@@ -12,17 +13,16 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,8 +38,11 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private GameDto currentGame;
     private UUID currentUuid;
 
+    private String currentUser = "";
+    private List<UserDto> allUsers = null;
+
     @FXML
-    private AnchorPane detailsPane;
+    private AnchorPane returningPane;
 
     // Generic
     @FXML
@@ -124,52 +127,22 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     @FXML
     private Button btnReturn;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
 
     @FXML
-    private ComboBox<UserDto> userSelect;
+    private Label userSelect;
 
-    @FXML
-    private Label confirm;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
         LOG.debug("Initialized ReturningController");
+        loadAdditionalData();
         addMediaTypeEventHandlers();
-
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
-            @Override
-            public String toString(UserDto userDto) {
-                if (userDto == null) {
-                    return "Select User";
-                }
-                return userDto.getName() + " (" + userDto.getUsername() + ")";
-            }
-
-            @Override
-            public UserDto fromString(String user) {
-                return new UserDto.UserDtoBuilder().name(user).build();
-            }
-        };
-
-        userSelect.setConverter(userConverter);
-        try {
-            userSelect
-                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     private void addMediaTypeEventHandlers() {
         this.btnReturn.setOnAction(e -> {
-            if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                confirm.setText("Please select a user first!");
-                return;
-            }
-
-            System.out.println(currentUuid);
 
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
@@ -194,19 +167,49 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                 LOG.error(remoteException);
             }
 
-            if (null == response) {
-                confirm.setText("An unknown error occurred - please try again!");
-                return;
+            if (response != null) {
+                if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                    AlertHelper.showAlert(
+                        Alert.AlertType.CONFIRMATION,
+                        this.returningPane.getScene().getWindow(),
+                        "Returning successful",
+                        response.getMessage()
+                    );
+                } else {
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.returningPane.getScene().getWindow(),
+                        "Returning failed",
+                        response.getMessage()
+                    );
+                }
+            } else {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.returningPane.getScene().getWindow(),
+                    "Returning failed",
+                    "Something went wrong. Returning failed."
+                );
             }
-            confirm.setText(response.getMessage());
+
+
         });
 
-        this.btnCancel.setOnAction(e -> {
+        this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.RETURNING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
     }
+
+    private void loadAdditionalData() {
+        try {
+            allUsers = RmiClient.getInstance().getAllUsers();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Set Current Medium to Book.
@@ -238,12 +241,20 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void setCurrentMedium(DvdDto dvdDto) {
         currentMediumType = MediumType.DVD;
         this.enableFieldsForMediumType(MediumType.DVD);
-        System.out.println("###########");
-        System.out.println(dvdDto.getStorageLocation());
-        System.out.println(dvdDto.getTitle());
-        System.out.println(dvdDto.getDirector());
-        System.out.println("###########");
         currentDvd = dvdDto;
+    }
+
+    /**
+     * Set current MediumCopyDto.
+     *
+     * @param dto dto from MediaDetailsController.
+     */
+    public void setCurrentMediumCopy(MediumCopyDto dto) {
+        this.userSelect.textProperty().bind(new SimpleStringProperty(
+            this.allUsers.stream()
+                .filter(user -> dto.getCurrentLendingUser().equals(user.getId()))
+                .findAny().orElse(null).getName()
+        ));
     }
 
     private void enableFieldsForMediumType(MediumType type) {
@@ -330,6 +341,10 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
     public void setCurrentUuid(UUID currentUuid) {
         this.currentUuid = currentUuid;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
     }
 
     @Override

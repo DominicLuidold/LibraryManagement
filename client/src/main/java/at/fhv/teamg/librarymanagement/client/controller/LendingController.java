@@ -1,7 +1,9 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -18,16 +20,17 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.TextFields;
 
 public class LendingController implements Initializable, Parentable<SearchController> {
     private static final Logger LOG = LogManager.getLogger(LendingController.class);
@@ -41,8 +44,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private GameDto currentGame;
     private UUID currentUuid;
 
+    private UserDropdown dropdown;
+    private List<UserDto> allUserList;
+
     @FXML
-    private AnchorPane detailsPane;
+    private AnchorPane lendingPane;
 
     // Generic
     @FXML
@@ -127,13 +133,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
+
 
     @FXML
-    private ComboBox<UserDto> userSelect;
-
-    @FXML
-    private Label confirm;
+    private TextField txtUserSelect;
 
     private List<TopicDto> topics = new LinkedList<>();
 
@@ -142,88 +146,108 @@ public class LendingController implements Initializable, Parentable<SearchContro
         this.resourceBundle = resources;
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
+        loadAdditionalData();
+        dropdown = new UserDropdown(allUserList);
+        TextFields.bindAutoCompletion(txtUserSelect, dropdown.getAllUserString());
 
-        // Get all topics
-        try {
-            this.topics = RmiClient.getInstance().getAllTopics();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
-            @Override
-            public String toString(UserDto userDto) {
-                if (userDto == null) {
-                    return "Select User";
-                }
-                return userDto.getName() + " (" + userDto.getUsername() + ")";
-            }
-
-            @Override
-            public UserDto fromString(String user) {
-                return new UserDto.UserDtoBuilder().name(user).build();
-            }
-        };
-
-        userSelect.setConverter(userConverter);
-        try {
-            userSelect
-                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
 
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
-            if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                confirm.setText("select user first");
+            if (txtUserSelect.getText().trim().length() == 0) {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "No user selected",
+                    "Select a user first."
+                );
                 return;
             }
-            UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
 
-            LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
-            builder.userId(userId)
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
-                .mediumCopyId(currentUuid)
-                .renewalCount(0);
+            UUID userId = dropdown.getUserID(txtUserSelect.getText().trim());
 
-            RmiClient client = RmiClient.getInstance();
+            if (userId != null) {
+                LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
+                builder.userId(userId)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now())
+                    .mediumCopyId(currentUuid)
+                    .renewalCount(0);
 
-            MessageDto<LendingDto> response = null;
-            try {
-                switch (currentMediumType) {
-                    case DVD:
-                        response = client.lendDvd(builder.build());
-                        break;
-                    case BOOK:
-                        response = client.lendBook(builder.build());
-                        break;
-                    case GAME:
-                        response = client.lendGame(builder.build());
-                        break;
-                    default:
-                        LOG.error("no medium type");
+                RmiClient client = RmiClient.getInstance();
+
+                MessageDto<LendingDto> response = null;
+                try {
+                    switch (currentMediumType) {
+                        case DVD:
+                            response = client.lendDvd(builder.build());
+                            break;
+                        case BOOK:
+                            response = client.lendBook(builder.build());
+                            break;
+                        case GAME:
+                            response = client.lendGame(builder.build());
+                            break;
+                        default:
+                            LOG.error("no medium type");
+                    }
+
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
                 }
 
-            } catch (RemoteException remoteException) {
-                remoteException.printStackTrace();
-            }
+                if (response != null) {
+                    if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.CONFIRMATION,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending successful",
+                            response.getMessage()
+                        );
+                    } else {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending failed",
+                            response.getMessage()
+                        );
+                    }
+                } else {
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.lendingPane.getScene().getWindow(),
+                        "Lending failed",
+                        "Something went wrong. Lending failed."
+                    );
+                }
 
-            if (null == response) {
-                confirm.setText("An unknown error occurred - please try again!");
+            } else {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "User not found",
+                    "No user found. Please select a valid user."
+                );
                 return;
             }
-            confirm.setText(response.getMessage());
         });
 
-        this.btnCancel.setOnAction(e -> {
+        this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
+
+    }
+
+    private void loadAdditionalData() {
+        try {
+            this.allUserList = RmiClient.getInstance().getAllUsers();
+            this.topics = RmiClient.getInstance().getAllTopics();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -19,7 +19,9 @@
 <?import org.controlsfx.control.ListSelectionView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.MenuButton?>
-<AnchorPane fx:id="detailsPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="lendingPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="at.fhv.teamg.librarymanagement.client.controller.LendingController">
     <children>
         <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -143,44 +145,57 @@
                                                GridPane.rowIndex="7"/>
                                         <Label fx:id="txtGamePlatforms" visible="false" GridPane.columnIndex="1"
                                                GridPane.rowIndex="7" text="${controller.currentGame.platforms}"/>
-
-                                        <Button fx:id="btnCancel" prefWidth="100" prefHeight="40" defaultButton="false"
-                                                GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0"
-                                                GridPane.rowIndex="9" text="Cancel" GridPane.halignment="LEFT"/>
-                                        <Button fx:id="btnReserve" prefWidth="300" prefHeight="40" defaultButton="true"
-                                                GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1"
-                                                GridPane.rowIndex="9" text="Lend" GridPane.halignment="LEFT"/>
                                     </children>
                                 </GridPane>
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                            <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <padding>
-                                    <Insets top="20" right="20" bottom="20" left="20"/>
-                                </padding>
-                                <columnConstraints>
-                                    <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
-                                    <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
-                                </columnConstraints>
-                                <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                </rowConstraints>
-                                <children>
-                                    <ComboBox fx:id="userSelect" GridPane.rowIndex="0"></ComboBox>
-                                    <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
-                                </children>
-                            </GridPane>
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                            <children>
+                                <VBox fillWidth="true">
+                                    <Label text="Add a lending">
+                                        <padding>
+                                            <Insets top="20" right="20" bottom="10" left="20"/>
+                                        </padding>
+                                        <font>
+                                            <Font size="18"/>
+                                        </font>
+                                    </Label>
+                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <padding>
+                                            <Insets top="20" right="20" bottom="20" left="20"/>
+                                        </padding>
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
+                                            <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
+                                            <TextField fx:id="txtUserSelect" promptText="User"
+                                                       GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
+                                            <Button fx:id="btnBack" prefWidth="100" prefHeight="40"
+                                                    defaultButton="false"
+                                                    GridPane.columnSpan="1" GridPane.rowSpan="1"
+                                                    GridPane.columnIndex="0"
+                                                    GridPane.rowIndex="1" text="Back" GridPane.halignment="LEFT"/>
+                                            <Button fx:id="btnReserve" prefWidth="100" prefHeight="40"
+                                                    defaultButton="true"
+                                                    GridPane.columnSpan="1" GridPane.rowSpan="1"
+                                                    GridPane.columnIndex="1"
+                                                    GridPane.rowIndex="1" text="Lend" GridPane.halignment="LEFT"/>
+                                        </children>
+                                    </GridPane>
+                                </VBox>
+                            </children>
+
                         </AnchorPane>
                     </items>
                 </SplitPane>

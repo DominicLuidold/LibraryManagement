@@ -268,24 +268,29 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                         return dto;
                     }
 
+                    System.out.println("Reached " + currentBook.toString());
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
                             .addTab(TabPaneEntry.RETURNING, this.getParentController()).get();
 
+                    System.out.println("reached 2 " + currentBook.toString());
                     ReturningController returningController = (ReturningController) controller;
 
                     if (null != currentMediumType) {
                         switch (currentMediumType) {
                             case DVD:
                                 returningController.setCurrentMedium(currentDvd);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             case BOOK:
                                 returningController.setCurrentMedium(currentBook);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             case GAME:
                                 returningController.setCurrentMedium(currentGame);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             default:
                                 LOG.error("No medium type available.");
