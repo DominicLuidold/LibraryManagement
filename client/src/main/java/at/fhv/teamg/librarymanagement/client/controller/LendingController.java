@@ -198,23 +198,31 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 }
 
                 if (response != null) {
-                    confirm.setText(response.getMessage());
-                    AlertHelper.showAlert(
-                        Alert.AlertType.CONFIRMATION,
-                        this.lendingPane.getScene().getWindow(),
-                        "Lending successful",
-                        "Lending was successful."
-                    );
-                    return;
+                    if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                        confirm.setText(response.getMessage());
+                        AlertHelper.showAlert(
+                            Alert.AlertType.CONFIRMATION,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending successful",
+                            response.getMessage()
+                        );
+                    } else {
+                        confirm.setText(response.getMessage());
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending failed",
+                            response.getMessage()
+                        );
+                    }
                 } else {
                     confirm.setText("Something went wrong");
                     AlertHelper.showAlert(
                         Alert.AlertType.ERROR,
                         this.lendingPane.getScene().getWindow(),
                         "Lending failed",
-                        "Lending failed."
+                        "Something went wrong. Lending failed."
                     );
-                    return;
                 }
 
             } else {

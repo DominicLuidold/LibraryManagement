@@ -170,13 +170,23 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             }
 
             if (response != null) {
-                confirm.setText(response.getMessage());
-                AlertHelper.showAlert(
-                    Alert.AlertType.CONFIRMATION,
-                    this.returningPane.getScene().getWindow(),
-                    "Returning successful",
-                    "Returning successful"
-                );
+                if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                    confirm.setText(response.getMessage());
+                    AlertHelper.showAlert(
+                        Alert.AlertType.CONFIRMATION,
+                        this.returningPane.getScene().getWindow(),
+                        "Returning successful",
+                        response.getMessage()
+                    );
+                } else {
+                    confirm.setText(response.getMessage());
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.returningPane.getScene().getWindow(),
+                        "Returning failed",
+                        response.getMessage()
+                    );
+                }
             } else {
                 confirm.setText("Something went wrong");
                 AlertHelper.showAlert(
@@ -186,6 +196,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                     "Something went wrong. Returning failed."
                 );
             }
+
 
         });
 
@@ -240,6 +251,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
     /**
      * Set current MediumCopyDto.
+     *
      * @param dto dto from MediaDetailsController.
      */
     public void setCurrentMediumCopy(MediumCopyDto dto) {
