@@ -69,7 +69,7 @@ public class LendingServiceTest {
     }
 
     @Test
-    void createLending_shouldReturnEmpty() {
+    void createLending_shouldNotReturnSuccess() {
         MediumCopy mediumCopyMock = mock(MediumCopy.class);
         Medium mediumMock = mock(Medium.class);
         MediumType mediumTypeMock = mock(MediumType.class);

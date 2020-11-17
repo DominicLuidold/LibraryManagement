@@ -3,6 +3,7 @@ package at.fhv.teamg.librarymanagement.server.rmi;
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
+import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
@@ -19,7 +20,6 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,6 +29,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
     private final ReservationService reservationService = new ReservationService();
+    private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
     private LoginDto loggedInUser;
 
@@ -82,8 +83,39 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
-        return reservationService.getReservations(gameDto);
+    public List<TopicDto> getAllTopics() throws RemoteException {
+        return cache.getAllTopics();
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() throws RemoteException {
+        return cache.getAllUsers();
+    }
+
+    /* #### RESERVATION #### */
+
+    @Override
+    public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
+        throws RemoteException {
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateBookCacheMedium(reservationDto.getMediumId());
+        return result;
+    }
+
+    @Override
+    public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto)
+        throws RemoteException {
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
+        return result;
+    }
+
+    @Override
+    public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto)
+        throws RemoteException {
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateGameCacheMedium(reservationDto.getMediumId());
+        return result;
     }
 
     @Override
@@ -96,49 +128,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return reservationService.getReservations(dvdDto);
     }
 
-    private ReservationDto reserve(ReservationDto reservationDto) {
-        Optional<ReservationDto> result = reservationService.createReservation(reservationDto);
-        if (result.isPresent()) {
-            return result.get();
-        }
-        LOG.error("Cannot create reservation");
-        return null;
-    }
-
     @Override
-    public ReservationDto reserveGame(ReservationDto reservationDto)
-        throws RemoteException {
-        ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateGameCacheMedium(reservationDto.getMediumId());
-        return result;
-    }
-
-    @Override
-    public ReservationDto reserveBook(ReservationDto reservationDto)
-        throws RemoteException {
-        // same as above
-        ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateBookCacheMedium(reservationDto.getMediumId());
-        return result;
-    }
-
-    @Override
-    public ReservationDto reserveDvd(ReservationDto reservationDto)
-        throws RemoteException {
-        // same as above
-        ReservationDto result = this.reserve(reservationDto);
-        cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
-        return result;
-    }
-
-    @Override
-    public List<TopicDto> getAllTopics() throws RemoteException {
-        return cache.getAllTopics();
-    }
-
-    @Override
-    public List<UserDto> getAllUsers() throws RemoteException {
-        return cache.getAllUsers();
+    public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
+        return reservationService.getReservations(gameDto);
     }
 
     /* ##### LENDING ##### */
@@ -206,11 +198,15 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return result;
     }
 
+    /* #### LOGIN #### */
+
     @Override
     public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
         loggedInUser = userService.authenticateUser(loginDto);
         return loggedInUser;
     }
+
+    /* #### AUTHORIZATION #### */
 
     private boolean isValid(UserRoleName userRoleNeeded) {
         /*
