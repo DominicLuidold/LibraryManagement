@@ -168,4 +168,8 @@ public class MainController implements Initializable {
     public UserRoleName getUserRole() {
         return userRole;
     }
+
+    public static boolean isReadOnly(UserRoleName role) {
+        return !(role.equals(UserRoleName.Librarian) || role.equals(UserRoleName.Admin));
+    }
 }
