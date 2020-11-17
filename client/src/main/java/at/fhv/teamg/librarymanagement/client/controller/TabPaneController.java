@@ -128,7 +128,7 @@ public class TabPaneController implements Initializable, Parentable<MainControll
         MainController parent = this.getParentController();
 
         Queue<TabPaneEntry> tabs = new LinkedList<>();
-        tabs = parent.getPermittedTabs();
+        tabs = parent.getPermittedTabs(parent.getUserRole());
 
 
         LOG.debug("Adding {} tabs to menu", tabs.size());

@@ -144,7 +144,7 @@ public class LoginController implements Initializable {
                 bundle,
                 this.submitButton
             );
-            controller.setLoginUser(); // TODO: add user
+            controller.setLoginUser(this.loggedInUser); // TODO: add user
             LOG.debug("MainController is fully loaded now :-)");
         } catch (IOException e) {
             LOG.error("Cannot load main scene", e);
