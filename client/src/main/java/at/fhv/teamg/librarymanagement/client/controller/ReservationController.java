@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -217,13 +219,31 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
                     if (resDto != null) {
                         confirm.setText("Reservation successful");
+                        AlertHelper.showAlert(
+                            Alert.AlertType.CONFIRMATION,
+                            this.reservationPane.getScene().getWindow(),
+                            "Reservation successful",
+                            "Reservation was successful."
+                        );
                         return;
                     } else {
                         confirm.setText("Something went wrong");
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.reservationPane.getScene().getWindow(),
+                            "Reservation failed",
+                            "Something went wrong. Reservation failed."
+                        );
                         return;
                     }
                 } else {
                     confirm.setText("No valid user found");
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.reservationPane.getScene().getWindow(),
+                        "User not found",
+                        "No user found. Please select a valid user."
+                    );
                     return;
                 }
                 /*if (this.type.equals(MediumType.BOOK)) {

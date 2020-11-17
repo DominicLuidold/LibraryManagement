@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
@@ -16,6 +17,7 @@ import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -38,7 +40,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private List<UserDto> allUsers = null;
 
     @FXML
-    private AnchorPane detailsPane;
+    private AnchorPane returningPane;
 
     // Generic
     @FXML
@@ -167,8 +169,20 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
             if (confirmedReturn) {
                 confirm.setText("Returning confirmed");
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.returningPane.getScene().getWindow(),
+                    "Returning successful",
+                    "Returning successful"
+                );
             } else {
                 confirm.setText("Something went wrong");
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.returningPane.getScene().getWindow(),
+                    "Returning failed",
+                    "Something went wrong. Returning failed."
+                );
             }
 
         });

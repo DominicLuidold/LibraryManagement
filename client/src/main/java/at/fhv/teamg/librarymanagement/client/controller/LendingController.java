@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -196,14 +198,32 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
                 if (confirmedLending != null) {
                     confirm.setText("Lending successful");
+                    AlertHelper.showAlert(
+                        Alert.AlertType.CONFIRMATION,
+                        this.lendingPane.getScene().getWindow(),
+                        "Lending successful",
+                        "Lending was successful."
+                    );
                     return;
                 } else {
                     confirm.setText("Something went wrong");
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.lendingPane.getScene().getWindow(),
+                        "Lending failed",
+                        "Lending failed."
+                    );
                     return;
                 }
 
             } else {
                 confirm.setText("No valid user found");
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "User not found",
+                    "No user found. Please select a valid user."
+                );
                 return;
             }
         });
