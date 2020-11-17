@@ -4,22 +4,22 @@ import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class MessageClient extends UnicastRemoteObject implements IMessageClient {
     List<Message> messages;
-    List<IMessageSubscriber> subscribers = new LinkedList<>();
+    Consumer<List<Message>> onUpdate;
 
     public MessageClient() throws RemoteException {
         super();
         messages = RmiClient.getInstance().getAllMessages();
     }
 
-    public void subscribe(IMessageSubscriber sub) {
-        subscribers.add(sub);
-        sub.update(messages);
+    public void onUpdate(Consumer<List<Message>> consumer) {
+        onUpdate = consumer;
+        onUpdate.accept(messages);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class MessageClient extends UnicastRemoteObject implements IMessageClient
             messages.add(message);
         }
 
-        subscribers.forEach(sub -> sub.update(messages));
+        onUpdate.accept(messages);
     }
 }
