@@ -170,7 +170,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             if (confirmedReturn) {
                 confirm.setText("Returning confirmed");
                 AlertHelper.showAlert(
-                    Alert.AlertType.ERROR,
+                    Alert.AlertType.CONFIRMATION,
                     this.returningPane.getScene().getWindow(),
                     "Returning successful",
                     "Returning successful"
