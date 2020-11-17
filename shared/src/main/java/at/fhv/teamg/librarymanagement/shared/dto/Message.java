@@ -12,6 +12,14 @@ public class Message implements Serializable {
         Done
     }
 
+    /**
+     * Constructor for Message.
+     *
+     * @param id       uuid
+     * @param message  text of the message
+     * @param status   status of the message
+     * @param dateTime datetime when the message was created
+     */
     public Message(UUID id, String message,
                    Status status, LocalDateTime dateTime) {
         this.id = id;
