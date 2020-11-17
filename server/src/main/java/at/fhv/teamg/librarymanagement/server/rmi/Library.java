@@ -21,8 +21,8 @@ import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
-import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
+import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDateTime;
@@ -48,7 +48,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final Cache cache = Cache.getInstance();
     private LoginDto loggedInUser;
 
-    private static final List<IMessageClient> clients = new LinkedList<>();
+    private static final List<MessageClientInterface> clients = new LinkedList<>();
     private static final List<Message> messages = new LinkedList<>();
 
     public Library() throws RemoteException {
@@ -246,7 +246,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public void registerForMessages(IMessageClient client) throws RemoteException {
+    public void registerForMessages(MessageClientInterface client) throws RemoteException {
         LOG.info("new message subscriber");
         clients.add(client);
     }
@@ -256,7 +256,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return messages;
     }
 
-    private static void updateClient(IMessageClient client, Message message) {
+    private static void updateClient(MessageClientInterface client, Message message) {
         new Thread(() -> {
             try {
                 client.update(message);

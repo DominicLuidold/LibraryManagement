@@ -4,6 +4,6 @@ import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IMessageClient extends Remote {
+public interface MessageClientInterface extends Remote {
     void update(Message message) throws RemoteException;
 }

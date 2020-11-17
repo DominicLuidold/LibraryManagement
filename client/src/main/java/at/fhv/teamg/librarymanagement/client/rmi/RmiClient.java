@@ -11,9 +11,9 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
-import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
+import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -186,7 +186,7 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public void registerForMessages(IMessageClient client) throws RemoteException {
+    public void registerForMessages(MessageClientInterface client) throws RemoteException {
         library.registerForMessages(client);
     }
 

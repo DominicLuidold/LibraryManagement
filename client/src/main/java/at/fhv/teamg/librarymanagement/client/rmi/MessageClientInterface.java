@@ -1,7 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.rmi;
 
 import at.fhv.teamg.librarymanagement.shared.dto.Message;
-import at.fhv.teamg.librarymanagement.shared.ifaces.IMessageClient;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -10,12 +9,13 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MessageClient extends UnicastRemoteObject implements IMessageClient {
-    private static final Logger LOG = LogManager.getLogger(MessageClient.class);
+public class MessageClientInterface extends UnicastRemoteObject implements
+    at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface {
+    private static final Logger LOG = LogManager.getLogger(MessageClientInterface.class);
     List<Message> messages;
     Consumer<List<Message>> onUpdate;
 
-    public MessageClient() throws RemoteException {
+    public MessageClientInterface() throws RemoteException {
         super();
         messages = RmiClient.getInstance().getAllMessages();
     }

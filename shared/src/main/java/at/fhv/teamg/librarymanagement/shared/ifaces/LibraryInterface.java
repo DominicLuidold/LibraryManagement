@@ -68,7 +68,7 @@ public interface LibraryInterface extends Remote {
 
     MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException;
 
-    void registerForMessages(IMessageClient client) throws RemoteException;
+    void registerForMessages(MessageClientInterface client) throws RemoteException;
 
     List<Message> getAllMessages() throws RemoteException;
 
