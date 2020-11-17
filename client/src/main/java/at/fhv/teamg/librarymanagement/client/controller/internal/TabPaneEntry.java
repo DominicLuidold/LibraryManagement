@@ -13,7 +13,8 @@ public enum TabPaneEntry {
     MEDIA_DETAIL(1, "Media Details", "/view/mediaDetails.fxml", true),
     RESERVATION(1, "Reservation", "/view/reservation.fxml", true),
     LENDING(1, "Lending", "/view/lending.fxml", true),
-    RETURNING(1, "Returning", "/view/returning.fxml", true);
+    RETURNING(1, "Returning", "/view/returning.fxml", true),
+    MESSAGES(2, "Messages", "/view/messages.fxml", false);
 
     private final int order;
     private final String title;
