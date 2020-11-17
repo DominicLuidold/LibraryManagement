@@ -182,11 +182,11 @@
                                             <TextField fx:id="txtUserSelect" promptText="User"
                                                        GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
                                             <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
-                                            <Button fx:id="btnCancel" prefWidth="100" prefHeight="40"
+                                            <Button fx:id="btnBack" prefWidth="100" prefHeight="40"
                                                     defaultButton="false"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1"
                                                     GridPane.columnIndex="0"
-                                                    GridPane.rowIndex="2" text="Cancel" GridPane.halignment="LEFT"/>
+                                                    GridPane.rowIndex="2" text="Back" GridPane.halignment="LEFT"/>
                                             <Button fx:id="btnReserve" prefWidth="100" prefHeight="40"
                                                     defaultButton="true"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1"

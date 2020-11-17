@@ -1,6 +1,5 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
-import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
@@ -19,16 +18,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
@@ -134,7 +130,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
 
     @FXML
     private ComboBox<UserDto> userSelect;
@@ -212,7 +208,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
             }
         });
 
-        this.btnCancel.setOnAction(e -> {
+        this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
             this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);

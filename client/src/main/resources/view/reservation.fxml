@@ -132,8 +132,8 @@
                                             <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUser" promptText="User" GridPane.rowIndex="0" GridPane.halignment="CENTER" GridPane.columnIndex="1"></TextField>
                                             <Label fx:id="confirm" GridPane.rowIndex="1"></Label>
-                                            <Button fx:id="btnCancel" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.rowIndex="2" GridPane.columnIndex="0" text="Cancel" GridPane.halignment="LEFT" />
-                                            <Button fx:id="btnOK" prefWidth="100" prefHeight="40" defaultButton="true" GridPane.rowIndex="2" text="Reserve" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                            <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.rowIndex="2" GridPane.columnIndex="0" text="Back" GridPane.halignment="LEFT" />
+                                            <Button fx:id="btnReserve" prefWidth="100" prefHeight="40" defaultButton="true" GridPane.rowIndex="2" text="Reserve" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                                         </children>
                                     </GridPane>
                                 </VBox>

@@ -1,6 +1,5 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
-import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
@@ -14,15 +13,12 @@ import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -147,9 +143,9 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     @FXML
     private TextField txtUser;
     @FXML
-    private Button btnOK;
+    private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
     @FXML
     private Label confirm;
 
@@ -187,7 +183,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     }*/
 
     private void addMediaTypeEventHandlers() {
-        this.btnOK.setOnAction(e -> {
+        this.btnReserve.setOnAction(e -> {
             if (txtUser.getText().trim().length() != 0) {
                 userUuidToReserve = dropdown.getUserID(txtUser.getText().trim());
 
@@ -265,7 +261,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
             }
         });
 
-        this.btnCancel.setOnAction(e -> {
+        this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
             this.parentController.getParentController().getParentController()
                 .removeTab(TabPaneEntry.RESERVATION);
