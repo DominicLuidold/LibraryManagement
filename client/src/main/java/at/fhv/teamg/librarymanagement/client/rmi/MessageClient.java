@@ -7,8 +7,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MessageClient extends UnicastRemoteObject implements IMessageClient {
+    private static final Logger LOG = LogManager.getLogger(MessageClient.class);
     List<Message> messages;
     Consumer<List<Message>> onUpdate;
 
@@ -29,13 +32,13 @@ public class MessageClient extends UnicastRemoteObject implements IMessageClient
             .findFirst();
 
         if (messageOptional.isPresent()) {
-            System.out.println("got message update");
+            LOG.info("got message update");
             Message m = messageOptional.get();
             m.status = message.status;
             m.message = message.message;
             m.dateTime = message.dateTime;
         } else {
-            System.out.println("got new Message");
+            LOG.info("got new Message");
             messages.add(message);
         }
 
