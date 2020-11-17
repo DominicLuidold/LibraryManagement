@@ -36,7 +36,7 @@ public class MessageDto<T extends Dto> implements Serializable {
     public static class MessageDtoBuilder<T extends Dto> {
         private String message;
         private MessageType type;
-        private T result;
+        private T result = null;
 
         public MessageDtoBuilder<T> withMessage(String message) {
             this.message = message;

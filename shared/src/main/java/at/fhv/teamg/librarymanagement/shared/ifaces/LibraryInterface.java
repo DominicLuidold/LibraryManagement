@@ -45,25 +45,27 @@ public interface LibraryInterface extends Remote {
 
     ReservationDto reserveDvd(ReservationDto reservationDto) throws RemoteException;
 
-    LendingDto lendGame(LendingDto lendingDto) throws RemoteException;
-
-    LendingDto lendBook(LendingDto lendingDto) throws RemoteException;
-
-    LendingDto lendDvd(LendingDto lendingDto) throws RemoteException;
-
-    Boolean returnGame(MediumCopyDto mediumCopyDto) throws RemoteException;
-
-    Boolean returnBook(MediumCopyDto mediumCopyDto) throws RemoteException;
-
-    Boolean returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
-
     List<TopicDto> getAllTopics() throws RemoteException;
 
     List<UserDto> getAllUsers() throws RemoteException;
+
+    /* ##### LENDING ##### */
+
+    MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException;
+
+    MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
+
+    MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException;
 
     MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException;
 
     MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
 
     MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException;
+
+    MessageDto<EmptyDto> returnBook(MediumCopyDto mediumCopyDto) throws RemoteException;
+
+    MessageDto<EmptyDto> returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException;
+
+    MessageDto<EmptyDto> returnGame(MediumCopyDto mediumCopyDto) throws RemoteException;
 }
