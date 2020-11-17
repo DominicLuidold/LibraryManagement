@@ -28,6 +28,7 @@ public class TaskRunner {
         }
 
         Duration duration = Duration.between(now, runAt);
+        LOG.debug("nex overdue check at " + now.plusSeconds(duration.getSeconds()));
         executor.scheduleAtFixedRate(new OverdueTask(),
             duration.getSeconds(),
             TimeUnit.DAYS.toSeconds(1),
