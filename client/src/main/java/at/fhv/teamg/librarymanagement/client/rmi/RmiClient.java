@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.client.rmi;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
@@ -51,10 +52,7 @@ public class RmiClient implements LibraryInterface {
         return instance;
     }
 
-    @Override
-    public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
-        return library.searchGame(gameDto);
-    }
+    /* #### SEARCH #### */
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
@@ -68,9 +66,11 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
-        return library.getGameDetail(gameDto);
+    public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
+        return library.searchGame(gameDto);
     }
+
+    /* #### DETAILS #### */
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
@@ -83,9 +83,11 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException {
-        return library.getAllGameCopies(gameDto);
+    public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
+        return library.getGameDetail(gameDto);
     }
+
+    /* #### GET ALL #### */
 
     @Override
     public List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException {
@@ -98,8 +100,38 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
-        return library.getAllGameReservations(gameDto);
+    public List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException {
+        return library.getAllGameCopies(gameDto);
+    }
+
+    @Override
+    public List<TopicDto> getAllTopics() throws RemoteException {
+        return library.getAllTopics();
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() throws RemoteException {
+        return library.getAllUsers();
+    }
+
+    /* #### RESERVATION #### */
+
+    @Override
+    public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
+        throws RemoteException {
+        return library.reserveBook(reservationDto);
+    }
+
+    @Override
+    public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto)
+        throws RemoteException {
+        return library.reserveDvd(reservationDto);
+    }
+
+    @Override
+    public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto)
+        throws RemoteException {
+        return library.reserveGame(reservationDto);
     }
 
     @Override
@@ -113,77 +145,65 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public ReservationDto reserveGame(ReservationDto reservationDto)
-        throws RemoteException {
-        return library.reserveGame(reservationDto);
+    public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
+        return library.getAllGameReservations(gameDto);
     }
 
-    @Override
-    public ReservationDto reserveBook(ReservationDto reservationDto)
-        throws RemoteException {
-        return library.reserveBook(reservationDto);
-    }
+    /* ##### LENDING ##### */
 
     @Override
-    public ReservationDto reserveDvd(ReservationDto reservationDto)
-        throws RemoteException {
-        return library.reserveDvd(reservationDto);
-    }
-
-    @Override
-    public LendingDto lendGame(LendingDto lendingDto) throws RemoteException {
-        return library.lendGame(lendingDto);
-    }
-
-    @Override
-    public LendingDto lendBook(LendingDto lendingDto) throws RemoteException {
+    public MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
         return library.lendBook(lendingDto);
     }
 
     @Override
-    public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
+    public MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
         return library.lendDvd(lendingDto);
     }
 
     @Override
-    public Boolean returnGame(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return library.returnGame(mediumCopyDto);
+    public MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
+        return library.lendGame(lendingDto);
     }
 
     @Override
-    public Boolean returnBook(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return library.returnBook(mediumCopyDto);
-    }
-
-    @Override
-    public Boolean returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
-        return library.returnDvd(mediumCopyDto);
-    }
-
-    @Override
-    public List<TopicDto> getAllTopics() throws RemoteException {
-        return library.getAllTopics();
-    }
-
-    @Override
-    public List<UserDto> getAllUsers() throws RemoteException {
-        return library.getAllUsers();
-    }
-
-    @Override
-    public MessageDto extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+    public MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
         return library.extendBook(mediumCopyDto);
     }
 
     @Override
-    public MessageDto extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+    public MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
         return library.extendDvd(mediumCopyDto);
     }
 
     @Override
-    public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+    public MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
         return library.extendGame(mediumCopyDto);
     }
+
+    @Override
+    public MessageDto<EmptyDto> returnBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.returnBook(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto<EmptyDto> returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.returnDvd(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto<EmptyDto> returnGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return library.returnGame(mediumCopyDto);
+    }
+
+    /* #### LOGIN #### */
+
+    @Override
+    public MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException {
+        return library.loginUser(loginDto);
+    }
+
+    /* #### MESSAGING #### */
 
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
@@ -193,10 +213,5 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<Message> getAllMessages() throws RemoteException {
         return library.getAllMessages();
-    }
-
-    @Override
-    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
-        return library.loginUser(loginDto);
     }
 }

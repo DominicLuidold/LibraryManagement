@@ -1,6 +1,9 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -19,6 +22,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
@@ -167,11 +171,17 @@ public class ReservationServiceTest {
             .mediumId(validMediumId)
             .userId(validUserId);
 
-        assertTrue(reservationService.createReservation(builder.build()).isPresent());
+        // Assertions
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.SUCCESS, messageDto.getType());
+        assertNotNull(messageDto.getResult());
     }
 
     @Test
-    void createReservation_shouldReturnEmpty() {
+    void createReservation_shouldNotReturnSuccess() {
         Medium mediumMock = mock(Medium.class);
         User userMock = mock(User.class);
         UserRole userRoleMock = mock(UserRole.class);
@@ -193,7 +203,13 @@ public class ReservationServiceTest {
             .startDate(LocalDate.now())
             .mediumId(notValidMediumId)
             .userId(notValidUserId);
-        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        // Medium not found
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         builder = new ReservationDto.ReservationDtoBuilder();
         builder
@@ -201,7 +217,11 @@ public class ReservationServiceTest {
             .startDate(LocalDate.now())
             .mediumId(validMediumId)
             .userId(notValidUserId);
-        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        // User not found
+        messageDto = reservationService.createReservation(builder.build());
+        assertEquals(MessageDto.MessageType.ERROR, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         builder = new ReservationDto.ReservationDtoBuilder();
         builder
@@ -210,17 +230,24 @@ public class ReservationServiceTest {
             .mediumId(validMediumId)
             .userId(validUserId);
         ReservationDto validReservation = builder.build();
-        assertFalse(reservationService.createReservation(validReservation).isPresent());
+
+        // User's role doesn't match CUSTOMER
+        messageDto = reservationService.createReservation(validReservation);
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
         doReturn(Optional.empty()).when(reservationService)
             .updateReservation(any(Reservation.class));
 
-        assertFalse(reservationService.createReservation(validReservation).isPresent());
+        // Updating reservation failed
+        messageDto = reservationService.createReservation(validReservation);
+        assertEquals(MessageDto.MessageType.ERROR, messageDto.getType());
+        assertNull(messageDto.getResult());
     }
 
     @Test
-    void createReservation_shouldReturnEmpty_whenCopiesAvailable() {
+    void createReservation_shouldReturnFailure_whenCopiesAvailable() {
         // Mocks
         MediumCopy mediumCopyMock = mock(MediumCopy.class);
         Set<MediumCopy> mediumCopies = new HashSet<>();
@@ -242,6 +269,11 @@ public class ReservationServiceTest {
             .userId(validUserId);
 
         // Assertions
-        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
     }
 }

