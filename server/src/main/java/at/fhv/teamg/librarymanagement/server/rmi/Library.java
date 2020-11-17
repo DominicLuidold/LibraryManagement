@@ -267,7 +267,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }).start();
     }
 
-    private static void addMessage(Message message) {
+    public static void addMessage(Message message) {
         messages.add(message);
         clients.forEach(client -> updateClient(client, message));
     }
