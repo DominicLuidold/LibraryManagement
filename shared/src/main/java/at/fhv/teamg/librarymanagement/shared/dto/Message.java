@@ -20,8 +20,12 @@ public class Message implements Serializable {
      * @param status   status of the message
      * @param dateTime datetime when the message was created
      */
-    public Message(UUID id, String message,
-                   Status status, LocalDateTime dateTime) {
+    public Message(
+        UUID id,
+        String message,
+        Status status,
+        LocalDateTime dateTime
+    ) {
         this.id = id;
         this.message = message;
         this.status = status;
