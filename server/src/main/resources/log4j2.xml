@@ -12,6 +12,9 @@
         <Logger name="org.hibernate" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
+        <Logger name="com.mchange.v2" level="ERROR">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
         <Root level="debug">
             <AppenderRef ref="LogToConsole"/>
         </Root>

@@ -6,8 +6,10 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -148,17 +150,17 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
 
             RmiClient client = RmiClient.getInstance();
-            boolean confirmedReturn = false;
+            MessageDto<EmptyDto> response = null;
             try {
                 switch (currentMediumType) {
                     case BOOK:
-                        confirmedReturn = client.returnBook(builder.build());
+                        response = client.returnBook(builder.build());
                         break;
                     case DVD:
-                        confirmedReturn = client.returnDvd(builder.build());
+                        response = client.returnDvd(builder.build());
                         break;
                     case GAME:
-                        confirmedReturn = client.returnGame(builder.build());
+                        response = client.returnGame(builder.build());
                         break;
                     default:
                         LOG.error("No medium type");
@@ -167,8 +169,8 @@ public class ReturningController implements Initializable, Parentable<SearchCont
                 LOG.error(remoteException);
             }
 
-            if (confirmedReturn) {
-                confirm.setText("Returning confirmed");
+            if (response != null) {
+                confirm.setText(response.getMessage());
                 AlertHelper.showAlert(
                     Alert.AlertType.CONFIRMATION,
                     this.returningPane.getScene().getWindow(),

@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.ReservationDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
@@ -12,6 +13,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.util.LinkedList;
@@ -98,30 +100,42 @@ public class ReservationService extends BaseMediaService {
     }
 
     /**
-     * Create a new Reservation.
+     * Creates a new reservation.
      *
      * @param reservationDto Dto without id
      * @return Newly created Reservation
      */
-    public Optional<ReservationDto> createReservation(ReservationDto reservationDto) {
+    public MessageDto<ReservationDto> createReservation(ReservationDto reservationDto) {
         Optional<Medium> medium = findMediumById(reservationDto.getMediumId());
-        if (!medium.isPresent()) {
-            return Optional.empty();
+        if (medium.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified medium",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         for (MediumCopy mediumCopy : medium.get().getCopies()) {
             if (mediumCopy.isAvailable()) {
-                return Optional.empty();
+                return Utils.createMessageResponse(
+                    "Selected medium has available copies",
+                    MessageDto.MessageType.FAILURE
+                );
             }
         }
 
         Optional<User> user = findUserById(reservationDto.getUserId());
-        if (!user.isPresent()) {
-            return Optional.empty();
+        if (user.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not process provided user information",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         if (!user.get().getRole().getName().equals(UserRoleName.Customer)) {
-            return Optional.empty();
+            return Utils.createMessageResponse(
+                "User is not allowed to reserve a medium",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         Reservation reservation = new Reservation();
@@ -131,8 +145,11 @@ public class ReservationService extends BaseMediaService {
         reservation.setMedium(medium.get());
         reservation.setUser(user.get());
 
-        if (!updateReservation(reservation).isPresent()) {
-            return Optional.empty();
+        if (updateReservation(reservation).isEmpty()) {
+            return Utils.createMessageResponse(
+                "Updating reservation information has failed",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         ReservationDto.ReservationDtoBuilder builder =
@@ -143,7 +160,11 @@ public class ReservationService extends BaseMediaService {
             .mediumId(reservation.getMedium().getId())
             .userId(reservation.getUser().getId());
 
-        return Optional.of(builder.build());
+        return Utils.createMessageResponse(
+            "Reservation created successfully",
+            MessageDto.MessageType.SUCCESS,
+            builder.build()
+        );
     }
 
     protected Optional<Medium> findMediumById(UUID id) {

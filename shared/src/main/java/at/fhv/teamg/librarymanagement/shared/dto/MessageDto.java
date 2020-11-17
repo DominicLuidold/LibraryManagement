@@ -1,8 +1,9 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 
-public class MessageDto implements Serializable {
+public class MessageDto<T extends Dto> implements Serializable {
     private static final long serialVersionUID = 856519996238854377L;
 
     public enum MessageType {
@@ -24,28 +25,36 @@ public class MessageDto implements Serializable {
 
     private final String message;
     private final MessageType type;
+    private final T result;
 
-    private MessageDto(MessageDtoBuilder builder) {
+    private MessageDto(MessageDtoBuilder<T> builder) {
         message = builder.message;
         type = builder.type;
+        result = builder.result;
     }
 
-    public static class MessageDtoBuilder {
+    public static class MessageDtoBuilder<T extends Dto> {
         private String message;
         private MessageType type;
+        private T result = null;
 
-        public MessageDtoBuilder withMessage(String message) {
+        public MessageDtoBuilder<T> withMessage(String message) {
             this.message = message;
             return this;
         }
 
-        public MessageDtoBuilder withType(MessageType type) {
+        public MessageDtoBuilder<T> withType(MessageType type) {
             this.type = type;
             return this;
         }
 
-        public MessageDto build() {
-            return new MessageDto(this);
+        public MessageDtoBuilder<T> withResult(T result) {
+            this.result = result;
+            return this;
+        }
+
+        public MessageDto<T> build() {
+            return new MessageDto<>(this);
         }
     }
 
@@ -55,5 +64,9 @@ public class MessageDto implements Serializable {
 
     public MessageType getType() {
         return type;
+    }
+
+    public T getResult() {
+        return result;
     }
 }

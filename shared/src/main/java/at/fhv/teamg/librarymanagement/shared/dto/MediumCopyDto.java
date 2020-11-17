@@ -1,10 +1,11 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class MediumCopyDto implements Serializable {
+public class MediumCopyDto implements Dto, Serializable {
     private static final long serialVersionUID = 4488858901782386377L;
 
     private final UUID id;
