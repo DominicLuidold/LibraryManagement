@@ -178,12 +178,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public LendingDto lendDvd(LendingDto lendingDto) throws RemoteException {
         LendingDto result = this.lend(lendingDto);
         cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
-        addMessage(new Message(
-            UUID.randomUUID(),
-            "Test Message lend dvd",
-            Message.Status.Open,
-            LocalDateTime.now()
-        ));
         return result;
     }
 
@@ -205,12 +199,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public Boolean returnDvd(MediumCopyDto copyDto) throws RemoteException {
         Boolean result = lendingService.returnLending(copyDto);
         cache.invalidateDvdCacheMediumCopy(copyDto.getId());
-        addMessage(new Message(
-            UUID.randomUUID(),
-            "Test Message return dvd",
-            Message.Status.Open,
-            LocalDateTime.now()
-        ));
         return result;
     }
 
@@ -267,12 +255,22 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }).start();
     }
 
+    /**
+     * Add a new message.
+     *
+     * @param message the new message
+     */
     public static void addMessage(Message message) {
         messages.add(message);
         clients.forEach(client -> updateClient(client, message));
     }
 
-    private static void updateMessage(Message message) {
+    /**
+     * Update an existing message.
+     *
+     * @param message message with the same id of an already existing message
+     */
+    public static void updateMessage(Message message) {
         messages.stream()
             .filter(m -> m.id.equals(message.id))
             .findFirst()
