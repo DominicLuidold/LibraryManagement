@@ -35,23 +35,28 @@ public class Cache {
 
     private Cache() {
         LOG.info("cache preload");
+        LOG.info("books");
         synchronized (lock) {
             new BookService().getAllBooks()
                 .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
         }
 
+        LOG.info("topics");
         synchronized (lock) {
             topicCache = new TopicService().getAllTopics();
         }
 
+        LOG.info("users");
         synchronized (lock) {
             userCache = new UserService().getAllUsers();
         }
 
+        LOG.info("dvds");
         synchronized (lock) {
             new DvdService().getAllDvds().forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
         }
 
+        LOG.info("games");
         synchronized (lock) {
             new GameService().getAllGames()
                 .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));

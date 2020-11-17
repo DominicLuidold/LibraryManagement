@@ -6,12 +6,14 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
+import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -181,6 +183,16 @@ public class RmiClient implements LibraryInterface {
     @Override
     public MessageDto extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
         return library.extendGame(mediumCopyDto);
+    }
+
+    @Override
+    public void registerForMessages(MessageClientInterface client) throws RemoteException {
+        library.registerForMessages(client);
+    }
+
+    @Override
+    public List<Message> getAllMessages() throws RemoteException {
+        return library.getAllMessages();
     }
 
     @Override

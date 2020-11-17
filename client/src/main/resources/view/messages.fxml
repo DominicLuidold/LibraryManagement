@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import org.controlsfx.control.SegmentedButton?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="detailsPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhv.teamg.librarymanagement.client.controller.MessagesController">
+    <children>
+        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <children>
+                <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <children>
+                                <Label>Messages</Label>
+                                <TableView fx:id="messagesTable" layoutX="62.0" layoutY="77.0"
+                                           prefHeight="200.0" prefWidth="200.0"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="timeCol" prefWidth="120.0" text="Time">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="dateTime"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="messageCol" prefWidth="800.0"
+                                                     text="Message">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="message"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="statusCol" prefWidth="120.0"
+                                                     text="Status">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="status"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="actionCol" prefWidth="120.0" text="Action">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                            </children>
+
+
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
