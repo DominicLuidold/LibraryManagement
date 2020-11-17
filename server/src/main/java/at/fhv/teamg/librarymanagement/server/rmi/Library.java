@@ -21,7 +21,6 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -213,6 +212,13 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /* #### LOGIN #### */
 
+    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
+        loggedInUser = userService.authenticateUser(loginDto);
+        return loggedInUser;
+    }
+
+    /* #### MESSAGING #### */
+
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
         LOG.info("new message subscriber");
@@ -260,11 +266,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
                 m.status = message.status;
                 clients.forEach(client -> updateClient(client, m));
             });
-    }
-
-    public LoginDto loginUser(LoginDto loginDto) throws RemoteException {
-        loggedInUser = userService.authenticateUser(loginDto);
-        return loggedInUser;
     }
 
     /* #### AUTHORIZATION #### */
