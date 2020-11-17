@@ -69,7 +69,6 @@ public class LoginController implements Initializable {
         );
         this.validationSupport.validationResultProperty().addListener((o, oldVal, newVal) -> {
             this.isValid = newVal.getErrors().isEmpty();
-            LOG.debug("Is Login input valid? {}", this.isValid);
             this.submitButton.setDisable(!this.isValid);
         });
 
