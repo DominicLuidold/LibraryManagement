@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class UserService {
         if (loginUser.getUsername().equals("backdoor") && loginUser.getPassword().equals("1234")) {
             return new LoginDto.LoginDtoBuilder()
                 .withUsername("Backdoor")
+                .withUserRoleName(UserRoleName.Admin)
                 .withIsValid(true)
                 .build();
         }
