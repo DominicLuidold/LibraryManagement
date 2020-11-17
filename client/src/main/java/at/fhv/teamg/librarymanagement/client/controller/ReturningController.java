@@ -40,7 +40,6 @@ public class ReturningController implements Initializable, Parentable<SearchCont
 
     private String currentUser = "";
     private List<UserDto> allUsers = null;
-    private List<MediumCopyDto> allMediumCopies = null;
 
     @FXML
     private AnchorPane detailsPane;
@@ -142,38 +141,10 @@ public class ReturningController implements Initializable, Parentable<SearchCont
         LOG.debug("Initialized ReturningController");
         loadAdditionalData();
         addMediaTypeEventHandlers();
-        /*StringConverter<UserDto> userConverter = new StringConverter<>() {
-            @Override
-            public String toString(UserDto userDto) {
-                if (userDto == null) {
-                    return "Select User";
-                }
-                return userDto.getName() + " (" + userDto.getUsername() + ")";
-            }
-
-            @Override
-            public UserDto fromString(String user) {
-                return new UserDto.UserDtoBuilder().name(user).build();
-            }
-        };*/
-
-        /*userSelect.setConverter(userConverter);
-        try {
-            userSelect
-                .setItems(FXCollections.observableArrayList(RmiClient.getInstance().getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void addMediaTypeEventHandlers() {
         this.btnReturn.setOnAction(e -> {
-            /*if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                confirm.setText("Please select a user first!");
-                return;
-            }*/
-
-            System.out.println(currentUuid);
 
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
@@ -214,63 +185,13 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     }
 
     private void loadAdditionalData() {
-        System.out.println("LOAD ADD DATA");
-        System.out.println("current uuid " + currentUuid);
-        System.out.println("list before: " + allMediumCopies);
-        //TODO GetAllLendings or get lending.userName needed
-        //List<MediumCopyDto> allMediumCopies = null;
-        System.out.println("book: " + currentBook);
-        try {
-            switch (currentMediumType) {
-                case BOOK:
-                    System.out.println("BOOK RETURN");
-                    this.allMediumCopies = RmiClient.getInstance().getAllBookCopies(currentBook);
-                    System.out.println(allMediumCopies.toString());
-                    break;
-                case DVD:
-                    this.allMediumCopies = RmiClient.getInstance().getAllDvdCopies(currentDvd);
-                    break;
-                case GAME:
-                    this.allMediumCopies = RmiClient.getInstance().getAllGameCopies(currentGame);
-                    break;
-                default:
-                    LOG.error("No medium type");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("list after: " + allMediumCopies);
-        if (this.allMediumCopies != null) {
-            for (MediumCopyDto medium : this.allMediumCopies) {
-                if (medium.getId().equals(currentUuid)) {
-                    System.out.println(medium.getId() + " AND " + currentUuid);
-                    System.out.println("User to be set........");
-                    setUserName(currentUuid);
-                    return;
-                }
-            }
-        }
-        /*try {
-            this.allLendings = RmiClient.getInstance().getAll
-        } catch (RemoteException e){
-            e.printStackTrace();
-        }*/
-    }
-
-    private void setUserName(UUID uuid) {
         try {
             allUsers = RmiClient.getInstance().getAllUsers();
-            for (UserDto user : allUsers) {
-                if (user.getId().equals(uuid)) {
-                    this.currentUser = user.getName() + " (" + user.getUsername() + ")";
-                    return;
-                }
-            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Set Current Medium to Book.
@@ -302,12 +223,19 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void setCurrentMedium(DvdDto dvdDto) {
         currentMediumType = MediumType.DVD;
         this.enableFieldsForMediumType(MediumType.DVD);
-        System.out.println("###########");
-        System.out.println(dvdDto.getStorageLocation());
-        System.out.println(dvdDto.getTitle());
-        System.out.println(dvdDto.getDirector());
-        System.out.println("###########");
         currentDvd = dvdDto;
+    }
+
+    /**
+     * Set current MediumCopyDto.
+     * @param dto dto from MediaDetailsController.
+     */
+    public void setCurrentMediumCopy(MediumCopyDto dto) {
+        this.userSelect.textProperty().bind(new SimpleStringProperty(
+            this.allUsers.stream()
+                .filter(user -> dto.getCurrentLendingUser().equals(user.getId()))
+                .findAny().orElse(null).getName()
+        ));
     }
 
     private void enableFieldsForMediumType(MediumType type) {

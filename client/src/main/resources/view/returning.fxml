@@ -145,7 +145,7 @@
                             </padding>
                             <children>
                                 <VBox fillWidth="true">
-                                    <Label text="Add a returning">
+                                    <Label text="Return a copy">
                                         <padding>
                                             <Insets top="20" right="20" bottom="10" left="20"/>
                                         </padding>
