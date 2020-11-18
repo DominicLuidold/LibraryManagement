@@ -585,13 +585,21 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
     private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
         boolean isAvailable = true;
-        for (MediumCopyDto dto : copies) {
-            // if a copy is available, disable button
-            if (dto.getLendTill() == null) {
-                isAvailable = false;
-                break;
+        if (MainController.isReadOnly(
+            this.parentController.getParentController().getParentController().getUserRole())
+        ) {
+            isAvailable = false;
+        } else {
+            for (MediumCopyDto dto : copies) {
+                // if a copy is available, disable button
+                if (dto.getLendTill() == null) {
+                    isAvailable = false;
+                    break;
+                }
             }
         }
+
+
         this.btnReserve.setVisible(isAvailable);
     }
 
