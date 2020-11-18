@@ -187,7 +187,7 @@ public class LendingService extends BaseMediaService {
         }
 
         lending.setRenewalCount(lending.getRenewalCount() + 1);
-        lending.setEndDate(lending.getEndDate().plusDays(EXTENDING_DURATION_IN_DAYS));
+        lending.setEndDate(LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS));
         if (updateLending(lending).isEmpty()) {
             return Utils.createMessageResponse(
                 "Updating lending information has failed",
