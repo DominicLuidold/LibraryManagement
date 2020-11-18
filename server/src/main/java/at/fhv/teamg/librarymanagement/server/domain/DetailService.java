@@ -26,7 +26,7 @@ public class DetailService extends BaseMediaService {
             builder.author(book.getAuthor())
                 .availability(getAvailability(book.getMedium()))
                 .isbn10(book.getIsbn10())
-                .isbn13(book.getIsbn10())
+                .isbn13(book.getIsbn13())
                 .languageKey(book.getLanguageKey())
                 .publisher(book.getPublisher())
                 .releaseDate(book.getMedium().getReleaseDate())
