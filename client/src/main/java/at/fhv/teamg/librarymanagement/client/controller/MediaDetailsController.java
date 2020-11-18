@@ -195,7 +195,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is not available",
-                            "Cannot lend a medium that is already lend to another customer"
+                            "Cannot lend a medium that has already been lent to another customer"
                         );
                         return dto;
                     }
@@ -241,7 +241,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is available",
-                            "Cannot extend a medium that is not lend"
+                            "Cannot extend a medium that is not lent out"
                         );
                         return dto;
                     }
@@ -271,7 +271,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is available",
-                            "Cannot return a medium that is not lend"
+                            "Cannot return a medium that has not been lent out"
                         );
                         return dto;
                     }
