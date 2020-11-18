@@ -180,7 +180,7 @@
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0"
                                                     GridPane.rowIndex="1" text="Back" GridPane.halignment="LEFT"/>
-                                            <Button fx:id="btnReturn" prefWidth="100" prefHeight="40" defaultButton="true"
+                                            <Button fx:id="btnReturn" prefWidth="160" prefHeight="40" defaultButton="true"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1"
                                                     GridPane.rowIndex="1" text="Return medium" GridPane.halignment="LEFT"/>
 
