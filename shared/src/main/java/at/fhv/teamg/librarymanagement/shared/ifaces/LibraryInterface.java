@@ -53,6 +53,8 @@ public interface LibraryInterface extends Remote {
 
     MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto) throws RemoteException;
 
+    MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto) throws RemoteException;
+
     List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException;
 
     List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException;
