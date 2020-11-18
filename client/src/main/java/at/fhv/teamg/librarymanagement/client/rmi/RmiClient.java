@@ -30,6 +30,12 @@ public class RmiClient implements LibraryInterface {
      * Singleton Client for RMI.
      */
     private RmiClient() {
+        // Fix RMI hostname to prevent RMI issues
+        System.setProperty(
+            "java.rmi.server.hostname",
+            "vsts-team007.westeurope.cloudapp.azure.com"
+        );
+
         try {
             LibraryFactoryInterface libraryFactory = (LibraryFactoryInterface) Naming.lookup(
                 "rmi://vsts-team007.westeurope.cloudapp.azure.com/libraryfactory"
