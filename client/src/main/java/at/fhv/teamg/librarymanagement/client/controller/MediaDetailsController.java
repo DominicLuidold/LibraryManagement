@@ -155,6 +155,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private TableColumn<UserDto, Button> columnUserId;
     @FXML
+    private TableColumn<ReservationDto, Button> columnRemoveReservation;
+    @FXML
     private TableView<MediumCopyDto> tblResults;
     @FXML
     private TableView<ReservationDto> tblReservations;
@@ -328,6 +330,34 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
             }
         });
+
+        this.columnRemoveReservation.setCellFactory(
+            ButtonTableCell.forTableColumn(
+                "Remove",
+                (ReservationDto dto) -> {
+                    LOG.debug("Remove reservation button has been pressed");
+                    try {
+                        RmiClient.getInstance().removeReservation(dto);
+                        AlertHelper.showAlert(
+                            Alert.AlertType.INFORMATION,
+                            this.detailsPane.getScene().getWindow(),
+                            "Reservation removed",
+                            "The reservation has been removed successfully."
+                        );
+                    } catch (RemoteException e) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Could not remove reservation",
+                            "An error occurred while trying to remove the reservation."
+                        );
+                        e.printStackTrace();
+                    }
+
+                    return dto;
+                }
+            )
+        );
     }
 
     private void addMediaTypeEventHandlers() {
