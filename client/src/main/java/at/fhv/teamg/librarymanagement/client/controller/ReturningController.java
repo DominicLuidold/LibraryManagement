@@ -170,7 +170,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
             if (response != null) {
                 if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
                     AlertHelper.showAlert(
-                        Alert.AlertType.CONFIRMATION,
+                        Alert.AlertType.INFORMATION,
                         this.returningPane.getScene().getWindow(),
                         "Returning successful",
                         response.getMessage()

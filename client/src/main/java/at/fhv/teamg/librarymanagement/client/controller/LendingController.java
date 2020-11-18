@@ -200,7 +200,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
                 if (response != null) {
                     if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
                         AlertHelper.showAlert(
-                            Alert.AlertType.CONFIRMATION,
+                            Alert.AlertType.INFORMATION,
                             this.lendingPane.getScene().getWindow(),
                             "Lending successful",
                             response.getMessage()
