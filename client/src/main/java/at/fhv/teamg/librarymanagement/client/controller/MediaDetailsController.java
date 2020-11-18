@@ -255,7 +255,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     /*MediaDetailsController mediaDetailsController =
                         (MediaDetailsController) controller;
                     mediaDetailsController.setCurrentMediumType(MediumType.BOOK, dto.getId());*/
-                    ExtendLendingController extendLendingController = (ExtendLendingController) controller;
+                    ExtendLendingController extendLendingController =
+                        (ExtendLendingController) controller;
 
                     if (null != currentMediumType) {
                         switch (currentMediumType) {
