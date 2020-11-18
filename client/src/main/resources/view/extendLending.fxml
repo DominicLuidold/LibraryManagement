@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="extendLendingPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhv.teamg.librarymanagement.client.controller.ExtendLendingController">
+    <children>
+        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <children>
+                <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <children>
+                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <padding>
+                                        <Insets top="20" right="20" bottom="20" left="20"/>
+                                    </padding>
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
+                                        <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                    <children>
+                                        <!-- GENERIC -->
+                                        <Label fx:id="lblTitle" visible="true" text="Title" GridPane.rowIndex="0"/>
+                                        <Label fx:id="txtTitle" visible="true" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="0" text="Title"/>
+
+                                        <Label fx:id="lblLocation" visible="true" GridPane.rowIndex="1"
+                                               text="Storage Location"/>
+                                        <Label fx:id="txtLocation" visible="true" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="1" text="${controller.currentBook.storageLocation}"/>
+
+                                        <Label fx:id="lblTopic" visible="true" GridPane.rowIndex="2" text="Topic"/>
+                                        <Label fx:id="txtTopic" visible="true" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2" text="${controller.currentBook.topic}"/>
+
+                                        <Label fx:id="lblReleaseDate" visible="true" GridPane.rowIndex="3"
+                                               text="Publication Date"/>
+                                        <Label fx:id="txtReleaseDate" visible="true" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="3" text="${controller.currentBook.releaseDate}"/>
+
+                                        <!-- BOOK -->
+                                        <Label fx:id="lblBookAuthor" visible="false" text="Author"
+                                               GridPane.rowIndex="4"/>
+                                        <Label fx:id="txtBookAuthor" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="4" text="${controller.currentBook.author}"/>
+
+                                        <Label fx:id="lblBookIsbn10" visible="false" text="ISBN-10"
+                                               GridPane.rowIndex="5"/>
+                                        <Label fx:id="txtBookIsbn10" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="5" text="${controller.currentBook.isbn10}"/>
+
+                                        <Label fx:id="lblBookIsbn13" visible="false" text="ISBN-13"
+                                               GridPane.rowIndex="6"/>
+                                        <Label fx:id="txtBookIsbn13" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="6" text="${controller.currentBook.isbn13}"/>
+
+                                        <Label fx:id="lblBookPublisher" visible="false" text="Publisher"
+                                               GridPane.rowIndex="7"/>
+                                        <Label fx:id="txtBookPublisher" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="7" text="${controller.currentBook.publisher}"/>
+
+                                        <Label fx:id="lblBookLanguage" visible="false" text="Language"
+                                               GridPane.rowIndex="8"/>
+                                        <Label fx:id="txtBookLanguage" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="8" text="${controller.currentBook.languageKey}"/>
+
+                                        <!-- DVD -->
+                                        <Label fx:id="lblDvdDirector" visible="false" text="Director"
+                                               GridPane.rowIndex="4"/>
+                                        <Label fx:id="txtDvdDirector" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="4" text="${controller.currentDvd.director}"/>
+
+                                        <Label fx:id="lblDvdDuration" visible="false" text="Duration"
+                                               GridPane.rowIndex="5"/>
+                                        <Label fx:id="txtDvdDuration" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="5" text="${controller.currentDvd.durationMinutes}"/>
+
+                                        <Label fx:id="lblDvdActors" visible="false" text="Actors"
+                                               GridPane.rowIndex="6"/>
+                                        <Label fx:id="txtDvdActors" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="6" text="${controller.currentDvd.actors}"/>
+
+                                        <Label fx:id="lblDvdStudio" visible="false" text="Studio"
+                                               GridPane.rowIndex="7"/>
+                                        <Label fx:id="txtDvdStudio" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="7" text="${controller.currentDvd.studio}"/>
+
+                                        <Label fx:id="lblDvdAgeRestriction" visible="false" text="Age Restriction"
+                                               GridPane.rowIndex="8"/>
+                                        <Label fx:id="txtDvdAgeRestriction" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="8" text="${controller.currentDvd.ageRestriction}"/>
+
+                                        <!-- GAME -->
+                                        <Label fx:id="lblGamePublisher" visible="false" text="Publisher"
+                                               GridPane.rowIndex="4"/>
+                                        <Label fx:id="txtGamePublisher" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="4" text="${controller.currentGame.publisher}"/>
+
+                                        <Label fx:id="lblGameDeveloper" visible="false" text="Developer"
+                                               GridPane.rowIndex="5"/>
+                                        <Label fx:id="txtGameDeveloper" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="5" text="${controller.currentGame.developer}"/>
+
+                                        <Label fx:id="lblGameAgeRestriction" visible="false" text="Age Restriction"
+                                               GridPane.rowIndex="6"/>
+                                        <Label fx:id="txtGameAgeRestriction" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="6" text="${controller.currentGame.ageRestriction}"/>
+
+                                        <Label fx:id="lblGamePlatforms" visible="false" text="Platforms"
+                                               GridPane.rowIndex="7"/>
+                                        <Label fx:id="txtGamePlatforms" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="7" text="${controller.currentGame.platforms}"/>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                            <children>
+                                <VBox fillWidth="true">
+                                    <Label text="Extend lending of a copy">
+                                        <padding>
+                                            <Insets top="20" right="20" bottom="10" left="20"/>
+                                        </padding>
+                                        <font>
+                                            <Font size="18" />
+                                        </font>
+                                    </Label>
+                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <padding>
+                                            <Insets top="20" right="20" bottom="20" left="20"/>
+                                        </padding>
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="150.0" prefWidth="150.0"/>
+                                            <ColumnConstraints hgrow="ALWAYS" minWidth="300.0" prefWidth="300.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Label text="User" GridPane.rowIndex="0"/>
+                                            <Label fx:id="userSelect" text="${controller.currentUser}" GridPane.rowIndex="0" GridPane.columnIndex="1"></Label>
+                                            <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false"
+                                                    GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0"
+                                                    GridPane.rowIndex="1" text="Back" GridPane.halignment="LEFT"/>
+                                            <Button fx:id="btnReturn" prefWidth="160" prefHeight="40" defaultButton="true"
+                                                    GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="1"
+                                                    GridPane.rowIndex="1" text="Extend lending" GridPane.halignment="LEFT"/>
+
+                                        </children>
+                                    </GridPane>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
