@@ -13,8 +13,10 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.G
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -337,13 +339,25 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (ReservationDto dto) -> {
                     LOG.debug("Remove reservation button has been pressed");
                     try {
-                        RmiClient.getInstance().removeReservation(dto);
-                        AlertHelper.showAlert(
-                            Alert.AlertType.INFORMATION,
-                            this.detailsPane.getScene().getWindow(),
-                            "Reservation removed",
-                            "The reservation has been removed successfully."
-                        );
+                        MessageDto<EmptyDto> msgDto = RmiClient.getInstance()
+                            .removeReservation(dto);
+
+                        if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.INFORMATION,
+                                this.detailsPane.getScene().getWindow(),
+                                "Reservation removed successfully",
+                                msgDto.getMessage()
+                            );
+                        } else {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.ERROR,
+                                this.detailsPane.getScene().getWindow(),
+                                "Could not remove reservation",
+                                msgDto.getMessage()
+                            );
+                        }
+
                     } catch (RemoteException e) {
                         AlertHelper.showAlert(
                             Alert.AlertType.ERROR,
