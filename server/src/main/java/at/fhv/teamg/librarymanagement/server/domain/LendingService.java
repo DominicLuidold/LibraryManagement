@@ -186,6 +186,14 @@ public class LendingService extends BaseMediaService {
             );
         }
 
+        if (LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isBefore(lending.getEndDate())) {
+            return Utils.createMessageResponse(
+                "Medium copy has not been extended as it would shorten the current "
+                    + "lending duration",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
         lending.setRenewalCount(lending.getRenewalCount() + 1);
         lending.setEndDate(LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS));
         if (updateLending(lending).isEmpty()) {

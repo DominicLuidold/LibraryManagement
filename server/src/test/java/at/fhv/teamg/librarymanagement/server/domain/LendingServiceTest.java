@@ -475,6 +475,42 @@ public class LendingServiceTest {
     }
 
     @Test
+    void extendLending_shouldReturnFailure_whenExtendingNotReasonable() {
+        // Mock currently active Lending
+        Lending lendingMock = mock(Lending.class);
+        when(lendingMock.getStartDate()).thenReturn(LocalDate.now().minusDays(1));
+        // 15 days > 2 weeks extending duration
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(15));
+
+        Set<Lending> lendingSet = new HashSet<>();
+        lendingSet.add(lendingMock);
+
+        // Mock incoming DTO
+        MediumCopyDto mediumCopyDtoMock = mock(MediumCopyDto.class);
+        when(mediumCopyDtoMock.getId()).thenReturn(validCopyID);
+
+        // Mock Medium entity
+        Medium mediumMock = mock(Medium.class);
+        when(mediumMock.getReservations()).thenReturn(new HashSet<>());
+
+        // Mock MediumCopy entity
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.getMedium()).thenReturn(mediumMock);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        // Mock Lending service
+        LendingService lendingService = spy(LendingService.class);
+        doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
+
+        // Assertions
+        MessageDto<EmptyDto> messageDto = lendingService.extendLending(mediumCopyDtoMock);
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
     void extendLending_shouldReturnError_whenLendingUpdateFails() {
         // Mock currently active Lending
         Lending lendingMock = mock(Lending.class);
