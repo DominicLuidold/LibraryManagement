@@ -135,6 +135,12 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
+    public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto)
+        throws RemoteException {
+        return library.removeReservation(reservationDto);
+    }
+
+    @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException {
         return library.getAllBookReservations(bookDto);
     }

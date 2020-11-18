@@ -13,8 +13,10 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.G
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -155,6 +157,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private TableColumn<UserDto, Button> columnUserId;
     @FXML
+    private TableColumn<ReservationDto, Button> columnRemoveReservation;
+    @FXML
     private TableView<MediumCopyDto> tblResults;
     @FXML
     private TableView<ReservationDto> tblReservations;
@@ -195,7 +199,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is not available",
-                            "Cannot lend a medium that is already lend to another customer"
+                            "Cannot lend a medium that has already been lent to another customer"
                         );
                         return dto;
                     }
@@ -241,7 +245,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is available",
-                            "Cannot extend a medium that is not lend"
+                            "Cannot extend a medium that is not lent out"
                         );
                         return dto;
                     }
@@ -271,7 +275,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                             Alert.AlertType.ERROR,
                             this.detailsPane.getScene().getWindow(),
                             "Medium is available",
-                            "Cannot return a medium that is not lend"
+                            "Cannot return a medium that has not been lent out"
                         );
                         return dto;
                     }
@@ -328,6 +332,46 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
             }
         });
+
+        this.columnRemoveReservation.setCellFactory(
+            ButtonTableCell.forTableColumn(
+                "Remove",
+                (ReservationDto dto) -> {
+                    LOG.debug("Remove reservation button has been pressed");
+                    try {
+                        MessageDto<EmptyDto> msgDto = RmiClient.getInstance()
+                            .removeReservation(dto);
+
+                        if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.INFORMATION,
+                                this.detailsPane.getScene().getWindow(),
+                                "Reservation removed successfully",
+                                msgDto.getMessage()
+                            );
+                        } else {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.ERROR,
+                                this.detailsPane.getScene().getWindow(),
+                                "Could not remove reservation",
+                                msgDto.getMessage()
+                            );
+                        }
+
+                    } catch (RemoteException e) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Could not remove reservation",
+                            "An error occurred while trying to remove the reservation."
+                        );
+                        e.printStackTrace();
+                    }
+
+                    return dto;
+                }
+            )
+        );
     }
 
     private void addMediaTypeEventHandlers() {
@@ -585,13 +629,21 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
     private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
         boolean isAvailable = true;
-        for (MediumCopyDto dto : copies) {
-            // if a copy is available, disable button
-            if (dto.getLendTill() == null) {
-                isAvailable = false;
-                break;
+        if (MainController.isReadOnly(
+            this.parentController.getParentController().getParentController().getUserRole())
+        ) {
+            isAvailable = false;
+        } else {
+            for (MediumCopyDto dto : copies) {
+                // if a copy is available, disable button
+                if (dto.getLendTill() == null) {
+                    isAvailable = false;
+                    break;
+                }
             }
         }
+
+
         this.btnReserve.setVisible(isAvailable);
     }
 

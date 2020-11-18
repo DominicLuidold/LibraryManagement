@@ -61,7 +61,7 @@
                                         <Label fx:id="lblTopic" visible="true" GridPane.rowIndex="2" text="Topic"/>
                                         <Label fx:id="txtTopic" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="2" text="" />
 
-                                        <Label fx:id="lblReleaseDate" visible="true" GridPane.rowIndex="3" text="Publication Date"/>
+                                        <Label fx:id="lblReleaseDate" visible="true" GridPane.rowIndex="3" text="Release Date"/>
                                         <Label fx:id="txtReleaseDate" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="3" text="" />
 
                                         <!-- BOOK -->
@@ -178,6 +178,8 @@
                                                         <cellValueFactory>
                                                             <PropertyValueFactory property="userName" />
                                                         </cellValueFactory>
+                                                    </TableColumn>
+                                                    <TableColumn fx:id="columnRemoveReservation" prefWidth="100" text="Remove Reservation">
                                                     </TableColumn>
                                                 </columns>
                                             </TableView>

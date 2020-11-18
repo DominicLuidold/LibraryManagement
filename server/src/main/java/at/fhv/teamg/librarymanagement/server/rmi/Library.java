@@ -133,6 +133,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
+    public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto)
+        throws RemoteException {
+        return reservationService.deleteReservation(reservationDto);
+    }
+
+    @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException {
         return reservationService.getReservations(bookDto);
     }

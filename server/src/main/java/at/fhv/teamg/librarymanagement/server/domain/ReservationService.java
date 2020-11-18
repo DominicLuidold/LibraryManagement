@@ -12,6 +12,7 @@ import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
@@ -178,13 +179,57 @@ public class ReservationService extends BaseMediaService {
         );
     }
 
+    /**
+     * Deletes a reservation.
+     *
+     * @param reservationDto The reservation to delete
+     * @return A MessageDto
+     */
+    public MessageDto<EmptyDto> deleteReservation(ReservationDto reservationDto) {
+        Optional<Reservation> reservationOptional = findReservationById(reservationDto.getId());
+        if (reservationOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified reservation",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        Optional<Medium> mediumOptional = findMediumById(reservationDto.getMediumId());
+        if (mediumOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified medium",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        Reservation reservation = reservationOptional.get();
+        if (!removeReservation(reservation)) {
+            return Utils.createMessageResponse(
+                "Could not remove reservation",
+                MessageDto.MessageType.ERROR
+            );
+        }
+
+        return Utils.createMessageResponse(
+            "Reservation removed successfully",
+            MessageDto.MessageType.SUCCESS
+        );
+    }
+
     protected Optional<Medium> findMediumById(UUID id) {
         MediumDao dao = new MediumDao();
         return dao.find(id);
     }
 
+    protected Optional<Reservation> findReservationById(UUID id) {
+        return new ReservationDao().find(id);
+    }
+
     protected Optional<Reservation> updateReservation(Reservation reservation) {
-        ReservationDao dao = new ReservationDao();
-        return dao.update(reservation);
+        return new ReservationDao().update(reservation);
+    }
+
+    protected boolean removeReservation(Reservation reservation) {
+        return new ReservationDao().remove(reservation);
     }
 }

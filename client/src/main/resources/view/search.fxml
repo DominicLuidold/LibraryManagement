@@ -59,7 +59,7 @@
                                         <JFXTextField fx:id="txtDvdDirector" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Director"/>
                                         <JFXTextField fx:id="txtGameDeveloper" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Developer" />
                                         <JFXTextField fx:id="txtBookIsbn13" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="ISBN-13"/>
-                                        <JFXDatePicker fx:id="txtDvdYearOfPublication" visible="false"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Year Of Publication" />
+                                        <JFXDatePicker fx:id="txtDvdYearOfPublication" visible="false"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Release Date" />
                                         <JFXTextField fx:id="txtGamePlatform" visible="false"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Platform"/>
                                         <ComboBox fx:id="txtBookTopic" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Topic (Book)"/>
                                         <ComboBox fx:id="txtDvdTopic" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Topic (DVD)"/>
@@ -71,7 +71,7 @@
                                         <Label fx:id="lblDvdDirector" visible="false"  text="Director" GridPane.rowIndex="2"/>
                                         <Label fx:id="lblGameDeveloper" visible="false"  text="Developer" GridPane.rowIndex="2"/>
                                         <Label fx:id="lblBookIsbn13" visible="false"  text="ISBN-13" GridPane.rowIndex="3"/>
-                                        <Label fx:id="lblDvdYearOfPublication" visible="false"  text="Year of Publication" GridPane.rowIndex="3"/>
+                                        <Label fx:id="lblDvdYearOfPublication" visible="false"  text="Release Date" GridPane.rowIndex="3"/>
                                         <Label fx:id="lblGamePlatform" visible="false"  text="Platform" GridPane.rowIndex="3"/>
                                         <Label fx:id="lblBookTopic" visible="false" text="Topic (Book)" GridPane.rowIndex="4"/>
                                         <Label fx:id="lblDvdTopic" visible="false" text="Topic (DVD)" GridPane.rowIndex="4"/>
