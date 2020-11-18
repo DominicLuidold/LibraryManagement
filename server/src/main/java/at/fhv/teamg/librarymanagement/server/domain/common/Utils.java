@@ -63,7 +63,7 @@ public class Utils {
             .author(book.getAuthor())
             .availability(availability)
             .isbn10(book.getIsbn10())
-            .isbn13(book.getIsbn10())
+            .isbn13(book.getIsbn13())
             .languageKey(book.getLanguageKey())
             .publisher(book.getPublisher())
             .releaseDate(book.getMedium().getReleaseDate())
