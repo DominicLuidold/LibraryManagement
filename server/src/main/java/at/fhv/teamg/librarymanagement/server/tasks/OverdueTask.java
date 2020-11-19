@@ -29,6 +29,6 @@ public class OverdueTask extends Thread {
                 ));
             }
         });
-        LOG.info("Found {} overdue lends", count);
+        LOG.info("Found [{}] overdue lends", count);
     }
 }

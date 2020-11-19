@@ -63,7 +63,7 @@ public class UserService {
      * @return LoginDto with isValid set to true if login was Successfully.
      */
     public MessageDto<LoginDto> authenticateUser(LoginDto loginUser) {
-        LOG.debug("User {} logging in", loginUser.getUsername());
+        LOG.debug("User [{}] logging in", loginUser.getUsername());
 
         // Special backdoor user required by porudct owner
         if (loginUser.getUsername().equals("backdoor") && loginUser.getPassword().equals("1234")) {
@@ -99,7 +99,7 @@ public class UserService {
             }
         }
 
-        LOG.debug("User {} failed to login", loginUser.getUsername());
+        LOG.debug("User [{}] failed to login", loginUser.getUsername());
         return Utils.createMessageResponse(
             "Login failed",
             MessageDto.MessageType.FAILURE,
