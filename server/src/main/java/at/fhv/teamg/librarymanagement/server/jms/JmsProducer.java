@@ -23,7 +23,7 @@ public class JmsProducer {
         con.start();
 
         this.session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Queue queue = session.createQueue("example.queue");
+        Queue queue = session.createQueue("library.queue");
         this.producer = session.createProducer(queue);
     }
 

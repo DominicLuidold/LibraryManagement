@@ -24,7 +24,7 @@ public class JmsConsumer implements MessageListener {
 
         Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        Queue queue = session.createQueue("example.queue");
+        Queue queue = session.createQueue("library.queue");
         MessageConsumer consumer = session.createConsumer(queue);
         consumer.setMessageListener(this);
     }
