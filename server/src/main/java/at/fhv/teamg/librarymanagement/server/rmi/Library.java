@@ -417,23 +417,13 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return false;
     }
 
-    //Try to make no Code duplicating (But Failed :D )
-
+    /* Try to make no Code duplicating (But Failed :D )
     public static MessageDto<Dto> getFailureMessage(String message, Class clazz) {
         MessageDto<clazz> result = new MessageDto.MessageDtoBuilder<>()
             .withType(MessageDto.MessageType.FAILURE)
             .withMessage(message)
             .build();
-
-
-        LoginDto test = new LoginDto.LoginDtoBuilder()
-            .withId(UUID.randomUUID())
-            .withPassword("asdfas")
-            .build();
-
-        test.getIsValid()
-
         return result;
     }
-
+    */
 }
