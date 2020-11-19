@@ -23,6 +23,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +46,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         super();
     }
 
-    /* #### SEARCH #### */
+    /* #### SEARCH ####
+
+    */
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
@@ -62,7 +65,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return cache.searchGame(gameDto);
     }
 
-    /* #### DETAILS #### */
+    /* #### DETAILS ####
+    *
+    *
+    */
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
@@ -103,7 +109,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
-        return cache.getAllUsers();
+        if (isValid(UserRoleName.Librarian)) {
+            return cache.getAllUsers();
+        }
+        return new LinkedList<UserDto>();
     }
 
     /* #### RESERVATION #### */
@@ -111,6 +120,13 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
         throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
+
         MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
         cache.invalidateBookCacheMedium(reservationDto.getMediumId());
         return result;
@@ -119,14 +135,26 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
         cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
-        return result;
+        return  result;
     }
 
     @Override
     public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto)
         throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
         cache.invalidateGameCacheMedium(reservationDto.getMediumId());
         return result;
@@ -135,21 +163,36 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto)
         throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         return reservationService.deleteReservation(reservationDto);
     }
 
     @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new LinkedList<ReservationDto>();
+        }
         return reservationService.getReservations(bookDto);
     }
 
     @Override
     public List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new LinkedList<ReservationDto>();
+        }
         return reservationService.getReservations(dvdDto);
     }
 
     @Override
     public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new LinkedList<ReservationDto>();
+        }
         return reservationService.getReservations(gameDto);
     }
 
@@ -157,6 +200,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
         cache.invalidateBookCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
@@ -164,6 +213,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
         cache.invalidateGameCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
@@ -171,6 +226,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
         cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
         return result;
@@ -178,6 +239,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
         cache.invalidateBookCacheMediumCopy(mediumCopyDto.getId());
         return result;
@@ -185,6 +252,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
         cache.invalidateDvdCacheMediumCopy(mediumCopyDto.getId());
         return result;
@@ -192,6 +265,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
         cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
         return result;
@@ -199,6 +278,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnBook(MediumCopyDto copyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
         cache.invalidateBookCacheMediumCopy(copyDto.getId());
         return result;
@@ -206,6 +291,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnDvd(MediumCopyDto copyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
         cache.invalidateDvdCacheMediumCopy(copyDto.getId());
         return result;
@@ -213,6 +304,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnGame(MediumCopyDto copyDto) throws RemoteException {
+        if (!isValid(UserRoleName.Librarian)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage("User not Authorized for this Action.")
+                .build();
+        }
         MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
         cache.invalidateGameCacheMediumCopy(copyDto.getId());
         return result;
@@ -220,8 +317,15 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /* #### LOGIN #### */
 
+    /**
+     * Try to login User specified in loginDto.
+     * @param loginDto User to login
+     * @return dto with UserRoleName is the so the Gui know what View to load
+     */
     public MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException {
-        return userService.authenticateUser(loginDto);
+        MessageDto<LoginDto> loggedInUserMessage = userService.authenticateUser(loginDto);
+        loggedInUser = loggedInUserMessage.getResult();
+        return loggedInUserMessage;
     }
 
     /* #### MESSAGING #### */
@@ -280,7 +384,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     private boolean isValid(UserRoleName userRoleNeeded) {
         /*
-         * Admin can perform all Actions.
+         * Armin can perform all Actions.
          */
         if (userRoleNeeded.equals(UserRoleName.Admin)) {
             if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
@@ -312,4 +416,24 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
         return false;
     }
+
+    //Try to make no Code duplicating (But Failed :D )
+
+    public static MessageDto<Dto> getFailureMessage(String message, Class clazz) {
+        MessageDto<clazz> result = new MessageDto.MessageDtoBuilder<>()
+            .withType(MessageDto.MessageType.FAILURE)
+            .withMessage(message)
+            .build();
+
+
+        LoginDto test = new LoginDto.LoginDtoBuilder()
+            .withId(UUID.randomUUID())
+            .withPassword("asdfas")
+            .build();
+
+        test.getIsValid()
+
+        return result;
+    }
+
 }
