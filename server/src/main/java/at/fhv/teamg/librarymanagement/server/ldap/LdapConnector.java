@@ -26,7 +26,7 @@ public class LdapConnector {
             new InitialDirContext(props);
             return true;
         } catch (NamingException e) {
-            LOG.error("LDAP authentication failed", e);
+            LOG.error("LDAP authentication failed: {}", e.getMessage());
             return false;
         }
     }

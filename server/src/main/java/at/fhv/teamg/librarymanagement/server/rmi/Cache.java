@@ -179,7 +179,7 @@ public class Cache {
      */
     public void invalidateBookCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.debug("Invalidating book cache by medium [{}]", mediumId);
+            LOG.debug("Invalidating book cache for medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<BookDto> bookDto = new BookService().getBookByMediumId(mediumId);
                 if (bookDto.isPresent()) {
@@ -198,7 +198,7 @@ public class Cache {
      */
     public void invalidateBookCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.debug("Invalidating book cache by medium copy [{}]", mediumCopyId);
+            LOG.debug("Invalidating book cache for medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<BookDto> bookDto = new BookService().getBookByMediumCopyId(mediumCopyId);
                 if (bookDto.isPresent()) {
@@ -230,7 +230,7 @@ public class Cache {
      */
     public void invalidateDvdCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.debug("Invalidating dvd cache by medium [{}]", mediumId);
+            LOG.debug("Invalidating dvd cache for medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumId(mediumId);
                 if (dvdDto.isPresent()) {
@@ -249,7 +249,7 @@ public class Cache {
      */
     public void invalidateDvdCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.debug("Invalidating dvd cache by medium copy [{}]", mediumCopyId);
+            LOG.debug("Invalidating dvd cache for medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumCopyId(mediumCopyId);
                 if (dvdDto.isPresent()) {
@@ -281,7 +281,7 @@ public class Cache {
      */
     public void invalidateGameCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.debug("Invalidating game cache by medium [{}]", mediumId);
+            LOG.debug("Invalidating game cache for medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<GameDto> gameDto = new GameService().getGameByMediumId(mediumId);
                 if (gameDto.isPresent()) {
@@ -300,7 +300,7 @@ public class Cache {
      */
     public void invalidateGameCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.debug("Invalidating game cache by medium copy [{}]", mediumCopyId);
+            LOG.debug("Invalidating game cache for medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<GameDto> gameDto = new GameService().getGameByMediumCopyId(mediumCopyId);
                 if (gameDto.isPresent()) {
