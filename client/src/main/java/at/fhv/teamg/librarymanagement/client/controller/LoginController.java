@@ -50,6 +50,8 @@ public class LoginController implements Initializable {
     private PasswordField passwordField;
     @FXML
     private Button submitButton;
+    @FXML
+    private Button guestButton;
     private boolean isValid = false;
     private ResourceBundle resources;
 
@@ -130,6 +132,41 @@ public class LoginController implements Initializable {
                     Alert.AlertType.ERROR, owner,
                     this.resources.getString("login.error.failed.title"),
                     response.getMessage()
+                );
+            }
+        });
+    }
+
+    /**
+     * Logging in with a Guest Account. Guest have to permissions of a Customer.
+     */
+    public void loginAsGuest() {
+        LOG.debug("LoginAsGuest btn pressed");
+        Window owner = this.submitButton.getScene().getWindow();
+
+
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+                .withUsername("guest")
+                .withPassword("")
+                .build();
+
+        UserLoginTask loginTask = new UserLoginTask(loginUser, this.pane);
+        Thread thread = new Thread(loginTask, "User login Task");
+        thread.start();
+        loginTask.setOnSucceeded(event -> {
+            LOG.debug("Logging in with username: {}", this.usernameField.getText());
+            MessageDto<LoginDto> response = loginTask.getValue();
+            loggedInUser = response.getResult();
+
+            if (response.getType().equals(MessageDto.MessageType.SUCCESS)
+                    && loggedInUser.getIsValid()
+            ) {
+                this.loadMainScene();
+            } else {
+                AlertHelper.showAlert(
+                        Alert.AlertType.ERROR, owner,
+                        this.resources.getString("login.error.failed.title"),
+                        response.getMessage()
                 );
             }
         });

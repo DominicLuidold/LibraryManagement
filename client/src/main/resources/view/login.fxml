@@ -68,5 +68,18 @@
                 <Insets top="10" right="0" bottom="20" left="0"></Insets>
             </GridPane.margin>
         </Button>
+
+        <Button fx:id="guestButton" text="%login.guestlogin"
+                prefWidth="300" prefHeight="40" defaultButton="true"
+                GridPane.columnIndex="0" GridPane.rowIndex="7"
+                GridPane.columnSpan="1" GridPane.rowSpan="1"
+                GridPane.halignment="CENTER"
+                onAction="#loginAsGuest"
+                style="-fx-font-size: 18;">
+            <GridPane.margin>
+                <Insets top="10" right="0" bottom="20" left="0"></Insets>
+            </GridPane.margin>
+        </Button>
+
     </GridPane>
 </AnchorPane>

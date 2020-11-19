@@ -323,9 +323,21 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      * @return dto with UserRoleName is the so the Gui know what View to load
      */
     public MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException {
-        MessageDto<LoginDto> loggedInUserMessage = userService.authenticateUser(loginDto);
-        loggedInUser = loggedInUserMessage.getResult();
-        return loggedInUserMessage;
+        if (!loginDto.getUsername().equals("guest")) {
+            MessageDto<LoginDto> loggedInUserMessage = userService.authenticateUser(loginDto);
+            loggedInUser = loggedInUserMessage.getResult();
+            return loggedInUserMessage;
+        }
+        return new MessageDto.MessageDtoBuilder<LoginDto>()
+            .withType(MessageDto.MessageType.SUCCESS)
+            .withResult(
+                new LoginDto.LoginDtoBuilder()
+                .withIsValid(true)
+                .withUsername("guest")
+                .withUserRoleName(UserRoleName.Customer)
+                .build()
+            )
+            .build();
     }
 
     /* #### MESSAGING #### */
