@@ -228,7 +228,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
-        LOG.info("new message subscriber");
+        LOG.debug("Registering new message subscriber [{}]", client.hashCode());
         clients.add(client);
     }
 
@@ -242,7 +242,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             try {
                 client.update(message);
             } catch (RemoteException e) {
-                LOG.info("Client can not be messaged -> remove from list");
+                LOG.error("Client cannot be messaged", e);
+                LOG.debug("Removing client [{}] from subscriber list", client.hashCode());
                 clients.remove(client);
             }
         }).start();

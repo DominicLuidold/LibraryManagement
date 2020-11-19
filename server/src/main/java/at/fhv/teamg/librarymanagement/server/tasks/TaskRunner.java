@@ -16,7 +16,7 @@ public class TaskRunner {
      * Run tasks now and schedule them to be run at their interval.
      */
     public static void run() {
-        LOG.info("running tasks");
+        LOG.info("Running tasks");
         new OverdueTask().start();
 
         LocalDateTime now = LocalDateTime.now();
@@ -27,10 +27,11 @@ public class TaskRunner {
         }
 
         Duration duration = Duration.between(now, runAt);
-        LOG.debug("nex overdue check at " + now.plusSeconds(duration.getSeconds()));
+        LOG.debug("Nex overdue check at {}", now.plusSeconds(duration.getSeconds()));
         executor.scheduleAtFixedRate(new OverdueTask(),
             duration.getSeconds(),
             TimeUnit.DAYS.toSeconds(1),
-            TimeUnit.SECONDS);
+            TimeUnit.SECONDS
+        );
     }
 }

@@ -14,16 +14,14 @@ public class RmiServer {
      * Start the RMI Server for serving the Java Client a Library Service.
      */
     public RmiServer() {
-        LOG.debug("Start up RMI Server");
+        LOG.debug("Starting RMI server");
         try {
             LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
             LibraryFactoryInterface remote = new LibraryFactory();
-            Naming.rebind("rmi://localhost/libraryfactory",
-                remote);
-            System.out.println("Server is ready");
-            LOG.debug("RMI Server is ready.");
+            Naming.rebind("rmi://localhost/libraryfactory", remote);
+            LOG.debug("RMI server started successfully");
         } catch (Exception e) {
-            LOG.error("RMI Server failed: " + e);
+            LOG.error("Starting RMI server failed", e);
         }
     }
 }

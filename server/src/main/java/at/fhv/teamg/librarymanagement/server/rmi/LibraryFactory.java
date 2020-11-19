@@ -7,16 +7,16 @@ import java.rmi.server.UnicastRemoteObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class LibraryFactory extends UnicastRemoteObject implements LibraryFactoryInterface {
     private static final Logger LOG = LogManager.getLogger(LibraryFactory.class);
 
-    // Add constructor to match signature of super.
-    public LibraryFactory() throws RemoteException {}
+    public LibraryFactory() throws RemoteException {
+        super();
+    }
 
     @Override
     public LibraryInterface getLibrary() throws RemoteException {
-        LOG.debug("Deliver instance of a Library.");
+        LOG.debug("Delivering new instance of a Library");
         return new Library();
     }
 }
