@@ -164,7 +164,7 @@ public class Cache {
      */
     public void invalidateBookCache() {
         new Thread(() -> {
-            LOG.info("updating books...");
+            LOG.debug("Invalidating book cache");
             synchronized (lock) {
                 new BookService().getAllBooks()
                     .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
@@ -179,13 +179,13 @@ public class Cache {
      */
     public void invalidateBookCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.info("updating book by medium id...");
+            LOG.debug("Invalidating book cache by medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<BookDto> bookDto = new BookService().getBookByMediumId(mediumId);
                 if (bookDto.isPresent()) {
                     bookCache.replace(bookDto.get().getId(), bookDto.get());
                 } else {
-                    LOG.error("Book no found");
+                    LOG.error("Book with id [{}] not found", mediumId);
                 }
             }
         }).start();
@@ -198,13 +198,13 @@ public class Cache {
      */
     public void invalidateBookCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.info("updating book by medium copy id...");
+            LOG.debug("Invalidating book cache by medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<BookDto> bookDto = new BookService().getBookByMediumCopyId(mediumCopyId);
                 if (bookDto.isPresent()) {
                     bookCache.replace(bookDto.get().getId(), bookDto.get());
                 } else {
-                    LOG.error("Book no found");
+                    LOG.error("Book with id [{}] not found", mediumCopyId);
                 }
             }
         }).start();
@@ -215,7 +215,7 @@ public class Cache {
      */
     public void invalidateDvdCache() {
         new Thread(() -> {
-            LOG.info("updating dvds...");
+            LOG.debug("Invalidating dvd cache");
             synchronized (lock) {
                 new DvdService().getAllDvds()
                     .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
@@ -230,13 +230,13 @@ public class Cache {
      */
     public void invalidateDvdCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.info("updating dvd by medium id...");
+            LOG.debug("Invalidating dvd cache by medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumId(mediumId);
                 if (dvdDto.isPresent()) {
                     dvdCache.replace(dvdDto.get().getId(), dvdDto.get());
                 } else {
-                    LOG.error("Dvd no found");
+                    LOG.error("Dvd with id [{}] not found", mediumId);
                 }
             }
         }).start();
@@ -249,13 +249,13 @@ public class Cache {
      */
     public void invalidateDvdCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.info("updating dvd by medium copy id...");
+            LOG.debug("Invalidating dvd cache by medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<DvdDto> dvdDto = new DvdService().getDvdByMediumCopyId(mediumCopyId);
                 if (dvdDto.isPresent()) {
                     dvdCache.replace(dvdDto.get().getId(), dvdDto.get());
                 } else {
-                    LOG.error("Dvd no found");
+                    LOG.error("Dvd with id [{}] not found", mediumCopyId);
                 }
             }
         }).start();
@@ -266,7 +266,7 @@ public class Cache {
      */
     public void invalidateGameCache() {
         new Thread(() -> {
-            LOG.info("updating games...");
+            LOG.debug("Invalidating game cache");
             synchronized (lock) {
                 new GameService().getAllGames()
                     .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
@@ -281,13 +281,13 @@ public class Cache {
      */
     public void invalidateGameCacheMedium(UUID mediumId) {
         new Thread(() -> {
-            LOG.info("updating game by medium id...");
+            LOG.debug("Invalidating game cache by medium [{}]", mediumId);
             synchronized (lock) {
                 Optional<GameDto> gameDto = new GameService().getGameByMediumId(mediumId);
                 if (gameDto.isPresent()) {
                     gameCache.replace(gameDto.get().getId(), gameDto.get());
                 } else {
-                    LOG.error("Game no found");
+                    LOG.error("Game with id [{}] not found", mediumId);
                 }
             }
         }).start();
@@ -300,13 +300,13 @@ public class Cache {
      */
     public void invalidateGameCacheMediumCopy(UUID mediumCopyId) {
         new Thread(() -> {
-            LOG.info("updating game by medium copy id...");
+            LOG.debug("Invalidating game cache by medium copy [{}]", mediumCopyId);
             synchronized (lock) {
                 Optional<GameDto> gameDto = new GameService().getGameByMediumCopyId(mediumCopyId);
                 if (gameDto.isPresent()) {
                     gameCache.replace(gameDto.get().getId(), gameDto.get());
                 } else {
-                    LOG.error("Game no found");
+                    LOG.error("Game with id [{}] not found", mediumCopyId);
                 }
             }
         }).start();
@@ -328,7 +328,7 @@ public class Cache {
         TimerTask updateBooks = new TimerTask() {
             @Override
             public void run() {
-                LOG.info("updating books...");
+                LOG.debug("Invalidating book cache based on automated timer");
                 synchronized (lock) {
                     new BookService().getAllBooks()
                         .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
@@ -340,7 +340,7 @@ public class Cache {
         TimerTask updateTopics = new TimerTask() {
             @Override
             public void run() {
-                LOG.info("updating topics...");
+                LOG.debug("Invalidating topic cache based on automated timer");
                 synchronized (lock) {
                     topicCache = new TopicService().getAllTopics();
                 }
@@ -351,7 +351,7 @@ public class Cache {
         TimerTask updateUsers = new TimerTask() {
             @Override
             public void run() {
-                LOG.info("updating users...");
+                LOG.debug("Invalidating user cache based on automated timer");
                 synchronized (lock) {
                     userCache = new UserService().getAllUsers();
                 }

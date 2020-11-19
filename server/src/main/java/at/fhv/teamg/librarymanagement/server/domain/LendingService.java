@@ -186,7 +186,9 @@ public class LendingService extends BaseMediaService {
             );
         }
 
-        if (LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isBefore(lending.getEndDate())) {
+        if (LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isBefore(lending.getEndDate())
+            || LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isEqual(lending.getEndDate())
+        ) {
             return Utils.createMessageResponse(
                 "Medium copy has not been extended as it would shorten the current "
                     + "lending duration",

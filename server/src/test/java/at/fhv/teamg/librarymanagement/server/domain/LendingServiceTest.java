@@ -503,8 +503,15 @@ public class LendingServiceTest {
         LendingService lendingService = spy(LendingService.class);
         doReturn(Optional.of(mediumCopyMock)).when(lendingService).findMediumCopyById(validCopyID);
 
-        // Assertions
+        // Assertions - lending would end before current end date
         MessageDto<EmptyDto> messageDto = lendingService.extendLending(mediumCopyDtoMock);
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+
+        // Assertions - lending would end on current end date
+        when(lendingMock.getEndDate()).thenReturn(LocalDate.now().plusDays(14));
+        messageDto = lendingService.extendLending(mediumCopyDtoMock);
 
         assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
         assertNull(messageDto.getResult());
