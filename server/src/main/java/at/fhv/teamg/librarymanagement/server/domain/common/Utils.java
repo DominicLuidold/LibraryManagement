@@ -3,6 +3,8 @@ package at.fhv.teamg.librarymanagement.server.domain.common;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -117,5 +119,35 @@ public class Utils {
             .topic(game.getMedium().getTopic().getId())
             .mediumId(game.getMedium().getId())
             .build();
+    }
+
+    /**
+     * Creates an returned reserved medium message.
+     *
+     * @param medium medium entity used to create the message
+     * @return message
+     */
+    public static String createReturnReservationMessage(Medium medium) {
+        Reservation reservation = medium.getReservations().stream().findFirst().get();
+        int reservationCount = medium.getReservations().size();
+
+        StringBuilder builder = new StringBuilder()
+            .append("Returned ")
+            .append(medium.getType().getName())
+            .append(" ")
+            .append(medium.getTitle())
+            .append(" is reserved by Customer ")
+            .append(reservation.getUser().getName())
+            .append(" (")
+            .append(reservation.getUser().getUsername())
+            .append(")");
+
+        if (reservationCount > 1) {
+            builder.append(" and ")
+                .append(reservationCount - 1)
+                .append(" more");
+        }
+
+        return builder.toString();
     }
 }
