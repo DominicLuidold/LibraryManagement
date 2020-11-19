@@ -15,7 +15,7 @@ public class OverdueTask extends Thread {
 
     @Override
     public void run() {
-        LOG.info("checking for overdue lends");
+        LOG.info("Checking for overdue lending");
         AtomicInteger count = new AtomicInteger();
         new LendingDao().getAll().forEach(lending -> {
             if (lending.getEndDate().isBefore(LocalDate.now())
@@ -23,12 +23,12 @@ public class OverdueTask extends Thread {
                 count.incrementAndGet();
                 Library.addMessage(new Message(
                     UUID.randomUUID(),
-                    Util.createOverdueMessage(lending),
+                    Utils.createOverdueMessage(lending),
                     Message.Status.Open,
                     LocalDateTime.now()
                 ));
             }
         });
-        LOG.info("Found " + count + " overdue lends");
+        LOG.info("Found {} overdue lends", count);
     }
 }

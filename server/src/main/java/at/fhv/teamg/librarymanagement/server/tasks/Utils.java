@@ -3,7 +3,7 @@ package at.fhv.teamg.librarymanagement.server.tasks;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import java.time.format.DateTimeFormatter;
 
-public class Util {
+public class Utils {
     /**
      * Creates an overdue lending message.
      *
@@ -14,9 +14,7 @@ public class Util {
         return new StringBuilder().append("Overdue ")
             .append(lending.getMediumCopy().getMedium().getType().getName())
             .append(" (")
-            .append(
-                lending.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            )
+            .append(lending.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
             .append(") ")
             .append(lending.getMediumCopy().getMedium().getTitle())
             .append(" by User ")

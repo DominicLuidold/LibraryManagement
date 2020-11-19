@@ -24,46 +24,49 @@ import org.apache.logging.log4j.Logger;
 public class Cache {
     private static final Logger LOG = LogManager.getLogger(Cache.class);
     private static Cache instance;
+
     private final Object lock = new Object();
     private final int minute = 1000 * 60;
-    private HashMap<UUID, BookDto> bookCache = new HashMap<>();
-    private HashMap<UUID, DvdDto> dvdCache = new HashMap<>();
-    private HashMap<UUID, GameDto> gameCache = new HashMap<>();
-    private List<TopicDto> topicCache;
-    private List<UserDto> userCache;
+    private final HashMap<UUID, BookDto> bookCache = new HashMap<>();
+    private final HashMap<UUID, DvdDto> dvdCache = new HashMap<>();
+    private final HashMap<UUID, GameDto> gameCache = new HashMap<>();
     private final Timer timer = new Timer();
 
+    private List<TopicDto> topicCache;
+    private List<UserDto> userCache;
+
     private Cache() {
-        LOG.info("cache preload");
-        LOG.info("books");
+        LOG.info("Starting cache preload");
+
+        LOG.debug("Preloading books");
         synchronized (lock) {
-            new BookService().getAllBooks()
-                .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
+            new BookService().getAllBooks().forEach(bookDto -> bookCache.put(
+                bookDto.getId(), bookDto
+            ));
         }
 
-        LOG.info("topics");
-        synchronized (lock) {
-            topicCache = new TopicService().getAllTopics();
-        }
-
-        LOG.info("users");
-        synchronized (lock) {
-            userCache = new UserService().getAllUsers();
-        }
-
-        LOG.info("dvds");
+        LOG.debug("Preloading dvds");
         synchronized (lock) {
             new DvdService().getAllDvds().forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
         }
 
-        LOG.info("games");
+        LOG.debug("Preloading games");
         synchronized (lock) {
             new GameService().getAllGames()
                 .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
         }
 
-        //startTimer();
-        LOG.info("cache ready");
+        LOG.debug("Preloading topics");
+        synchronized (lock) {
+            topicCache = new TopicService().getAllTopics();
+        }
+
+        LOG.debug("Preloading users");
+        synchronized (lock) {
+            userCache = new UserService().getAllUsers();
+        }
+
+        LOG.info("Preloading done. Cache ready");
     }
 
     /**

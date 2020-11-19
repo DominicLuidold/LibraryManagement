@@ -1,10 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.persistance.dao;
 
-import at.fhv.teamg.librarymanagement.server.Main;
 import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 public class UserDao extends BaseDao<User> {
     private static final Logger LOG = LogManager.getLogger(UserDao.class);
-
 
     /**
      * {@inheritDoc}
@@ -55,6 +51,7 @@ public class UserDao extends BaseDao<User> {
 
     /**
      * Find User by its Username.
+     *
      * @param username to search for.
      * @return a Optional of the User.
      */
@@ -71,9 +68,9 @@ public class UserDao extends BaseDao<User> {
 
         try {
             user = Optional.of(query.getSingleResult());
-        } catch (NoResultException exception) {
-            LOG.debug(exception);
+        } catch (NoResultException e) {
+            LOG.error("Finding user by username failed", e);
         }
-        return  user;
+        return user;
     }
 }
