@@ -628,19 +628,42 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     System.out.println(dto.getId().toString());
                 }
                 // Get Reservations
-                try {
-                    this.tblReservations.setItems(FXCollections.observableList(
-                        RmiClient.getInstance().getAllBookReservations(this.currentBook)
-                        )
-                    );
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                this.loadReservations(MediumType.BOOK);
             });
             thread2.start();
         });
         thread.start();
 
+    }
+
+    private void loadReservations(MediumType type) {
+        UserRoleName role = this.parentController.getParentController().getParentController()
+                .getUserRole();
+        if (MainController.isReadOnly(role)) {
+            LOG.debug("Won't load reservations because role is {}", role);
+            return;
+        }
+        List<ReservationDto> res = new LinkedList<>();
+
+        try {
+            switch (type) {
+                case BOOK:
+                    res = RmiClient.getInstance().getAllBookReservations(this.currentBook);
+                    break;
+                case DVD:
+                    res = RmiClient.getInstance().getAllDvdReservations(this.currentDvd);
+                    break;
+                case GAME:
+                    res = RmiClient.getInstance().getAllGameReservations(this.currentGame);
+                    break;
+                default:
+                    break;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        this.tblReservations.setItems(FXCollections.observableList(res));
     }
 
     private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
@@ -707,14 +730,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
 
                 // Get Reservations
-                try {
-                    this.tblReservations.setItems(FXCollections.observableList(
-                        RmiClient.getInstance().getAllDvdReservations(this.currentDvd)
-                        )
-                    );
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                this.loadReservations(MediumType.DVD);
             });
             thread2.start();
         });
@@ -764,14 +780,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 }
 
                 // Get Reservations
-                try {
-                    this.tblReservations.setItems(FXCollections.observableList(
-                        RmiClient.getInstance().getAllGameReservations(this.currentGame)
-                        )
-                    );
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                this.loadReservations(MediumType.GAME);
             });
             thread2.start();
         });

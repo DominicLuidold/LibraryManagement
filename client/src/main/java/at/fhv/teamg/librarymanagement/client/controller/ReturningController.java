@@ -10,9 +10,12 @@ import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -123,15 +126,14 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private Label lblGamePlatforms;
     @FXML
     private Label txtGamePlatforms;
-
     @FXML
     private Button btnReturn;
     @FXML
     private Button btnBack;
-
     @FXML
     private Label userSelect;
 
+    private List<TopicDto> topics = new LinkedList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -205,6 +207,7 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private void loadAdditionalData() {
         try {
             allUsers = RmiClient.getInstance().getAllUsers();
+            topics = RmiClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -219,6 +222,12 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void setCurrentMedium(BookDto bookDto) {
         currentMediumType = MediumType.BOOK;
         this.enableFieldsForMediumType(MediumType.BOOK);
+        this.bindGenericProperties(
+            bookDto.getTitle(),
+            bookDto.getStorageLocation(),
+            bookDto.getTopic(),
+            bookDto.getReleaseDate()
+        );
         currentBook = bookDto;
     }
 
@@ -230,6 +239,12 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void setCurrentMedium(GameDto gameDto) {
         currentMediumType = MediumType.GAME;
         this.enableFieldsForMediumType(MediumType.GAME);
+        this.bindGenericProperties(
+            gameDto.getTitle(),
+            gameDto.getStorageLocation(),
+            gameDto.getTopic(),
+            gameDto.getReleaseDate()
+        );
         currentGame = gameDto;
     }
 
@@ -241,6 +256,12 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     public void setCurrentMedium(DvdDto dvdDto) {
         currentMediumType = MediumType.DVD;
         this.enableFieldsForMediumType(MediumType.DVD);
+        this.bindGenericProperties(
+            dvdDto.getTitle(),
+            dvdDto.getStorageLocation(),
+            dvdDto.getTopic(),
+            dvdDto.getReleaseDate()
+        );
         currentDvd = dvdDto;
     }
 
@@ -320,15 +341,20 @@ public class ReturningController implements Initializable, Parentable<SearchCont
     private void bindGenericProperties(
         String title,
         String storageLocation,
-        String topic,
-        String releaseDate
+        UUID topicId,
+        LocalDate releaseDate
     ) {
         this.txtTitle.textProperty().bind(new SimpleStringProperty(title));
         this.txtLocation.textProperty().bind(new SimpleStringProperty(storageLocation));
-        this.txtTopic.textProperty().bind(new SimpleStringProperty(topic));
-        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
+        this.txtTopic.textProperty().bind(new SimpleStringProperty(
+            this.topics.stream()
+                .filter(top -> topicId.equals(top.getId()))
+                .findAny().orElse(null).getName()
+        ));
+        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(
+            releaseDate != null ? releaseDate.toString() : ""
+        ));
     }
-
 
     public DvdDto getCurrentDvd() {
         return currentDvd;

@@ -6,14 +6,18 @@ import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -50,6 +54,11 @@ public class LoginController implements Initializable {
     private PasswordField passwordField;
     @FXML
     private Button submitButton;
+    @FXML
+    private Button guestButton;
+    @FXML
+    private ComboBox<String> serverDropdown;
+
     private boolean isValid = false;
     private ResourceBundle resources;
 
@@ -82,6 +91,17 @@ public class LoginController implements Initializable {
                     firstTime.setValue(false);
                 }
             });
+
+        // Make guest login button non-default to prevent strange behaviour
+        this.guestButton.setDefaultButton(false);
+
+        // Fill server list
+        List<String> servers = new LinkedList<>();
+        servers.add("vsts-team007.westeurope.cloudapp.azure.com");
+        servers.add("localhost");
+
+        this.serverDropdown.setItems(FXCollections.observableList(servers));
+        this.serverDropdown.getSelectionModel().select(0);
     }
 
     /**
@@ -107,13 +127,56 @@ public class LoginController implements Initializable {
             return;
         }
 
-
         LoginDto loginUser = new LoginDto.LoginDtoBuilder()
             .withUsername(usernameField.getText())
             .withPassword(passwordField.getText())
             .build();
 
-        UserLoginTask loginTask = new UserLoginTask(loginUser, this.pane);
+        UserLoginTask loginTask = new UserLoginTask(
+            loginUser,
+            this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.pane
+        );
+
+        Thread thread = new Thread(loginTask, "User login Task");
+        thread.start();
+        loginTask.setOnSucceeded(event -> {
+            LOG.debug("Logging in with username: {}", this.usernameField.getText());
+            MessageDto<LoginDto> response = loginTask.getValue();
+            loggedInUser = response.getResult();
+
+            if (response.getType().equals(MessageDto.MessageType.SUCCESS)
+                && loggedInUser.getIsValid()
+            ) {
+                this.loadMainScene();
+            } else {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR, owner,
+                    this.resources.getString("login.error.failed.title"),
+                    response.getMessage()
+                );
+            }
+        });
+    }
+
+    /**
+     * Logging in with a Guest Account. Guest have to permissions of a Customer.
+     */
+    public void loginAsGuest() {
+        LOG.debug("LoginAsGuest btn pressed");
+        Window owner = this.submitButton.getScene().getWindow();
+
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+            .withUsername("guest")
+            .withPassword("")
+            .build();
+
+        UserLoginTask loginTask = new UserLoginTask(
+            loginUser,
+            this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.pane
+        );
+
         Thread thread = new Thread(loginTask, "User login Task");
         thread.start();
         loginTask.setOnSucceeded(event -> {

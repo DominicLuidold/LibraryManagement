@@ -23,6 +23,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -150,6 +151,13 @@ public class LendingServiceTest {
         MediumCopy mediumCopyMock = mock(MediumCopy.class);
         when(mediumCopyMock.isAvailable()).thenReturn(false);
         when(mediumCopyMock.getLending()).thenReturn(lendingSet);
+
+        //Mock Medium entity
+        Medium mediumMock = mock(Medium.class);
+        when(mediumCopyMock.getMedium()).thenReturn(mediumMock);
+
+        //Mock Reservations
+        when(mediumMock.getReservations()).thenReturn(new LinkedHashSet<>());
 
         // Mock Lending service
         LendingService lendingService = spy(LendingService.class);

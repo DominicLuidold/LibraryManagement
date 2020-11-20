@@ -23,7 +23,8 @@ import org.apache.logging.log4j.Logger;
 
 public class RmiClient implements LibraryInterface {
     private static final Logger LOG = LogManager.getLogger(RmiClient.class);
-    private static RmiClient instance;
+    private static String SERVER_ADDRESS = "vsts-team007.westeurope.cloudapp.azure.com";
+    private static RmiClient RMI_INSTANCE;
     private LibraryInterface library;
 
     /**
@@ -33,12 +34,12 @@ public class RmiClient implements LibraryInterface {
         // Fix RMI hostname to prevent RMI issues
         System.setProperty(
             "java.rmi.server.hostname",
-            "vsts-team007.westeurope.cloudapp.azure.com"
+            SERVER_ADDRESS
         );
 
         try {
             LibraryFactoryInterface libraryFactory = (LibraryFactoryInterface) Naming.lookup(
-                "rmi://vsts-team007.westeurope.cloudapp.azure.com/libraryfactory"
+                "rmi://" + SERVER_ADDRESS + "/libraryfactory"
             );
             library = libraryFactory.getLibrary();
         } catch (Exception e) {
@@ -52,10 +53,15 @@ public class RmiClient implements LibraryInterface {
      * @return RmiClient Singleton Instance
      */
     public static RmiClient getInstance() {
-        if (instance == null) {
-            instance = new RmiClient();
+        if (RMI_INSTANCE == null) {
+            RMI_INSTANCE = new RmiClient();
         }
-        return instance;
+        return RMI_INSTANCE;
+    }
+
+    public static void setServerAddress(String address) {
+        RMI_INSTANCE = null;
+        SERVER_ADDRESS = address;
     }
 
     /* #### SEARCH #### */
