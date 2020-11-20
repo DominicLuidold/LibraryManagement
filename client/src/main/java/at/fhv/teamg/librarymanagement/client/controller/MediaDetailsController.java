@@ -254,7 +254,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.EXTEND_LENDING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.EXTEND_LENDING, this).get();
 
                     ExtendLendingController extendLendingController =
                         (ExtendLendingController) controller;
