@@ -10,16 +10,19 @@ import org.apache.logging.log4j.Logger;
 public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     private static final Logger LOG = LogManager.getLogger(UserLoginTask.class);
     private final LoginDto loginUser;
+    private final String server;
 
-    public UserLoginTask(LoginDto loginUser, AnchorPane pane) {
+    public UserLoginTask(LoginDto loginUser, String server, AnchorPane pane) {
         super(pane);
         this.loginUser = loginUser;
+        this.server = server;
     }
 
     @Override
     protected MessageDto<LoginDto> call() throws Exception {
         super.call();
         LOG.debug("Perform user login");
+        RmiClient.setServerAddress(server);
         return RmiClient.getInstance().loginUser(loginUser);
     }
 }
