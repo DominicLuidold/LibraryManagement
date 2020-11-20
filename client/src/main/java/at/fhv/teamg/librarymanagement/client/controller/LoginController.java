@@ -88,14 +88,8 @@ public class LoginController implements Initializable {
                 }
             });
 
-        this.passwordField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    processLoginCredentials();
-                }
-            }
-        });
+        // Make guest login button non-default to prevent strange behaviour
+        this.guestButton.setDefaultButton(false);
     }
 
     /**
