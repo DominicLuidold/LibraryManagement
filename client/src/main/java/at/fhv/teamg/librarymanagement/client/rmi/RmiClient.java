@@ -60,6 +60,7 @@ public class RmiClient implements LibraryInterface {
     }
 
     public static void setServerAddress(String address) {
+        RMI_INSTANCE = null;
         SERVER_ADDRESS = address;
     }
 
