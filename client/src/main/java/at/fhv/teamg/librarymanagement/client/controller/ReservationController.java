@@ -199,6 +199,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                             );
                             //update the reservations list in MediaDetailsController
                             this.getParentController().updateView();
+                            this.txtUser.clear();
                         } else {
                             AlertHelper.showAlert(
                                 Alert.AlertType.ERROR,
