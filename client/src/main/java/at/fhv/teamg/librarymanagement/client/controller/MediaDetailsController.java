@@ -365,6 +365,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                                 "Reservation removed successfully",
                                 msgDto.getMessage()
                             );
+                            this.updateView();
                         } else {
                             AlertHelper.showAlert(
                                 Alert.AlertType.ERROR,
@@ -776,6 +777,25 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             thread2.start();
         });
         thread.start();
+    }
+
+    /**
+     * updates the current medium.
+     */
+    public void updateView() {
+        switch (this.currentMediumType) {
+            case BOOK:
+                this.loadCurrentBook();
+                break;
+            case DVD:
+                this.loadCurrentDvd();
+                break;
+            case GAME:
+                this.loadCurrentGame();
+                break;
+            default:
+                LOG.error("no medium type");
+        }
     }
 
     @Override

@@ -197,6 +197,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                                 "Reservation successful",
                                 response.getMessage()
                             );
+                            //update the reservations list in MediaDetailsController
+                            this.getParentController().updateView();
                         } else {
                             AlertHelper.showAlert(
                                 Alert.AlertType.ERROR,
@@ -489,7 +491,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     @Override
     public MediaDetailsController getParentController() {
-        return this.getParentController();
+        return this.parentController;
     }
 
     @Override
