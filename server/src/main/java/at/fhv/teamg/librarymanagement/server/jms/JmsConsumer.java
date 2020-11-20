@@ -15,7 +15,22 @@ import javax.jms.TextMessage;
  */
 public class JmsConsumer implements MessageListener {
 
+    private static JmsConsumer INSTANCE;
     private Connection con;
+
+    private JmsConsumer() { }
+
+    /**
+     * Returns an instance.
+     *
+     * @return Instance
+     */
+    public static JmsConsumer getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new JmsConsumer();
+        }
+        return INSTANCE;
+    }
 
     public void startListener() throws JMSException {
         ConnectionFactory factory = JmsProvider.getConnectionFactory();

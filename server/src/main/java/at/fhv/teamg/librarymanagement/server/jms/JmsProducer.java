@@ -13,11 +13,24 @@ import javax.jms.TextMessage;
  */
 public class JmsProducer {
 
+    private static JmsProducer INSTANCE;
     private final MessageProducer producer;
     private final Session session;
     private final Connection con;
 
-    public JmsProducer() throws JMSException {
+    /**
+     * Returns an instance.
+     *
+     * @return Instance
+     */
+    public static JmsProducer getInstance() throws JMSException {
+        if (INSTANCE == null) {
+            INSTANCE = new JmsProducer();
+        }
+        return INSTANCE;
+    }
+
+    private JmsProducer() throws JMSException {
         ConnectionFactory factory = JmsProvider.getConnectionFactory();
         this.con = factory.createConnection();
         con.start();

@@ -25,8 +25,8 @@ public class Main {
 
         final JmsProducer sender;
         try {
-            sender = new JmsProducer();
-            final JmsConsumer receiver = new JmsConsumer();
+            sender = JmsProducer.getInstance();
+            final JmsConsumer receiver = JmsConsumer.getInstance();
             receiver.startListener();
 
             for (int i = 1; i <= 5; i++) {
