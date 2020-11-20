@@ -32,10 +32,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 
-public class LendingController implements Initializable, Parentable<SearchController> {
+public class LendingController implements Initializable, Parentable<MediaDetailsController> {
     private static final Logger LOG = LogManager.getLogger(LendingController.class);
 
-    private SearchController parentController;
+    private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
     private MediumType currentMediumType;
@@ -205,6 +205,8 @@ public class LendingController implements Initializable, Parentable<SearchContro
                             "Lending successful",
                             response.getMessage()
                         );
+                        this.getParentController().updateView();
+                        this.txtUserSelect.clear();
                     } else {
                         AlertHelper.showAlert(
                             Alert.AlertType.ERROR,
@@ -235,8 +237,10 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
         this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
-            this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
-            this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
+            this.parentController.getParentController().getParentController()
+                .removeTab(TabPaneEntry.LENDING);
+            this.parentController.getParentController().getParentController()
+                .selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
 
     }
@@ -392,12 +396,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     }
 
     @Override
-    public SearchController getParentController() {
+    public MediaDetailsController getParentController() {
         return this.parentController;
     }
 
     @Override
-    public void setParentController(SearchController controller) {
+    public void setParentController(MediaDetailsController controller) {
         this.parentController = controller;
     }
 
