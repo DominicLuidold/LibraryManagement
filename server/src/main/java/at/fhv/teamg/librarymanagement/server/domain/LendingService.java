@@ -6,11 +6,14 @@ import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -131,6 +134,17 @@ public class LendingService extends BaseMediaService {
                 "Updating medium copy has failed",
                 MessageDto.MessageType.ERROR
             );
+        }
+
+        if (mediumCopy.getMedium().getReservations().size() > 0) {
+            new Thread(() ->
+                Library.addMessage(new Message(
+                    UUID.randomUUID(),
+                    Utils.createReturnReservationMessage(mediumCopy.getMedium()),
+                    Message.Status.Open,
+                    LocalDateTime.now()
+                ))
+            ).start();
         }
 
         return Utils.createMessageResponse(
