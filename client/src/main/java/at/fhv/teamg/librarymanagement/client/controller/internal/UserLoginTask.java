@@ -12,6 +12,13 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     private final LoginDto loginUser;
     private final String server;
 
+    /**
+     * Sets all required values for the UserLoginTask.
+     *
+     * @param loginUser LoginDto
+     * @param server    Server
+     * @param pane      AnchorPane
+     */
     public UserLoginTask(LoginDto loginUser, String server, AnchorPane pane) {
         super(pane);
         this.loginUser = loginUser;
