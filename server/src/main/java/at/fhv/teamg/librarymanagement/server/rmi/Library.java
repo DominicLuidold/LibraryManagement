@@ -383,15 +383,19 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      * @param message message with the same id of an already existing message
      */
     public static void updateMessage(Message message) {
-//        messages.stream()
-//            .filter(m -> m.id.equals(message.id))
-//            .findFirst()
-//            .ifPresent(m -> {
-//                m.dateTime = message.dateTime;
-//                m.message = message.message;
-//                m.status = message.status;
-//                clients.forEach(client -> updateClient(client, m));
-//            });
+        messages.stream()
+            .filter(m -> m.id.equals(message.id))
+            .findFirst()
+            .ifPresent(m -> {
+                m.dateTime = message.dateTime;
+                m.message = message.message;
+                m.status = message.status;
+                try {
+                    JmsProducer.getInstance().sendMessage(message);
+                } catch (JMSException e) {
+                    LOG.error("Cannot send message over JMS", message);
+                }
+            });
     }
 
     /* #### AUTHORIZATION #### */
