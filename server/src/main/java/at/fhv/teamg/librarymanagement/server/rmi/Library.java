@@ -23,7 +23,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -111,6 +110,14 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return new LinkedList<UserDto>();
     }
 
+    @Override
+    public List<UserDto> getAllCustomers() throws RemoteException {
+        if (isValid(UserRoleName.Librarian)) {
+            return cache.getAllCustomers();
+        }
+        return new LinkedList<UserDto>();
+    }
+
     /* #### RESERVATION #### */
 
     @Override
@@ -139,7 +146,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
         MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
         cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
-        return  result;
+        return result;
     }
 
     @Override
@@ -315,6 +322,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /**
      * Try to login User specified in loginDto.
+     *
      * @param loginDto User to login
      * @return dto with UserRoleName is the so the Gui know what View to load
      */
@@ -328,10 +336,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             .withType(MessageDto.MessageType.SUCCESS)
             .withResult(
                 new LoginDto.LoginDtoBuilder()
-                .withIsValid(true)
-                .withUsername("guest")
-                .withUserRoleName(UserRoleName.Customer)
-                .build()
+                    .withIsValid(true)
+                    .withUsername("guest")
+                    .withUserRoleName(UserRoleName.Customer)
+                    .build()
             )
             .build();
     }

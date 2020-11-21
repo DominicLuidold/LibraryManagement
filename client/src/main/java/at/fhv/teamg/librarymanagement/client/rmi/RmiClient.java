@@ -126,6 +126,11 @@ public class RmiClient implements LibraryInterface {
         return library.getAllUsers();
     }
 
+    @Override
+    public List<UserDto> getAllCustomers() throws RemoteException {
+        return library.getAllCustomers();
+    }
+
     /* #### RESERVATION #### */
 
     @Override
