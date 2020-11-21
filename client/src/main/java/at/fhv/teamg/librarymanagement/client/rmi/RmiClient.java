@@ -232,4 +232,9 @@ public class RmiClient implements LibraryInterface {
     public List<Message> getAllMessages() throws RemoteException {
         return library.getAllMessages();
     }
+
+    @Override
+    public void updateMessageStatus(Message message) throws RemoteException {
+        library.updateMessageStatus(message);
+    }
 }
