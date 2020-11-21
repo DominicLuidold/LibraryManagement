@@ -23,6 +23,7 @@ public class Main {
         new RmiServer();
         LOG.info("Project initialized successfully");
 
+        /*
         final JmsProducer sender;
         try {
             sender = JmsProducer.getInstance();
@@ -41,5 +42,7 @@ public class Main {
         } catch (JMSException | InterruptedException e) {
             e.printStackTrace();
         }
+
+         */
     }
 }

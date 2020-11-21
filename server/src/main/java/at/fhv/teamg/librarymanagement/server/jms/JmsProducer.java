@@ -1,9 +1,11 @@
 package at.fhv.teamg.librarymanagement.server.jms;
 
+import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -40,12 +42,12 @@ public class JmsProducer {
         this.producer = session.createProducer(queue);
     }
 
-    public void sendMessage(String message) throws JMSException {
+    public void sendMessage(Message message) throws JMSException {
         System.out.printf("Sending message: %s, Thread:%s%n",
             message,
             Thread.currentThread().getName());
-        TextMessage textMessage = session.createTextMessage(message);
-        producer.send(textMessage);
+        ObjectMessage m = session.createObjectMessage(message);
+        producer.send(m);
     }
 
     public void destroy() throws JMSException {

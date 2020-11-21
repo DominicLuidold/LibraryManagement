@@ -4,6 +4,8 @@ import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
+import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
@@ -24,6 +26,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import javax.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,12 +42,22 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final ReservationService reservationService = new ReservationService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
+    private final JmsConsumer consumer = JmsConsumer.getInstance(this);
 
     private LoginDto loggedInUser;
     private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
 
     public Library() throws RemoteException {
         super();
+        try {
+            consumer.startListener();
+        } catch (JMSException e) {
+            LOG.error("Cannot start message JMS listener", e);
+        }
+    }
+
+    public static List<MessageClientInterface> getClients() {
+        return clients;
     }
 
     /* #### SEARCH #### */
@@ -349,17 +362,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return messages;
     }
 
-    private static void updateClient(MessageClientInterface client, Message message) {
-        new Thread(() -> {
-            try {
-                client.update(message);
-            } catch (RemoteException e) {
-                LOG.error("Client cannot be messaged", e);
-                LOG.debug("Removing client [{}] from subscriber list", client.hashCode());
-                clients.remove(client);
-            }
-        }).start();
-    }
 
     /**
      * Add a new message.
@@ -368,7 +370,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      */
     public static void addMessage(Message message) {
         messages.add(message);
-        clients.forEach(client -> updateClient(client, message));
+        try {
+            JmsProducer.getInstance().sendMessage(message);
+        } catch (JMSException e) {
+            LOG.error("Cannot send message to queue", e);
+        }
     }
 
     /**
@@ -377,15 +383,15 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      * @param message message with the same id of an already existing message
      */
     public static void updateMessage(Message message) {
-        messages.stream()
-            .filter(m -> m.id.equals(message.id))
-            .findFirst()
-            .ifPresent(m -> {
-                m.dateTime = message.dateTime;
-                m.message = message.message;
-                m.status = message.status;
-                clients.forEach(client -> updateClient(client, m));
-            });
+//        messages.stream()
+//            .filter(m -> m.id.equals(message.id))
+//            .findFirst()
+//            .ifPresent(m -> {
+//                m.dateTime = message.dateTime;
+//                m.message = message.message;
+//                m.status = message.status;
+//                clients.forEach(client -> updateClient(client, m));
+//            });
     }
 
     /* #### AUTHORIZATION #### */
