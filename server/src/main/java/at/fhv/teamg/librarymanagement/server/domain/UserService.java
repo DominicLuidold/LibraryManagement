@@ -3,7 +3,9 @@ package at.fhv.teamg.librarymanagement.server.domain;
 import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
+import at.fhv.teamg.librarymanagement.server.persistance.dao.UserRoleDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -129,6 +131,24 @@ public class UserService {
             return Optional.of(foundLoginDto);
         }
         return Optional.empty();
+    }
+
+    /**
+     * Returns id of the UserRole with the given name.
+     *
+     * @param userRoleName name to search for
+     * @return uuid
+     */
+    public UUID findUserRoleIdByName(UserRoleName userRoleName) {
+        var userRoles = new UserRoleDao().getAll();
+
+        for (var userRole : userRoles) {
+            if (userRole.getName().equals(userRoleName)) {
+                return userRole.getId();
+            }
+        }
+
+        return null;
     }
 
     protected List<User> getAll() {

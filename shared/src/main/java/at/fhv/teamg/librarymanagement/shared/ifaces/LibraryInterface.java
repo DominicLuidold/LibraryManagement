@@ -45,6 +45,8 @@ public interface LibraryInterface extends Remote {
 
     List<UserDto> getAllUsers() throws RemoteException;
 
+    List<UserDto> getAllCustomers() throws RemoteException;
+
     /* #### RESERVATION #### */
 
     MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto) throws RemoteException;

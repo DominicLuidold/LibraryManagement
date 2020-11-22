@@ -24,7 +24,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -45,7 +44,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private UUID currentUuid;
 
     private UserDropdown dropdown;
-    private List<UserDto> allUserList;
+    private List<UserDto> allCustomerList;
 
     @FXML
     private AnchorPane lendingPane;
@@ -147,7 +146,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
         loadAdditionalData();
-        dropdown = new UserDropdown(allUserList);
+        dropdown = new UserDropdown(allCustomerList);
         TextFields.bindAutoCompletion(txtUserSelect, dropdown.getAllUserString());
 
     }
@@ -243,7 +242,7 @@ public class LendingController implements Initializable, Parentable<SearchContro
 
     private void loadAdditionalData() {
         try {
-            this.allUserList = RmiClient.getInstance().getAllUsers();
+            this.allCustomerList = RmiClient.getInstance().getAllCustomers();
             this.topics = RmiClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
