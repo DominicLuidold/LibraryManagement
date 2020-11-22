@@ -9,7 +9,8 @@ public class Message implements Serializable {
     public enum Status {
         Open,
         Working,
-        Done
+        Done,
+        Archived
     }
 
     /**
@@ -36,6 +37,7 @@ public class Message implements Serializable {
     public String message;
     public Status status;
     public LocalDateTime dateTime;
+    public UUID userId;
 
     public UUID getId() {
         return id;
@@ -51,5 +53,9 @@ public class Message implements Serializable {
 
     public String getDateTime() {
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public UUID getUserId() {
+        return userId;
     }
 }

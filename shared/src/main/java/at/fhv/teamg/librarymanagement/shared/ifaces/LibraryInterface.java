@@ -92,4 +92,6 @@ public interface LibraryInterface extends Remote {
     void registerForMessages(MessageClientInterface client) throws RemoteException;
 
     List<Message> getAllMessages() throws RemoteException;
+
+    void updateMessageStatus(Message message) throws RemoteException;
 }

@@ -396,6 +396,40 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             });
     }
 
+    /**
+     * Update message Status.
+     *
+     * @param message message with the same id of an already existing message
+     */
+    public void updateMessageStatus(Message message) throws RemoteException {
+        var messageOptional = messages.stream()
+            .filter(m -> m.id.equals(message.id))
+            .findFirst();
+
+        if (messageOptional.isEmpty()) {
+            LOG.error("Got message with invalid Id");
+            return;
+        }
+
+        var messageToUpdate = messageOptional.get();
+
+        if (messageToUpdate.userId == null) {
+            messageToUpdate.userId = loggedInUser.getId();
+        } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
+            LOG.error("Logged-in user is not allowed to update this message");
+            return;
+        }
+
+        messageToUpdate.status = message.status;
+
+        clients.forEach(client -> updateClient(client, messageToUpdate));
+
+        if (messageToUpdate.status.equals(Message.Status.Archived)) {
+            messages.remove(messageToUpdate);
+            //TODO Remove message from JMS Queue and persist in DB
+        }
+    }
+
     /* #### AUTHORIZATION #### */
 
     private boolean isValid(UserRoleName userRoleNeeded) {
