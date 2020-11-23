@@ -1,13 +1,13 @@
 package at.fhv.teamg.librarymanagement.client.rmi;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
@@ -234,12 +234,12 @@ public class RmiClient implements LibraryInterface {
     }
 
     @Override
-    public List<Message> getAllMessages() throws RemoteException {
+    public List<CustomMessage> getAllMessages() throws RemoteException {
         return library.getAllMessages();
     }
 
     @Override
-    public void updateMessageStatus(Message message) throws RemoteException {
+    public void updateMessageStatus(CustomMessage message) throws RemoteException {
         library.updateMessageStatus(message);
     }
 }

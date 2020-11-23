@@ -10,7 +10,7 @@ import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -138,10 +138,10 @@ public class LendingService extends BaseMediaService {
 
         if (mediumCopy.getMedium().getReservations().size() > 0) {
             new Thread(() ->
-                Library.addMessage(new Message(
+                Library.addMessage(new CustomMessage(
                     UUID.randomUUID(),
                     Utils.createReturnReservationMessage(mediumCopy.getMedium()),
-                    Message.Status.Open,
+                    CustomMessage.Status.Open,
                     LocalDateTime.now()
                 ))
             ).start();

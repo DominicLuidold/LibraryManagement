@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class Message implements Serializable {
+public class CustomMessage implements Serializable {
     public enum Status {
         Open,
         Working,
@@ -21,7 +21,7 @@ public class Message implements Serializable {
      * @param status   status of the message
      * @param dateTime datetime when the message was created
      */
-    public Message(
+    public CustomMessage(
         UUID id,
         String message,
         Status status,

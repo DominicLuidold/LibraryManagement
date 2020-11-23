@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.jms;
 
 import at.fhv.teamg.librarymanagement.server.rmi.Library;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -12,7 +13,6 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,9 +54,9 @@ public class JmsConsumer implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        if (message instanceof at.fhv.teamg.librarymanagement.shared.dto.Message) {
-            at.fhv.teamg.librarymanagement.shared.dto.Message m =
-                (at.fhv.teamg.librarymanagement.shared.dto.Message) message;
+        if (message instanceof CustomMessage) {
+            CustomMessage m =
+                (CustomMessage) message;
             System.out.printf("Message received: %s, Thread: %s%n",
                 m.getMessage(),
                 Thread.currentThread().getName());
@@ -68,11 +68,11 @@ public class JmsConsumer implements MessageListener {
 
     private static void updateClient(
         MessageClientInterface client,
-        at.fhv.teamg.librarymanagement.shared.dto.Message message
+        CustomMessage customMessage
     ) {
         new Thread(() -> {
             try {
-                client.update(message);
+                client.update(customMessage);
             } catch (RemoteException e) {
                 LOG.error("Client cannot be messaged", e);
                 LOG.debug("Removing client [{}] from subscriber list", client.hashCode());

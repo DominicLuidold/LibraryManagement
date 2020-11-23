@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.jms;
 
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.server.rmi.Library;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -8,7 +9,6 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 
 /**
  * @author Valentin Goronjic
@@ -42,12 +42,14 @@ public class JmsProducer {
         this.producer = session.createProducer(queue);
     }
 
-    public void sendMessage(Message message) throws JMSException {
+    public ObjectMessage sendMessage(CustomMessage customMessage) throws JMSException {
         System.out.printf("Sending message: %s, Thread:%s%n",
-            message,
+            customMessage,
             Thread.currentThread().getName());
-        ObjectMessage m = session.createObjectMessage(message);
+        ObjectMessage m = session.createObjectMessage(customMessage);
         producer.send(m);
+
+        return m;
     }
 
     public void destroy() throws JMSException {

@@ -13,7 +13,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
@@ -23,10 +23,12 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +37,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private static final long serialVersionUID = -443483629739057113L;
 
     private static final List<MessageClientInterface> clients = new LinkedList<>();
-    private static final List<Message> messages = new LinkedList<>();
+    private static final Map<CustomMessage, Message> CUSTOM_MESSAGES = new HashMap<>();
 
     private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
@@ -367,20 +369,20 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public List<Message> getAllMessages() throws RemoteException {
-        return messages;
+    public List<CustomMessage> getAllMessages() throws RemoteException {
+        return new LinkedList<>(CUSTOM_MESSAGES.keySet());
     }
 
 
     /**
      * Add a new message.
      *
-     * @param message the new message
+     * @param customMessage the new message
      */
-    public static void addMessage(Message message) {
-        messages.add(message);
+    public static void addMessage(CustomMessage customMessage) {
         try {
-            JmsProducer.getInstance().sendMessage(message);
+            Message m = JmsProducer.getInstance().sendMessage(customMessage);
+            CUSTOM_MESSAGES.put(customMessage, m);
         } catch (JMSException e) {
             LOG.error("Cannot send message to queue", e);
         }
@@ -389,20 +391,21 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     /**
      * Update an existing message.
      *
-     * @param message message with the same id of an already existing message
+     * @param customMessage message with the same id of an already existing message
      */
-    public static void updateMessage(Message message) {
-        messages.stream()
-            .filter(m -> m.id.equals(message.id))
+    public static void updateMessage(CustomMessage customMessage) {
+        CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
             .findFirst()
             .ifPresent(m -> {
-                m.dateTime = message.dateTime;
-                m.message = message.message;
-                m.status = message.status;
+                m.dateTime = customMessage.dateTime;
+                m.message = customMessage.message;
+                m.status = customMessage.status;
                 try {
-                    JmsProducer.getInstance().sendMessage(message);
+                    Message m2 = JmsProducer.getInstance().sendMessage(customMessage);
+                    CUSTOM_MESSAGES.put(m, m2);
                 } catch (JMSException e) {
-                    LOG.error("Cannot send message over JMS", message);
+                    LOG.error("Cannot send message over JMS", customMessage);
                 }
             });
     }
@@ -410,11 +413,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     /**
      * Update message Status.
      *
-     * @param message message with the same id of an already existing message
+     * @param customMessage message with the same id of an already existing message
      */
-    public void updateMessageStatus(Message message) throws RemoteException {
-        var messageOptional = messages.stream()
-            .filter(m -> m.id.equals(message.id))
+    public void updateMessageStatus(CustomMessage customMessage) throws RemoteException {
+        var messageOptional = CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
             .findFirst();
 
         if (messageOptional.isEmpty()) {
@@ -431,13 +434,20 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             return;
         }
 
-        messageToUpdate.status = message.status;
+        messageToUpdate.status = customMessage.status;
 
         updateMessage(messageToUpdate);
 
-        if (messageToUpdate.status.equals(Message.Status.Archived)) {
+        if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
             //TODO Remove message from JMS Queue and persist in DB
-            messages.remove(messageToUpdate);
+            Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
+            try {
+                jmsMessage.acknowledge();
+            } catch (JMSException e) {
+                LOG.error("Unable to archive (acknowledge) message", e);
+            }
+
+            CUSTOM_MESSAGES.remove(messageToUpdate);
         }
     }
 

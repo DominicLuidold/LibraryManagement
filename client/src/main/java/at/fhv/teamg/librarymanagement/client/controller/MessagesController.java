@@ -3,7 +3,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.rmi.MessageClient;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ResourceBundle;
@@ -21,7 +21,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
     private ResourceBundle resourceBundle;
 
     @FXML
-    private TableView<Message> messagesTable;
+    private TableView<CustomMessage> messagesTable;
 
 
     @Override

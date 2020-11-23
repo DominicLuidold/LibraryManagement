@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.rmi;
 
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -12,29 +12,29 @@ import org.apache.logging.log4j.Logger;
 
 public class MessageClient extends UnicastRemoteObject implements MessageClientInterface {
     private static final Logger LOG = LogManager.getLogger(MessageClientInterface.class);
-    List<Message> messages;
-    Consumer<List<Message>> onUpdate;
+    List<CustomMessage> messages;
+    Consumer<List<CustomMessage>> onUpdate;
 
     public MessageClient() throws RemoteException {
         super();
         messages = RmiClient.getInstance().getAllMessages();
     }
 
-    public void onUpdate(Consumer<List<Message>> consumer) {
+    public void onUpdate(Consumer<List<CustomMessage>> consumer) {
         onUpdate = consumer;
         onUpdate.accept(messages);
     }
 
     @Override
-    public void update(Message message) throws RemoteException {
-        Optional<Message> messageOptional = messages.stream()
+    public void update(CustomMessage message) throws RemoteException {
+        Optional<CustomMessage> messageOptional = messages.stream()
             .filter(m -> m.id.equals(message.id))
             .findFirst();
 
         if (messageOptional.isPresent()) {
             LOG.info("got message update");
-            Message m = messageOptional.get();
-            if (message.status.equals(Message.Status.Archived)) {
+            CustomMessage m = messageOptional.get();
+            if (message.status.equals(CustomMessage.Status.Archived)) {
                 LOG.info("Removing archived message");
                 messages.remove(m);
             } else {
