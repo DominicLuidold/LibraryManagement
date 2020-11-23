@@ -433,7 +433,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
         messageToUpdate.status = message.status;
 
-        clients.forEach(client -> updateClient(client, messageToUpdate));
+        updateMessage(messageToUpdate);
 
         if (messageToUpdate.status.equals(Message.Status.Archived)) {
             //TODO Remove message from JMS Queue and persist in DB
