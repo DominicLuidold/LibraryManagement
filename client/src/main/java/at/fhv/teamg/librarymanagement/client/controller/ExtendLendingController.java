@@ -42,7 +42,7 @@ public class ExtendLendingController implements Initializable, Parentable<Search
     private UUID currentUuid;
 
     private String currentUser = "";
-    private List<UserDto> allUsers = null;
+    private List<UserDto> allCustomers = null;
 
     @FXML
     private AnchorPane extendLendingPane;
@@ -206,7 +206,7 @@ public class ExtendLendingController implements Initializable, Parentable<Search
 
     private void loadAdditionalData() {
         try {
-            allUsers = RmiClient.getInstance().getAllUsers();
+            allCustomers = RmiClient.getInstance().getAllCustomers();
             topics = RmiClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -272,7 +272,7 @@ public class ExtendLendingController implements Initializable, Parentable<Search
      */
     public void setCurrentMediumCopy(MediumCopyDto dto) {
         this.userSelect.textProperty().bind(new SimpleStringProperty(
-            this.allUsers.stream()
+            this.allCustomers.stream()
                 .filter(user -> dto.getCurrentLendingUser().equals(user.getId()))
                 .findAny().orElse(null).getName()
         ));

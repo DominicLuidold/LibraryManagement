@@ -45,6 +45,8 @@ public interface LibraryInterface extends Remote {
 
     List<UserDto> getAllUsers() throws RemoteException;
 
+    List<UserDto> getAllCustomers() throws RemoteException;
+
     /* #### RESERVATION #### */
 
     MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto) throws RemoteException;
@@ -90,4 +92,6 @@ public interface LibraryInterface extends Remote {
     void registerForMessages(MessageClientInterface client) throws RemoteException;
 
     List<Message> getAllMessages() throws RemoteException;
+
+    void updateMessageStatus(Message message) throws RemoteException;
 }

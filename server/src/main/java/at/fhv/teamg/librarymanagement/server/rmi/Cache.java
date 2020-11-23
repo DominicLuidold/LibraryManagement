@@ -10,6 +10,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Cache {
 
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
+    private UUID customerId;
 
     private Cache() {
         LOG.info("Starting cache preload");
@@ -63,7 +65,9 @@ public class Cache {
 
         LOG.debug("Preloading users");
         synchronized (lock) {
-            userCache = new UserService().getAllUsers();
+            var service = new UserService();
+            userCache = service.getAllUsers();
+            customerId = service.findUserRoleIdByName(UserRoleName.Customer);
         }
 
         LOG.info("Preloading done. Cache ready");
@@ -318,6 +322,17 @@ public class Cache {
 
     public List<UserDto> getAllUsers() {
         return userCache;
+    }
+
+    /**
+     * Returns all Users with UserRole Customer.
+     *
+     * @return list of customers
+     */
+    public List<UserDto> getAllCustomers() {
+        return userCache.stream()
+            .filter(userDto -> userDto.getRoleId().equals(customerId))
+            .collect(Collectors.toList());
     }
 
     /**
