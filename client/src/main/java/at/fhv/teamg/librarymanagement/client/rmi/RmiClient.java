@@ -126,6 +126,11 @@ public class RmiClient implements LibraryInterface {
         return library.getAllUsers();
     }
 
+    @Override
+    public List<UserDto> getAllCustomers() throws RemoteException {
+        return library.getAllCustomers();
+    }
+
     /* #### RESERVATION #### */
 
     @Override
@@ -231,5 +236,10 @@ public class RmiClient implements LibraryInterface {
     @Override
     public List<Message> getAllMessages() throws RemoteException {
         return library.getAllMessages();
+    }
+
+    @Override
+    public void updateMessageStatus(Message message) throws RemoteException {
+        library.updateMessageStatus(message);
     }
 }

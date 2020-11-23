@@ -34,9 +34,15 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
         if (messageOptional.isPresent()) {
             LOG.info("got message update");
             Message m = messageOptional.get();
-            m.status = message.status;
-            m.message = message.message;
-            m.dateTime = message.dateTime;
+            if (message.status.equals(Message.Status.Archived)) {
+                LOG.info("Removing archived message");
+                messages.remove(m);
+            } else {
+                m.status = message.status;
+                m.message = message.message;
+                m.dateTime = message.dateTime;
+                m.userId = message.userId;
+            }
         } else {
             LOG.info("got new Message");
             messages.add(message);

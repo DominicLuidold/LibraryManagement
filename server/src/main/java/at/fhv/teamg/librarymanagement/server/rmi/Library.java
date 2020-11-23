@@ -23,7 +23,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -111,6 +110,14 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return new LinkedList<UserDto>();
     }
 
+    @Override
+    public List<UserDto> getAllCustomers() throws RemoteException {
+        if (isValid(UserRoleName.Librarian)) {
+            return cache.getAllCustomers();
+        }
+        return new LinkedList<UserDto>();
+    }
+
     /* #### RESERVATION #### */
 
     @Override
@@ -139,7 +146,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
         MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
         cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
-        return  result;
+        return result;
     }
 
     @Override
@@ -315,6 +322,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /**
      * Try to login User specified in loginDto.
+     *
      * @param loginDto User to login
      * @return dto with UserRoleName is the so the Gui know what View to load
      */
@@ -328,10 +336,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             .withType(MessageDto.MessageType.SUCCESS)
             .withResult(
                 new LoginDto.LoginDtoBuilder()
-                .withIsValid(true)
-                .withUsername("guest")
-                .withUserRoleName(UserRoleName.Customer)
-                .build()
+                    .withIsValid(true)
+                    .withUsername("guest")
+                    .withUserRoleName(UserRoleName.Customer)
+                    .build()
             )
             .build();
     }
@@ -386,6 +394,40 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
                 m.status = message.status;
                 clients.forEach(client -> updateClient(client, m));
             });
+    }
+
+    /**
+     * Update message Status.
+     *
+     * @param message message with the same id of an already existing message
+     */
+    public void updateMessageStatus(Message message) throws RemoteException {
+        var messageOptional = messages.stream()
+            .filter(m -> m.id.equals(message.id))
+            .findFirst();
+
+        if (messageOptional.isEmpty()) {
+            LOG.error("Got message with invalid Id");
+            return;
+        }
+
+        var messageToUpdate = messageOptional.get();
+
+        if (messageToUpdate.userId == null) {
+            messageToUpdate.userId = loggedInUser.getId();
+        } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
+            LOG.error("Logged-in user is not allowed to update this message");
+            return;
+        }
+
+        messageToUpdate.status = message.status;
+
+        clients.forEach(client -> updateClient(client, messageToUpdate));
+
+        if (messageToUpdate.status.equals(Message.Status.Archived)) {
+            messages.remove(messageToUpdate);
+            //TODO Remove message from JMS Queue and persist in DB
+        }
     }
 
     /* #### AUTHORIZATION #### */

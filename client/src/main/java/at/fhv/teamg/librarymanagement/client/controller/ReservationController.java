@@ -36,7 +36,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
-    private List<UserDto> allUserList;
+    private List<UserDto> allCustomerList;
     private UserDropdown dropdown;
 
     private BookDto currentBook = null;
@@ -153,7 +153,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
         this.enableLabelsForMediumType(type);
         this.addMediaTypeEventHandlers();
         loadAdditionalData();
-        dropdown = new UserDropdown(allUserList);
+        dropdown = new UserDropdown(allCustomerList);
         TextFields.bindAutoCompletion(txtUser, dropdown.getAllUserString());
         LOG.debug("Initialized ReservationController");
     }
@@ -412,7 +412,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
     private void loadAdditionalData() {
         try {
             this.topics = RmiClient.getInstance().getAllTopics();
-            this.allUserList = RmiClient.getInstance().getAllUsers();
+            this.allCustomerList = RmiClient.getInstance().getAllCustomers();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
