@@ -44,7 +44,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private final ReservationService reservationService = new ReservationService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
-    private final JmsConsumer consumer = JmsConsumer.getInstance(this);
     private LoginDto loggedInUser;
 
     /**
@@ -54,11 +53,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      */
     public Library() throws RemoteException {
         super();
-        try {
-            consumer.startListener();
-        } catch (JMSException e) {
-            LOG.error("Cannot start message JMS listener", e);
-        }
     }
 
     public static List<MessageClientInterface> getClients() {

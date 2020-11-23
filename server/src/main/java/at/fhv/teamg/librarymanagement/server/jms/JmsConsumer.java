@@ -11,6 +11,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +31,7 @@ public class JmsConsumer implements MessageListener {
      *
      * @return Instance
      */
-    public static JmsConsumer getInstance(Library l) {
+    public static JmsConsumer getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new JmsConsumer();
         }
@@ -46,24 +47,33 @@ public class JmsConsumer implements MessageListener {
         this.con = factory.createConnection();
         con.start();
 
-        Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = con.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
         Queue queue = session.createQueue("library.queue");
         MessageConsumer consumer = session.createConsumer(queue);
         consumer.setMessageListener(this);
+        LOG.debug("Starting JMS listener");
     }
 
     @Override
     public void onMessage(Message message) {
-        if (message instanceof CustomMessage) {
-            CustomMessage m =
-                (CustomMessage) message;
-            System.out.printf("Message received: %s, Thread: %s%n",
-                m.getMessage(),
-                Thread.currentThread().getName());
-            List<MessageClientInterface> clients = Library.getClients();
+        LOG.debug("Received a JMS message");
+        if (message instanceof ObjectMessage) {
+            ObjectMessage m =
+                (ObjectMessage) message;
+            try {
+                CustomMessage customMessage = (CustomMessage) m.getObject();
+                LOG.debug(
+                    "Message received: {}, Thread: {}",
+                    customMessage.getMessage(),
+                    Thread.currentThread().getName()
+                );
 
-            clients.forEach(client -> updateClient(client, m));
+                List<MessageClientInterface> clients = Library.getClients();
+                clients.forEach(client -> updateClient(client, customMessage));
+            } catch (JMSException e) {
+                LOG.error("Cannot read received message",e);
+            }
         }
     }
 

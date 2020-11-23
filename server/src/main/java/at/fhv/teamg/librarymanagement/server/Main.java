@@ -21,6 +21,11 @@ public class Main {
         Cache.getInstance();
         TaskRunner.run();
         new RmiServer();
+        try {
+            JmsConsumer.getInstance().startListener();
+        } catch (JMSException e) {
+            LOG.error("Cannot start message JMS listener", e);
+        }
         LOG.info("Project initialized successfully");
     }
 }

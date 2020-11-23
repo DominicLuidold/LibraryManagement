@@ -34,7 +34,7 @@ public class JmsProducer {
         this.con = factory.createConnection();
         con.start();
 
-        this.session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        this.session = con.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         Queue queue = session.createQueue("library.queue");
         this.producer = session.createProducer(queue);
     }

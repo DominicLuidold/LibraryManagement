@@ -16,9 +16,9 @@ public class JmsProvider {
         The VM transport allows clients to connect to each other inside
         the VM without the overhead of the network communication.
         */
-        ConnectionFactory connectionFactory =
+        ActiveMQConnectionFactory connectionFactory =
             new ActiveMQConnectionFactory("vm://localhost");
-
+        connectionFactory.setTrustAllPackages(true);
         return connectionFactory;
     }
 }
