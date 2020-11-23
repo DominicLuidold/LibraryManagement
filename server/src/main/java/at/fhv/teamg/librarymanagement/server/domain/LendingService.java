@@ -138,7 +138,7 @@ public class LendingService extends BaseMediaService {
 
         if (mediumCopy.getMedium().getReservations().size() > 0) {
             new Thread(() ->
-                Library.addMessage(new CustomMessage(
+                Library.addAndSendMessage(new CustomMessage(
                     UUID.randomUUID(),
                     Utils.createReturnReservationMessage(mediumCopy.getMedium()),
                     CustomMessage.Status.Open,

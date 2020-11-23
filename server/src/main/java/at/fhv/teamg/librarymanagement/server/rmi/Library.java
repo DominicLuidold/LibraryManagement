@@ -4,7 +4,6 @@ import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
-import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
 import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
@@ -66,13 +65,25 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
      *
      * @param customMessage the new message
      */
-    public static void addMessage(CustomMessage customMessage) {
+    public static void addAndSendMessage(CustomMessage customMessage) {
         try {
             Message m = JmsProducer.getInstance().sendMessage(customMessage);
             CUSTOM_MESSAGES.put(customMessage, m);
         } catch (JMSException e) {
             LOG.error("Cannot send message to queue", e);
         }
+    }
+
+    public static void addMessageWithoutSending(CustomMessage customMessage, Message m) {
+        CUSTOM_MESSAGES.put(customMessage, m);
+    }
+
+    /**
+     * Checks if library contains a message.
+     * @param customMessage Message to check
+     */
+    public static boolean containsMessage(CustomMessage customMessage) {
+        return CUSTOM_MESSAGES.containsKey(customMessage);
     }
 
     /**

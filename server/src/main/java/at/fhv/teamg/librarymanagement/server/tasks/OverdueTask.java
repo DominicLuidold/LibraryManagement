@@ -21,7 +21,7 @@ public class OverdueTask extends Thread {
             if (lending.getEndDate().isBefore(LocalDate.now())
                 && lending.getReturnDate() == null) {
                 count.incrementAndGet();
-                Library.addMessage(new CustomMessage(
+                Library.addAndSendMessage(new CustomMessage(
                     UUID.randomUUID(),
                     Utils.createOverdueMessage(lending),
                     CustomMessage.Status.Open,

@@ -45,7 +45,7 @@ public class JmsConsumer implements MessageListener {
     public void startListener() throws JMSException {
         ConnectionFactory factory = JmsProvider.getConnectionFactory();
         this.con = factory.createConnection();
-        con.start();
+        this.con.start();
 
         Session session = con.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
@@ -63,6 +63,11 @@ public class JmsConsumer implements MessageListener {
                 (ObjectMessage) message;
             try {
                 CustomMessage customMessage = (CustomMessage) m.getObject();
+                if (!Library.containsMessage(customMessage)) {
+                    LOG.debug("Adding a message to library that exists in queue but not in "
+                        + "library (server restart?)");
+                    Library.addMessageWithoutSending(customMessage, m);
+                }
                 LOG.debug(
                     "Message received: {}, Thread: {}",
                     customMessage.getMessage(),
