@@ -794,16 +794,17 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     public void updateView() {
         switch (this.currentMediumType) {
             case BOOK:
+                System.out.println("##############updating book##################");
                 this.loadCurrentBook();
-                this.loadReservations(this.currentMediumType);
+                //this.loadReservations(this.currentMediumType);
                 break;
             case DVD:
                 this.loadCurrentDvd();
-                this.loadReservations(this.currentMediumType);
+                //this.loadReservations(this.currentMediumType);
                 break;
             case GAME:
                 this.loadCurrentGame();
-                this.loadReservations(this.currentMediumType);
+                //this.loadReservations(this.currentMediumType);
                 break;
             default:
                 LOG.error("no medium type");
