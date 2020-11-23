@@ -439,7 +439,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         updateMessage(messageToUpdate);
 
         if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
-            //TODO Remove message from JMS Queue and persist in DB
+            //TODO persist in DB
             Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
             try {
                 jmsMessage.acknowledge();
