@@ -22,27 +22,5 @@ public class Main {
         TaskRunner.run();
         new RmiServer();
         LOG.info("Project initialized successfully");
-
-        /*
-        final JmsProducer sender;
-        try {
-            sender = JmsProducer.getInstance();
-            final JmsConsumer receiver = JmsConsumer.getInstance();
-            receiver.startListener();
-
-            for (int i = 1; i <= 5; i++) {
-                String m = "Hello world! " + i;
-                sender.sendMessage(m);
-                Thread.sleep(300);
-            }
-
-            sender.destroy();
-            receiver.destroy();
-
-        } catch (JMSException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-         */
     }
 }

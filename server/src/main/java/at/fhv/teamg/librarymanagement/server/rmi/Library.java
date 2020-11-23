@@ -370,6 +370,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<CustomMessage> getAllMessages() throws RemoteException {
+        LOG.debug("Returning all Messages to client");
         return new LinkedList<>(CUSTOM_MESSAGES.keySet());
     }
 
