@@ -10,9 +10,6 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 
-/**
- * @author Valentin Goronjic
- */
 public class JmsProducer {
 
     private static JmsProducer INSTANCE;
@@ -42,6 +39,13 @@ public class JmsProducer {
         this.producer = session.createProducer(queue);
     }
 
+    /**
+     * Sends a message to the JMS provider (queue).
+     *
+     * @param customMessage The message to be sent
+     * @return The JMS message (to acknowledge later on)
+     * @throws JMSException If unable to send
+     */
     public ObjectMessage sendMessage(CustomMessage customMessage) throws JMSException {
         System.out.printf("Sending message: %s, Thread:%s%n",
             customMessage,

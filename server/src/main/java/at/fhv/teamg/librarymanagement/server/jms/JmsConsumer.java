@@ -16,9 +16,6 @@ import javax.jms.Session;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Valentin Goronjic
- */
 public class JmsConsumer implements MessageListener {
 
     private static final Logger LOG = LogManager.getLogger(JmsConsumer.class);
@@ -40,6 +37,10 @@ public class JmsConsumer implements MessageListener {
         return INSTANCE;
     }
 
+    /**
+     * Starts the JMS listener.
+     * @throws JMSException When unable to start session
+     */
     public void startListener() throws JMSException {
         ConnectionFactory factory = JmsProvider.getConnectionFactory();
         this.con = factory.createConnection();
