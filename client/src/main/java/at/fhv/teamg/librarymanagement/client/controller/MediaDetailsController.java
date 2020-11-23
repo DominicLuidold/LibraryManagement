@@ -639,7 +639,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
     private void loadReservations(MediumType type) {
         UserRoleName role = this.parentController.getParentController().getParentController()
-                .getUserRole();
+            .getUserRole();
         if (MainController.isReadOnly(role)) {
             LOG.debug("Won't load reservations because role is {}", role);
             return;
