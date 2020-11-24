@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server.rmi;
 
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
+import at.fhv.teamg.librarymanagement.server.domain.MessageService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
@@ -80,6 +81,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /**
      * Checks if library contains a message.
+     *
      * @param customMessage Message to check
      */
     public static boolean containsMessage(CustomMessage customMessage) {
@@ -447,7 +449,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         updateMessage(messageToUpdate);
 
         if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
-            //TODO persist in DB
+            if (new MessageService().archiveMessage(messageToUpdate).getType().equals(
+                MessageDto.MessageType.ERROR)
+            ) {
+                LOG.error("Unable to archive message to DB");
+            }
+
             Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
             try {
                 jmsMessage.acknowledge();

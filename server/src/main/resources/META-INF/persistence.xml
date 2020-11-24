@@ -19,6 +19,7 @@
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Topic</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.User</class>
         <class>at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Message</class>
 
         <!-- Properties -->
         <properties>
