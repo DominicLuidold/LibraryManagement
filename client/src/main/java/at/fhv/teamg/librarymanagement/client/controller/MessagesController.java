@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -70,6 +71,13 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                             private final Button btnArchive = new Button("Archive");
 
                             {
+                                btnTake.setPrefSize(120, 10);
+                                btnTake.setAlignment(Pos.CENTER);
+                                btnComplete.setPrefSize(120, 10);
+                                btnComplete.setAlignment(Pos.CENTER);
+                                btnArchive.setPrefSize(120, 10);
+                                btnArchive.setAlignment(Pos.CENTER);
+
                                 RmiClient client = RmiClient.getInstance();
 
                                 btnTake.setOnAction((ActionEvent event) -> {
