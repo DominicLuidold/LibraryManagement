@@ -466,6 +466,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
     }
 
+    @Override
+    public void addMessage(CustomMessage message) throws RemoteException {
+        Library.addAndSendMessage(message);
+    }
+
     /* #### AUTHORIZATION #### */
 
     private boolean isValid(UserRoleName userRoleNeeded) {
