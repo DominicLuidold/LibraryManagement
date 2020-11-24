@@ -29,10 +29,10 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ExtendLendingController implements Initializable, Parentable<SearchController> {
+public class ExtendLendingController implements Initializable, Parentable<MediaDetailsController> {
     private static final Logger LOG = LogManager.getLogger(ExtendLendingController.class);
 
-    private SearchController parentController;
+    private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
     private MediumType currentMediumType;
@@ -177,6 +177,7 @@ public class ExtendLendingController implements Initializable, Parentable<Search
                         "Extend lending successful",
                         response.getMessage()
                     );
+                    this.getParentController().updateView();
                 } else {
                     AlertHelper.showAlert(
                         Alert.AlertType.ERROR,
@@ -199,8 +200,10 @@ public class ExtendLendingController implements Initializable, Parentable<Search
 
         this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
-            this.parentController.getParentController().removeTab(TabPaneEntry.EXTEND_LENDING);
-            this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
+            this.parentController.getParentController().getParentController()
+                .removeTab(TabPaneEntry.EXTEND_LENDING);
+            this.parentController.getParentController().getParentController()
+                .selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
     }
 
@@ -374,12 +377,12 @@ public class ExtendLendingController implements Initializable, Parentable<Search
     }
 
     @Override
-    public SearchController getParentController() {
+    public MediaDetailsController getParentController() {
         return this.parentController;
     }
 
     @Override
-    public void setParentController(SearchController controller) {
+    public void setParentController(MediaDetailsController controller) {
         this.parentController = controller;
     }
 

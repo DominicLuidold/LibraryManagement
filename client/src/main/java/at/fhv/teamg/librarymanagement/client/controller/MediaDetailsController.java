@@ -208,7 +208,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.LENDING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.LENDING, this).get();
 
                     LendingController lendingController =
                         (LendingController) controller;
@@ -254,7 +254,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.EXTEND_LENDING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.EXTEND_LENDING, this).get();
 
                     ExtendLendingController extendLendingController =
                         (ExtendLendingController) controller;
@@ -302,7 +302,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.RETURNING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.RETURNING, this).get();
 
                     ReturningController returningController = (ReturningController) controller;
 
@@ -365,6 +365,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                                 "Reservation removed successfully",
                                 msgDto.getMessage()
                             );
+                            this.updateView();
                         } else {
                             AlertHelper.showAlert(
                                 Alert.AlertType.ERROR,
@@ -638,7 +639,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
     private void loadReservations(MediumType type) {
         UserRoleName role = this.parentController.getParentController().getParentController()
-                .getUserRole();
+            .getUserRole();
         if (MainController.isReadOnly(role)) {
             LOG.debug("Won't load reservations because role is {}", role);
             return;
@@ -785,6 +786,29 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             thread2.start();
         });
         thread.start();
+    }
+
+    /**
+     * updates the current medium.
+     */
+    public void updateView() {
+        switch (this.currentMediumType) {
+            case BOOK:
+                System.out.println("##############updating book##################");
+                this.loadCurrentBook();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            case DVD:
+                this.loadCurrentDvd();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            case GAME:
+                this.loadCurrentGame();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            default:
+                LOG.error("no medium type");
+        }
     }
 
     @Override

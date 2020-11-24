@@ -27,6 +27,7 @@ public abstract class BaseDao<T> implements Dao<T> {
             "LibraryManagement"
         );
     protected static EntityManager entityManager = entityManagerFactory.createEntityManager();
+    private static final Object lock = new Object(); //HACK
 
     /**
      * Finds the object based on the provided {@link UUID}.
@@ -36,7 +37,9 @@ public abstract class BaseDao<T> implements Dao<T> {
      * @return {@link Optional#ofNullable(T)} containing the entity
      */
     protected Optional<T> find(Class<T> clazz, UUID uuid) {
-        return Optional.ofNullable(entityManager.find(clazz, uuid));
+        synchronized (lock) {
+            return Optional.ofNullable(entityManager.find(clazz, uuid));
+        }
     }
 
     /**
@@ -47,22 +50,24 @@ public abstract class BaseDao<T> implements Dao<T> {
      * @return {@link Optional#empty()} if persisting not possible
      */
     protected Optional<T> persist(Class<T> clazz, T elem) {
-        EntityTransaction transaction = null;
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.persist(elem);
-            transaction.commit();
-            return Optional.of(elem);
-        } catch (Exception e) {
-            if (null != transaction && transaction.isActive()) {
-                transaction.rollback();
+        synchronized (lock) {
+            EntityTransaction transaction = null;
+            try {
+                transaction = entityManager.getTransaction();
+                transaction.begin();
+                entityManager.persist(elem);
+                transaction.commit();
+                return Optional.of(elem);
+            } catch (Exception e) {
+                if (null != transaction && transaction.isActive()) {
+                    transaction.rollback();
+                }
+                LOG.error("Could not persist element", e);
+            } finally {
+                entityManager.clear();
             }
-            LOG.error("Could not persist element", e);
-        } finally {
-            entityManager.clear();
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     /**
@@ -73,21 +78,23 @@ public abstract class BaseDao<T> implements Dao<T> {
      * @return {@link Optional#empty()} if updating not possible
      */
     protected Optional<T> update(Class<T> clazz, T elem) {
-        EntityTransaction transaction = null;
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.merge(elem);
-            transaction.commit();
-            return Optional.of(elem);
-        } catch (Exception e) {
-            if (null != transaction && transaction.isActive()) {
-                transaction.rollback();
+        synchronized (lock) {
+            EntityTransaction transaction = null;
+            try {
+                transaction = entityManager.getTransaction();
+                transaction.begin();
+                entityManager.merge(elem);
+                transaction.commit();
+                return Optional.of(elem);
+            } catch (Exception e) {
+                if (null != transaction && transaction.isActive()) {
+                    transaction.rollback();
+                }
+                LOG.error("Could not update element", e);
+                return Optional.empty();
+            } finally {
+                entityManager.clear();
             }
-            LOG.error("Could not update element", e);
-            return Optional.empty();
-        } finally {
-            entityManager.clear();
         }
     }
 
@@ -99,21 +106,23 @@ public abstract class BaseDao<T> implements Dao<T> {
      * @return true if removing was successful, false otherwise
      */
     protected boolean remove(Class<T> clazz, T elem) {
-        EntityTransaction transaction = null;
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.remove(elem);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            if (null != transaction && transaction.isActive()) {
-                transaction.rollback();
+        synchronized (lock) {
+            EntityTransaction transaction = null;
+            try {
+                transaction = entityManager.getTransaction();
+                transaction.begin();
+                entityManager.remove(elem);
+                transaction.commit();
+                return true;
+            } catch (Exception e) {
+                if (null != transaction && transaction.isActive()) {
+                    transaction.rollback();
+                }
+                LOG.error("Could not remove element", e);
+                return false;
+            } finally {
+                entityManager.clear();
             }
-            LOG.error("Could not remove element", e);
-            return false;
-        } finally {
-            entityManager.clear();
         }
     }
 
@@ -124,13 +133,15 @@ public abstract class BaseDao<T> implements Dao<T> {
      * @return A List of objects
      */
     protected List<T> getAll(Class<T> clazz) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
-        Root<T> rootEntry = criteriaQuery.from(clazz);
-        CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
+        synchronized (lock) {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(clazz);
+            Root<T> rootEntry = criteriaQuery.from(clazz);
+            CriteriaQuery<T> all = criteriaQuery.select(rootEntry);
 
-        TypedQuery<T> allQuery = entityManager.createQuery(all);
-        entityManager.clear();
-        return allQuery.getResultList();
+            TypedQuery<T> allQuery = entityManager.createQuery(all);
+            entityManager.clear();
+            return allQuery.getResultList();
+        }
     }
 }
