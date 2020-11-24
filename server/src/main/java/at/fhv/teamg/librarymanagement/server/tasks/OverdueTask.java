@@ -2,7 +2,7 @@ package at.fhv.teamg.librarymanagement.server.tasks;
 
 import at.fhv.teamg.librarymanagement.server.persistance.dao.LendingDao;
 import at.fhv.teamg.librarymanagement.server.rmi.Library;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,10 +21,10 @@ public class OverdueTask extends Thread {
             if (lending.getEndDate().isBefore(LocalDate.now())
                 && lending.getReturnDate() == null) {
                 count.incrementAndGet();
-                Library.addMessage(new Message(
+                Library.addAndSendMessage(new CustomMessage(
                     UUID.randomUUID(),
                     Utils.createOverdueMessage(lending),
-                    Message.Status.Open,
+                    CustomMessage.Status.Open,
                     LocalDateTime.now()
                 ));
             }

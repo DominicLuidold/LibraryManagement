@@ -4,14 +4,15 @@ import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
+import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
@@ -21,8 +22,12 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import javax.jms.JMSException;
+import javax.jms.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,27 +36,84 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private static final long serialVersionUID = -443483629739057113L;
 
     private static final List<MessageClientInterface> clients = new LinkedList<>();
-    private static final List<Message> messages = new LinkedList<>();
-
+    private static final Map<CustomMessage, Message> CUSTOM_MESSAGES = new HashMap<>();
+    private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
     private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
     private final ReservationService reservationService = new ReservationService();
     private final UserService userService = new UserService();
     private final Cache cache = Cache.getInstance();
-
     private LoginDto loggedInUser;
-    private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
 
+    /**
+     * Constructs a new library.
+     *
+     * @throws RemoteException when unable to receive messages
+     */
     public Library() throws RemoteException {
         super();
     }
 
+    public static List<MessageClientInterface> getClients() {
+        return clients;
+    }
+
     /* #### SEARCH #### */
+
+    /**
+     * Add a new message.
+     *
+     * @param customMessage the new message
+     */
+    public static void addAndSendMessage(CustomMessage customMessage) {
+        try {
+            Message m = JmsProducer.getInstance().sendMessage(customMessage);
+            CUSTOM_MESSAGES.put(customMessage, m);
+        } catch (JMSException e) {
+            LOG.error("Cannot send message to queue", e);
+        }
+    }
+
+    public static void addMessageWithoutSending(CustomMessage customMessage, Message m) {
+        CUSTOM_MESSAGES.put(customMessage, m);
+    }
+
+    /**
+     * Checks if library contains a message.
+     * @param customMessage Message to check
+     */
+    public static boolean containsMessage(CustomMessage customMessage) {
+        return CUSTOM_MESSAGES.containsKey(customMessage);
+    }
+
+    /**
+     * Update an existing message.
+     *
+     * @param customMessage message with the same id of an already existing message
+     */
+    public static void updateMessage(CustomMessage customMessage) {
+        CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
+            .findFirst()
+            .ifPresent(m -> {
+                m.dateTime = customMessage.dateTime;
+                m.message = customMessage.message;
+                m.status = customMessage.status;
+                try {
+                    Message m2 = JmsProducer.getInstance().sendMessage(customMessage);
+                    CUSTOM_MESSAGES.put(m, m2);
+                } catch (JMSException e) {
+                    LOG.error("Cannot send message over JMS", customMessage);
+                }
+            });
+    }
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
         return cache.searchBook(bookDto);
     }
+
+    /* #### DETAILS #### */
 
     @Override
     public List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException {
@@ -63,12 +125,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return cache.searchGame(gameDto);
     }
 
-    /* #### DETAILS #### */
-
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
         return cache.getBookDetail(bookDto.getId());
     }
+
+    /* #### GET ALL #### */
 
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
@@ -79,8 +141,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
         return cache.getGameDetail(gameDto.getId());
     }
-
-    /* #### GET ALL #### */
 
     @Override
     public List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException {
@@ -102,6 +162,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return cache.getAllTopics();
     }
 
+    /* #### RESERVATION #### */
+
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
         if (isValid(UserRoleName.Librarian)) {
@@ -117,8 +179,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
         return new LinkedList<UserDto>();
     }
-
-    /* #### RESERVATION #### */
 
     @Override
     public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
@@ -183,6 +243,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return reservationService.getReservations(bookDto);
     }
 
+    /* ##### LENDING ##### */
+
     @Override
     public List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException {
         if (!isValid(UserRoleName.Librarian)) {
@@ -198,8 +260,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         }
         return reservationService.getReservations(gameDto);
     }
-
-    /* ##### LENDING ##### */
 
     @Override
     public MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
@@ -292,6 +352,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return result;
     }
 
+    /* #### LOGIN #### */
+
     @Override
     public MessageDto<EmptyDto> returnDvd(MediumCopyDto copyDto) throws RemoteException {
         if (!isValid(UserRoleName.Librarian)) {
@@ -305,6 +367,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return result;
     }
 
+    /* #### MESSAGING #### */
+
     @Override
     public MessageDto<EmptyDto> returnGame(MediumCopyDto copyDto) throws RemoteException {
         if (!isValid(UserRoleName.Librarian)) {
@@ -317,8 +381,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         cache.invalidateGameCacheMediumCopy(copyDto.getId());
         return result;
     }
-
-    /* #### LOGIN #### */
 
     /**
      * Try to login User specified in loginDto.
@@ -344,8 +406,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             .build();
     }
 
-    /* #### MESSAGING #### */
-
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
         LOG.debug("Registering new message subscriber [{}]", client.hashCode());
@@ -353,57 +413,19 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     }
 
     @Override
-    public List<Message> getAllMessages() throws RemoteException {
-        return messages;
-    }
-
-    private static void updateClient(MessageClientInterface client, Message message) {
-        new Thread(() -> {
-            try {
-                client.update(message);
-            } catch (RemoteException e) {
-                LOG.error("Client cannot be messaged", e);
-                LOG.debug("Removing client [{}] from subscriber list", client.hashCode());
-                clients.remove(client);
-            }
-        }).start();
-    }
-
-    /**
-     * Add a new message.
-     *
-     * @param message the new message
-     */
-    public static void addMessage(Message message) {
-        messages.add(message);
-        clients.forEach(client -> updateClient(client, message));
-    }
-
-    /**
-     * Update an existing message.
-     *
-     * @param message message with the same id of an already existing message
-     */
-    public static void updateMessage(Message message) {
-        messages.stream()
-            .filter(m -> m.id.equals(message.id))
-            .findFirst()
-            .ifPresent(m -> {
-                m.dateTime = message.dateTime;
-                m.message = message.message;
-                m.status = message.status;
-                clients.forEach(client -> updateClient(client, m));
-            });
+    public List<CustomMessage> getAllMessages() throws RemoteException {
+        LOG.debug("Returning all Messages to client");
+        return new LinkedList<>(CUSTOM_MESSAGES.keySet());
     }
 
     /**
      * Update message Status.
      *
-     * @param message message with the same id of an already existing message
+     * @param customMessage message with the same id of an already existing message
      */
-    public void updateMessageStatus(Message message) throws RemoteException {
-        var messageOptional = messages.stream()
-            .filter(m -> m.id.equals(message.id))
+    public void updateMessageStatus(CustomMessage customMessage) throws RemoteException {
+        var messageOptional = CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
             .findFirst();
 
         if (messageOptional.isEmpty()) {
@@ -420,13 +442,20 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             return;
         }
 
-        messageToUpdate.status = message.status;
+        messageToUpdate.status = customMessage.status;
 
-        clients.forEach(client -> updateClient(client, messageToUpdate));
+        updateMessage(messageToUpdate);
 
-        if (messageToUpdate.status.equals(Message.Status.Archived)) {
-            messages.remove(messageToUpdate);
-            //TODO Remove message from JMS Queue and persist in DB
+        if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
+            //TODO persist in DB
+            Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
+            try {
+                jmsMessage.acknowledge();
+            } catch (JMSException e) {
+                LOG.error("Unable to archive (acknowledge) message", e);
+            }
+
+            CUSTOM_MESSAGES.remove(messageToUpdate);
         }
     }
 

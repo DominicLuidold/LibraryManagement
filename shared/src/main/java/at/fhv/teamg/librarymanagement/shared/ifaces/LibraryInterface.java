@@ -1,13 +1,13 @@
 package at.fhv.teamg.librarymanagement.shared.ifaces;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
@@ -91,7 +91,7 @@ public interface LibraryInterface extends Remote {
 
     void registerForMessages(MessageClientInterface client) throws RemoteException;
 
-    List<Message> getAllMessages() throws RemoteException;
+    List<CustomMessage> getAllMessages() throws RemoteException;
 
-    void updateMessageStatus(Message message) throws RemoteException;
+    void updateMessageStatus(CustomMessage customMessage) throws RemoteException;
 }
