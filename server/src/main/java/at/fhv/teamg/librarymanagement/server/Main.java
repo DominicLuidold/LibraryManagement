@@ -1,8 +1,11 @@
 package at.fhv.teamg.librarymanagement.server;
 
+import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
+import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.server.tasks.TaskRunner;
+import javax.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +21,11 @@ public class Main {
         Cache.getInstance();
         TaskRunner.run();
         new RmiServer();
+        try {
+            JmsConsumer.getInstance().startListener();
+        } catch (JMSException e) {
+            LOG.error("Cannot start message JMS listener", e);
+        }
         LOG.info("Project initialized successfully");
     }
 }
