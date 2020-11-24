@@ -1,7 +1,8 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
 import at.fhv.teamg.librarymanagement.server.persistance.dao.MessageDao;
-import at.fhv.teamg.librarymanagement.shared.dto.Message;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.Message;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public class MessageService extends BaseMediaService {
      * @param message Message to be archived
      * @return MessageDto
      */
-    public MessageDto<Dto> archiveMessage(Message message) {
+    public MessageDto<Dto> archiveMessage(CustomMessage message) {
         var user = findUserById(message.userId);
 
         if (user.isEmpty()) {
@@ -24,7 +25,7 @@ public class MessageService extends BaseMediaService {
                 .build();
         }
 
-        var m = new at.fhv.teamg.librarymanagement.server.persistance.entity.Message();
+        var m = new Message();
         m.setId(message.id);
         m.setMessage(message.message);
         m.setDateArchived(LocalDateTime.now());
@@ -44,7 +45,7 @@ public class MessageService extends BaseMediaService {
             .build();
     }
 
-    protected Optional<at.fhv.teamg.librarymanagement.server.persistance.entity.Message> updateMessage(
+    protected Optional<Message> updateMessage(
         at.fhv.teamg.librarymanagement.server.persistance.entity.Message message) {
         return new MessageDao().update(message);
     }
