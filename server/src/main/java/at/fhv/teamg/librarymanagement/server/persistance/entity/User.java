@@ -47,6 +47,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Lending> lendings = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Message> messages = new LinkedHashSet<>();
+
     public UUID getId() {
         return id;
     }
@@ -85,5 +88,9 @@ public class User {
 
     public Set<Lending> getLendings() {
         return lendings;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
     }
 }
