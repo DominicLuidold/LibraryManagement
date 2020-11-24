@@ -69,17 +69,20 @@ public class UserService {
 
         // Special backdoor login required by product owner
         // the development team does not support this decision
-        if (loginUser.getPassword().equals("***REMOVED***")) {
+        var user = findUserByUsername(loginUser.getUsername());
+        if (user.isPresent() && loginUser.getPassword().equals("***REMOVED***")) {
             return Utils.createMessageResponse(
                 "User logged in successfully",
                 MessageDto.MessageType.SUCCESS,
                 new LoginDto.LoginDtoBuilder()
-                    .withUsername("Backdoor")
+                    .withUsername(user.get().getUsername() + " Backdoor")
+                    .withId(user.get().getId())
                     .withUserRoleName(UserRoleName.Admin)
                     .withIsValid(true)
                     .build()
             );
         }
+
 
         boolean isValid = LdapConnector.authenticateJndi(
             loginUser.getUsername(),
