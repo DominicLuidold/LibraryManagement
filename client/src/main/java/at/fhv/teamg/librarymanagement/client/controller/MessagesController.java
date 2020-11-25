@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.rmi.MessageClient;
 import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
 
     private TabPaneController parentController;
     private ResourceBundle resourceBundle;
+    private MessageClient messageClient;
 
     @FXML
     private TableView<CustomMessage> messagesTable;
@@ -47,9 +49,8 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
         this.resourceBundle = resources;
         LOG.debug("Initialized MessagesController");
 
-        MessageClient messageClient = null;
         try {
-            messageClient = new MessageClient();
+            messageClient = new MessageClient(true);
             messageClient.onUpdate(
                 messages -> {
                     messagesTable.setItems(FXCollections.observableList(messages));
@@ -76,6 +77,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                         CustomMessage.Status.Open,
                         LocalDateTime.now()
                     ));
+                    messageClient.poll();
                 } catch (RemoteException e) {
                     LOG.error("Cannot send message", e);
                     AlertHelper.showAlert(
@@ -120,9 +122,14 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     CustomMessage msg = getTableView()
                                         .getItems().get(getIndex());
                                     LOG.debug("Take button pressed for message: " + msg.id);
+                                    boolean isChangable = isMessageChangable(msg);
+                                    if (!isChangable) {
+                                        return;
+                                    }
                                     msg.status = CustomMessage.Status.Working;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }
@@ -132,9 +139,14 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     CustomMessage msg = getTableView()
                                         .getItems().get(getIndex());
                                     LOG.debug("Complete button pressed for message: " + msg.id);
+                                    boolean isChangable = isMessageChangable(msg);
+                                    if (!isChangable) {
+                                        return;
+                                    }
                                     msg.status = CustomMessage.Status.Done;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }
@@ -144,9 +156,14 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     CustomMessage msg = getTableView()
                                         .getItems().get(getIndex());
                                     LOG.debug("Archive button pressed for message: " + msg.id);
+                                    boolean isChangable = isMessageChangable(msg);
+                                    if (!isChangable) {
+                                        return;
+                                    }
                                     msg.status = CustomMessage.Status.Archived;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }
@@ -182,6 +199,22 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
         return cellFactory;
     }
 
+    private boolean isMessageChangable(CustomMessage msg) {
+        if (msg.getUserId() == null) {
+            return true;
+        } else if (!msg.getUserId().equals(parentController.getParentController().getUserUuid())
+            && !parentController.getParentController().getUserRole().equals(UserRoleName.Admin)) {
+            AlertHelper.showAlert(
+                Alert.AlertType.ERROR,
+                messagePane.getScene().getWindow(),
+                "Not your message",
+                "Another librarian is working on "
+                    + "this message. You cannot change it."
+            );
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public TabPaneController getParentController() {
