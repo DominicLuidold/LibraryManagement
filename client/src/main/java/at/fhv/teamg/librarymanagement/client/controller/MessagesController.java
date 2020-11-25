@@ -31,6 +31,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
 
     private TabPaneController parentController;
     private ResourceBundle resourceBundle;
+    private MessageClient messageClient;
 
     @FXML
     private TableView<CustomMessage> messagesTable;
@@ -47,7 +48,6 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
         this.resourceBundle = resources;
         LOG.debug("Initialized MessagesController");
 
-        MessageClient messageClient = null;
         try {
             messageClient = new MessageClient(true);
             messageClient.onUpdate(
@@ -123,6 +123,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     msg.status = CustomMessage.Status.Working;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }
@@ -135,6 +136,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     msg.status = CustomMessage.Status.Done;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }
@@ -147,6 +149,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                     msg.status = CustomMessage.Status.Archived;
                                     try {
                                         client.updateMessageStatus(msg);
+                                        messageClient.poll();
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
                                     }

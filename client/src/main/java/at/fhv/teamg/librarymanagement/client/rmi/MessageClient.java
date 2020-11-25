@@ -50,6 +50,23 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
         }
     }
 
+    public void poll() throws RemoteException {
+        new Thread(() -> {
+            try {
+                Thread.sleep(200);
+                RmiClient.getInstance().getAllMessages().forEach(customMessage -> {
+                    try {
+                        update(customMessage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public void onUpdate(Consumer<List<CustomMessage>> consumer) {
         onUpdate = consumer;
         onUpdate.accept(messages);
@@ -62,7 +79,6 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
             .findFirst();
 
         if (messageOptional.isPresent()) {
-            LOG.info("got message update");
             CustomMessage m = messageOptional.get();
             if (message.status.equals(CustomMessage.Status.Archived)) {
                 LOG.info("Removing archived message");
