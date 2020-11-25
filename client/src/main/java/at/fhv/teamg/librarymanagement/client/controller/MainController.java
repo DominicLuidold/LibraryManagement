@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -167,6 +168,10 @@ public class MainController implements Initializable {
 
     public UserRoleName getUserRole() {
         return userRole;
+    }
+
+    public UUID getUserUuid() {
+        return currentUser.getId();
     }
 
     public static boolean isReadOnly(UserRoleName role) {
