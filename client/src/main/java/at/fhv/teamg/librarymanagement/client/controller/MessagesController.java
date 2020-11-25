@@ -77,6 +77,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                         CustomMessage.Status.Open,
                         LocalDateTime.now()
                     ));
+                    messageClient.poll();
                 } catch (RemoteException e) {
                     LOG.error("Cannot send message", e);
                     AlertHelper.showAlert(
