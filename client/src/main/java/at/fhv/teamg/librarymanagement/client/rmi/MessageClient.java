@@ -34,17 +34,11 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
                 @Override
                 public void run() {
                     try {
-                        LOG.info("polling messages");
-                        RmiClient.getInstance().getAllMessages().forEach(customMessage -> {
-                            try {
-                                update(customMessage);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        messages = RmiClient.getInstance().getAllMessages();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    onUpdate.accept(messages);
                 }
             };
             new Timer().scheduleAtFixedRate(task, 0, 20000);
@@ -61,27 +55,15 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
             new Thread(() -> {
                 try {
                     Thread.sleep(200);
-                    RmiClient.getInstance().getAllMessages().forEach(customMessage -> {
-                        try {
-                            update(customMessage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    messages = RmiClient.getInstance().getAllMessages();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                onUpdate.accept(messages);
             }).start();
-            archiveCheck();
         }
     }
 
-    private void archiveCheck() {
-        messages = messages.stream()
-            .filter(
-                customMessage -> !customMessage.status.equals(CustomMessage.Status.Archived))
-            .collect(Collectors.toList());
-    }
 
     public void onUpdate(Consumer<List<CustomMessage>> consumer) {
         onUpdate = consumer;
@@ -108,10 +90,6 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
         } else {
             LOG.info("got new Message");
             messages.add(message);
-        }
-
-        if (polling) {
-            archiveCheck();
         }
 
         onUpdate.accept(messages);
