@@ -242,4 +242,9 @@ public class RmiClient implements LibraryInterface {
     public void updateMessageStatus(CustomMessage message) throws RemoteException {
         library.updateMessageStatus(message);
     }
+
+    @Override
+    public void addMessage(CustomMessage message) throws RemoteException {
+        library.addMessage(message);
+    }
 }

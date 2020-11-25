@@ -439,6 +439,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
         if (messageToUpdate.userId == null) {
             messageToUpdate.userId = loggedInUser.getId();
+        } else if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
+            LOG.info("message admin override");
         } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
             LOG.error("Logged-in user is not allowed to update this message");
             return;
@@ -464,6 +466,11 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
             CUSTOM_MESSAGES.remove(messageToUpdate);
         }
+    }
+
+    @Override
+    public void addMessage(CustomMessage message) throws RemoteException {
+        Library.addAndSendMessage(message);
     }
 
     /* #### AUTHORIZATION #### */
