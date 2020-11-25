@@ -49,7 +49,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
 
         MessageClient messageClient = null;
         try {
-            messageClient = new MessageClient();
+            messageClient = new MessageClient(true);
             messageClient.onUpdate(
                 messages -> {
                     messagesTable.setItems(FXCollections.observableList(messages));
