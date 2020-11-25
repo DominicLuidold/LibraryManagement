@@ -176,7 +176,7 @@
                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                         </rowConstraints>
                                         <children>
-                                            <Label text="User" GridPane.rowIndex="0"/>
+                                            <Label text="Customer" GridPane.rowIndex="0"/>
                                             <Label fx:id="userSelect" text="${controller.currentUser}" GridPane.rowIndex="0" GridPane.columnIndex="1"></Label>
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false"
                                                     GridPane.columnSpan="1" GridPane.rowSpan="1" GridPane.columnIndex="0"

@@ -174,7 +174,7 @@
                                                             <PropertyValueFactory property="endDate" />
                                                         </cellValueFactory>
                                                     </TableColumn>
-                                                    <TableColumn fx:id="columnUserId" prefWidth="120.0" text="User" >
+                                                    <TableColumn fx:id="columnUserId" prefWidth="120.0" text="Customer" >
                                                         <cellValueFactory>
                                                             <PropertyValueFactory property="userName" />
                                                         </cellValueFactory>

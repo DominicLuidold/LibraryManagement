@@ -178,7 +178,7 @@
                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                         </rowConstraints>
                                         <children>
-                                            <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
+                                            <Label visible="true" text="Select customer" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUserSelect" promptText="User"
                                                        GridPane.rowIndex="0" GridPane.columnIndex="1"></TextField>
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40"
