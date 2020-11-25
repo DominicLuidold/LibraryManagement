@@ -10,11 +10,13 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class MessageClient extends UnicastRemoteObject implements MessageClientInterface {
     private static final Logger LOG = LogManager.getLogger(MessageClientInterface.class);
+    private final boolean polling;
     List<CustomMessage> messages = new LinkedList<>();
     Consumer<List<CustomMessage>> onUpdate;
 
@@ -26,6 +28,7 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
      */
     public MessageClient(boolean doPolling) throws RemoteException {
         super();
+        polling = doPolling;
         if (doPolling) {
             TimerTask task = new TimerTask() {
                 @Override
@@ -50,21 +53,34 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
         }
     }
 
-    public void poll() throws RemoteException {
-        new Thread(() -> {
-            try {
-                Thread.sleep(200);
-                RmiClient.getInstance().getAllMessages().forEach(customMessage -> {
-                    try {
-                        update(customMessage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+    /**
+     * Poll messages from Server.
+     */
+    public void poll() {
+        if (polling) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(200);
+                    RmiClient.getInstance().getAllMessages().forEach(customMessage -> {
+                        try {
+                            update(customMessage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+            archiveCheck();
+        }
+    }
+
+    private void archiveCheck() {
+        messages = messages.stream()
+            .filter(
+                customMessage -> !customMessage.status.equals(CustomMessage.Status.Archived))
+            .collect(Collectors.toList());
     }
 
     public void onUpdate(Consumer<List<CustomMessage>> consumer) {
@@ -92,6 +108,10 @@ public class MessageClient extends UnicastRemoteObject implements MessageClientI
         } else {
             LOG.info("got new Message");
             messages.add(message);
+        }
+
+        if (polling) {
+            archiveCheck();
         }
 
         onUpdate.accept(messages);
