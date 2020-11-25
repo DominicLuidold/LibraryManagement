@@ -69,11 +69,11 @@ public class CustomMessage implements Serializable {
             return false;
         }
         CustomMessage that = (CustomMessage) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(message);
     }
 }
