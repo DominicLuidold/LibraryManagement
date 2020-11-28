@@ -129,7 +129,7 @@
                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                         </rowConstraints>
                                         <children>
-                                            <Label visible="true" text="Select user" GridPane.rowIndex="0"/>
+                                            <Label visible="true" text="Select customer" GridPane.rowIndex="0"/>
                                             <TextField fx:id="txtUser" promptText="User" GridPane.rowIndex="0" GridPane.halignment="CENTER" GridPane.columnIndex="1"></TextField>
                                             <Button fx:id="btnBack" prefWidth="100" prefHeight="40" defaultButton="false" GridPane.rowIndex="1" GridPane.columnIndex="0" text="Back" GridPane.halignment="LEFT" />
                                             <Button fx:id="btnReserve" prefWidth="100" prefHeight="40" defaultButton="true" GridPane.rowIndex="1" text="Reserve" GridPane.columnIndex="1" GridPane.halignment="LEFT" />
