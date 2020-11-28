@@ -28,17 +28,20 @@
                       value="jdbc:***REMOVED***?serverTimezone=Europe/Berlin&amp;autoReconnect=true"/>
             <property name="javax.persistence.jdbc.user" value="devusr"/>
             <property name="javax.persistence.jdbc.password" value="***REMOVED***"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+
+
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="5"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+
+            <!-- Connection pool
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             <property name="hibernate.connection.provider_class"
                       value="org.hibernate.connection.C3P0ConnectionProvider"/>
-
-            <!-- Connection pool -->
             <property name="hibernate.c3p0.min_size" value="5"/>
             <property name="hibernate.c3p0.max_size" value="20"/>
             <property name="hibernate.c3p0.timeout" value="120"/>
@@ -49,7 +52,8 @@
             <property name="hibernate.c3p0.validationQuery " value="SELECT 1"/>
             <property name="hibernate.c3p0.numHelperThreads " value="10"/>
             <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="100"/>
-            <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="false"/>
+            <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="false"/> 
+            -->
         </properties>
     </persistence-unit>
 </persistence>
