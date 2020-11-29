@@ -59,7 +59,7 @@ public class UserDao extends BaseDao<User> {
         TypedQuery<User> query = entityManager.createQuery(
             "SELECT u FROM User u "
                 + "JOIN UserRole ur ON ur = u.role "
-                + "WHERE u.username LIKE :username ",
+                + "WHERE u.username = :username ",
             User.class
         );
         query.setParameter("username", "%" + username + "%");
