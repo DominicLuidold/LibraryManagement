@@ -62,7 +62,7 @@ public class UserDao extends BaseDao<User> {
                 + "WHERE u.username = :username ",
             User.class
         );
-        query.setParameter("username", "%" + username + "%");
+        query.setParameter("username", username.trim());
 
         Optional<User> user = Optional.empty();
 
