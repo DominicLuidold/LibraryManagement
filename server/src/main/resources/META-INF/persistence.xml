@@ -25,8 +25,8 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:***REMOVED***?serverTimezone=Europe/Berlin&amp;autoReconnect=true"/>
-            <property name="javax.persistence.jdbc.user" value="devusr"/>
+                      value="***REMOVED***?serverTimezone=Europe/Berlin&amp;autoReconnect=true"/>
+            <property name="javax.persistence.jdbc.user" value="mainusr"/>
             <property name="javax.persistence.jdbc.password" value="***REMOVED***"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
