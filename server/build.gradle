@@ -6,6 +6,7 @@ plugins {
     /* Project specific plugins */
     id 'checkstyle'
     id 'jacoco'
+    id 'war'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
@@ -38,7 +39,13 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
     implementation 'at.fhv.teamg.librarymanagement:LibraryManagement_Shared:0.+'
+
+    /* JAVA EE, EJBs */
     compile group: 'javax', name: 'javaee-api', version: '8.0.1'
+    compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2.2'
+    compile group: 'org.wildfly.bom', name: 'wildfly-jakartaee8-with-tools-builder', version: '21.0.1.Final', ext: 'pom'
+    compile group: 'org.jboss.spec.javax.annotation', name: 'jboss-annotations-api_1.3_spec', version: '2.0.1.Final'
+    providedCompile group: 'org.jboss.spec.javax.ejb', name: 'jboss-ejb-api_3.2_spec', version: '2.0.0.Final'
 
     testCompile 'org.mockito:mockito-core:3.5.15'
 }
@@ -99,3 +106,9 @@ distributions {
         }
     }
 }
+
+artifacts {
+    archives jar
+    archives war
+}
+
