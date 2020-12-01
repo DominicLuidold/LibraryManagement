@@ -4,7 +4,7 @@ ENV JBOSS_CLI /opt/jboss/wildfly/bin/jboss-cli.sh
 ENV DEPLOYMENT_DIR /opt/jboss/wildfly/standalone/deployments/
 
 COPY build/libs/LibraryServer.jar /opt/jboss/wildfly/standalone/deployments/
-#RUN /opt/jboss/wildfly/bin/add-user.sh admin h8nNgw5v/rHDmgON --silent
+#RUN /opt/jboss/wildfly/bin/add-user.sh admin <PW> --silent # necessary to login on web gui!
 
 
 #RUN echo "=> Starting WildFly server" && \
