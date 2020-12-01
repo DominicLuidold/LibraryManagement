@@ -29,14 +29,13 @@
             <property name="javax.persistence.jdbc.user" value="devusr"/>
             <property name="javax.persistence.jdbc.password" value="***REMOVED***"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
-
-
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.generate_statistics" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="5"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+
             <!--
             TODO: Find out how C3PO works in Wildfly -> exception during startup, driver is null?
             <property name="hibernate.connection.provider_class"
