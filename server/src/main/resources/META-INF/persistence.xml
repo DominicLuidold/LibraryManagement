@@ -37,8 +37,8 @@
             <property name="hibernate.jdbc.batch_size" value="5"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-
             <!--
+            TODO: Find out how C3PO works in Wildfly -> exception during startup, driver is null?
             <property name="hibernate.connection.provider_class"
                       value="org.hibernate.connection.C3P0ConnectionProvider"/>
             <property name="hibernate.c3p0.min_size" value="5"/>

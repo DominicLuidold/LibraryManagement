@@ -106,9 +106,3 @@ distributions {
         }
     }
 }
-
-artifacts {
-    archives jar
-    archives war
-}
-
