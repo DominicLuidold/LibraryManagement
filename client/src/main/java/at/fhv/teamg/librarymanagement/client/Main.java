@@ -21,16 +21,20 @@ public class Main {
         //MainGui.main();
 
         // EJBs
-
         try {
             Properties props = new Properties();
 
-            props.put(Context.INITIAL_CONTEXT_FACTORY, "org.wildfly.naming.client.WildFlyInitialContextFactory");
+            props.put(
+                Context.INITIAL_CONTEXT_FACTORY,
+                "org.wildfly.naming.client.WildFlyInitialContextFactory"
+            );
             props.put(Context.PROVIDER_URL, "http-remoting://localhost:8080");
 
             Context context = new InitialContext(props);
 
-            EjbTestRemote etr = (EjbTestRemote) context.lookup("ejb:/LibraryServer/EjbTest!at.fhv.teamg.librarymanagement.shared.ifaces.ejb.EjbTestRemote");
+            EjbTestRemote etr = (EjbTestRemote) context.lookup(
+                "ejb:/LibraryServer/EjbTest!at.fhv.teamg.librarymanagement.shared.ifaces.ejb"
+                    + ".EjbTestRemote");
             System.out.println(etr.getName("Team G"));
 
         } catch (NamingException ex) {

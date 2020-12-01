@@ -4,7 +4,7 @@ ENV JBOSS_CLI /opt/jboss/wildfly/bin/jboss-cli.sh
 ENV DEPLOYMENT_DIR /opt/jboss/wildfly/standalone/deployments/
 
 COPY build/libs/LibraryServer.jar /opt/jboss/wildfly/standalone/deployments/
-RUN /opt/jboss/wildfly/bin/add-user.sh admin h8nNgw5v/rHDmgON --silent
+#RUN /opt/jboss/wildfly/bin/add-user.sh admin h8nNgw5v/rHDmgON --silent
 
 
 #RUN echo "=> Starting WildFly server" && \
@@ -26,7 +26,7 @@ RUN /opt/jboss/wildfly/bin/add-user.sh admin h8nNgw5v/rHDmgON --silent
 #      rm -f /tmp/*.jar
 
 # Expose http and admin ports
-EXPOSE 8080 9990
+EXPOSE 8080 9990 1099 1098 3873
 
 #ENTRYPOINT /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement=0.0.0.0
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
