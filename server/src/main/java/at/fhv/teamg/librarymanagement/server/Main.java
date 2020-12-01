@@ -20,14 +20,14 @@ public class Main {
      */
     public static void main(String[] args) {
         Cache.getInstance();
-        //TaskRunner.run();
+        TaskRunner.run();
         Rest.start(args);
-        //new RmiServer();
-        //try {
-        //    JmsConsumer.getInstance().startListener();
-        //} catch (JMSException e) {
-        //    LOG.error("Cannot start message JMS listener", e);
-        //}
-        //LOG.info("Project initialized successfully");
+        new RmiServer();
+        try {
+            JmsConsumer.getInstance().startListener();
+        } catch (JMSException e) {
+            LOG.error("Cannot start message JMS listener", e);
+        }
+        LOG.info("Project initialized successfully");
     }
 }
