@@ -1,11 +1,14 @@
 plugins {
     id 'java'
+    id 'java-library'
     id 'application'
-
+    id 'ear'
     /* Project specific plugins */
     id 'checkstyle'
     id 'jacoco'
     id("io.micronaut.application") version "1.2.0"
+    id 'war'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group = 'at.fhv.teamg.librarymanagement'
@@ -25,12 +28,12 @@ dependencies {
 
     /* Project specific dependencies */
     compile 'javax.persistence:javax.persistence-api:2.2'
-    compile 'mysql:mysql-connector-java:5.1.49'
+    api 'mysql:mysql-connector-java:5.1.49'
     compile 'org.apache.logging.log4j:log4j-api:2.13.3'
     compile 'org.apache.logging.log4j:log4j-core:2.13.3'
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
-    compile 'org.hibernate:hibernate-core:5.4.22.Final'
-    compile 'org.hibernate:hibernate-c3p0:5.4.22.Final'
+    api 'org.hibernate:hibernate-core:5.4.22.Final'
+    api 'org.hibernate:hibernate-c3p0:5.4.22.Final'
     compile ('org.apache.activemq:activemq-all:5.16.0') {
         exclude group: 'org.slf4j'
     }
@@ -42,6 +45,12 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
+    /* JAVA EE, EJBs */
+    compile group: 'javax', name: 'javaee-api', version: '8.0.1'
+    compile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2.2'
+    compile group: 'org.wildfly.bom', name: 'wildfly-jakartaee8-with-tools-builder', version: '21.0.1.Final', ext: 'pom'
+    compile group: 'org.jboss.spec.javax.annotation', name: 'jboss-annotations-api_1.3_spec', version: '2.0.1.Final'
+    providedCompile group: 'org.jboss.spec.javax.ejb', name: 'jboss-ejb-api_3.2_spec', version: '2.0.0.Final'
 
     testCompile 'org.mockito:mockito-core:3.5.15'
 }
@@ -89,24 +98,24 @@ jacocoTestReport {
     }
 }
 build.dependsOn jacocoTestReport
-//
-///* ShadowJar configuration */
-//shadowJar {
-//    archiveFileName = 'LibraryServer.jar'
-//    mergeServiceFiles()
-//    manifest {
-//        attributes(
-//                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
-//        )
-//    }
-//}
-//
-///* Distribution configuration */
-//distributions {
-//    main {
-//        distributionBaseName = 'main'
-//        contents {
-//            from shadowJar
-//        }
-//    }
-//}
+
+/* ShadowJar configuration */
+shadowJar {
+    archiveFileName = 'LibraryServer.jar'
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
+        )
+    }
+}
+
+/* Distribution configuration */
+distributions {
+    main {
+        distributionBaseName = 'main'
+        contents {
+            from shadowJar
+        }
+    }
+}
