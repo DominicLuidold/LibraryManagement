@@ -61,61 +61,10 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     /* #### SEARCH #### */
 
-    /**
-     * Add a new message.
-     *
-     * @param customMessage the new message
-     */
-    public static void addAndSendMessage(CustomMessage customMessage) {
-        try {
-            Message m = JmsProducer.getInstance().sendMessage(customMessage);
-            CUSTOM_MESSAGES.put(customMessage, m);
-        } catch (JMSException e) {
-            LOG.error("Cannot send message to queue", e);
-        }
-    }
-
-    public static void addMessageWithoutSending(CustomMessage customMessage, Message m) {
-        CUSTOM_MESSAGES.put(customMessage, m);
-    }
-
-    /**
-     * Checks if library contains a message.
-     *
-     * @param customMessage Message to check
-     */
-    public static boolean containsMessage(CustomMessage customMessage) {
-        return CUSTOM_MESSAGES.containsKey(customMessage);
-    }
-
-    /**
-     * Update an existing message.
-     *
-     * @param customMessage message with the same id of an already existing message
-     */
-    public static void updateMessage(CustomMessage customMessage) {
-        CUSTOM_MESSAGES.keySet().stream()
-            .filter(m -> m.id.equals(customMessage.id))
-            .findFirst()
-            .ifPresent(m -> {
-                m.dateTime = customMessage.dateTime;
-                m.message = customMessage.message;
-                m.status = customMessage.status;
-                try {
-                    Message m2 = JmsProducer.getInstance().sendMessage(customMessage);
-                    CUSTOM_MESSAGES.put(m, m2);
-                } catch (JMSException e) {
-                    LOG.error("Cannot send message over JMS", customMessage);
-                }
-            });
-    }
-
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
         return cache.searchBook(bookDto);
     }
-
-    /* #### DETAILS #### */
 
     @Override
     public List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException {
@@ -127,12 +76,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return cache.searchGame(gameDto);
     }
 
+    /* #### DETAILS #### */
+
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
         return cache.getBookDetail(bookDto.getId());
     }
-
-    /* #### GET ALL #### */
 
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
@@ -143,6 +92,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
         return cache.getGameDetail(gameDto.getId());
     }
+
+    /* #### GET ALL #### */
 
     @Override
     public List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException {
@@ -171,7 +122,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         if (isValid(UserRoleName.Librarian)) {
             return cache.getAllUsers();
         }
-        return new LinkedList<UserDto>();
+        return new LinkedList<>();
     }
 
     @Override
@@ -179,7 +130,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         if (isValid(UserRoleName.Librarian)) {
             return cache.getAllCustomers();
         }
-        return new LinkedList<UserDto>();
+        return new LinkedList<>();
     }
 
     @Override
@@ -354,8 +305,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return result;
     }
 
-    /* #### LOGIN #### */
-
     @Override
     public MessageDto<EmptyDto> returnDvd(MediumCopyDto copyDto) throws RemoteException {
         if (!isValid(UserRoleName.Librarian)) {
@@ -369,8 +318,6 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return result;
     }
 
-    /* #### MESSAGING #### */
-
     @Override
     public MessageDto<EmptyDto> returnGame(MediumCopyDto copyDto) throws RemoteException {
         if (!isValid(UserRoleName.Librarian)) {
@@ -383,6 +330,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         cache.invalidateGameCacheMediumCopy(copyDto.getId());
         return result;
     }
+
+    /* #### LOGIN #### */
 
     /**
      * Try to login User specified in loginDto.
@@ -408,6 +357,8 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             .build();
     }
 
+    /* #### MESSAGING #### */
+
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
         LOG.debug("Registering new message subscriber [{}]", client.hashCode());
@@ -418,6 +369,55 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     public List<CustomMessage> getAllMessages() throws RemoteException {
         LOG.debug("Returning all Messages to client");
         return new LinkedList<>(CUSTOM_MESSAGES.keySet());
+    }
+
+    /**
+     * Add a new message.
+     *
+     * @param customMessage the new message
+     */
+    public static void addAndSendMessage(CustomMessage customMessage) {
+        try {
+            Message m = JmsProducer.getInstance().sendMessage(customMessage);
+            CUSTOM_MESSAGES.put(customMessage, m);
+        } catch (JMSException e) {
+            LOG.error("Cannot send message to queue", e);
+        }
+    }
+
+    public static void addMessageWithoutSending(CustomMessage customMessage, Message m) {
+        CUSTOM_MESSAGES.put(customMessage, m);
+    }
+
+    /**
+     * Checks if library contains a message.
+     *
+     * @param customMessage Message to check
+     */
+    public static boolean containsMessage(CustomMessage customMessage) {
+        return CUSTOM_MESSAGES.containsKey(customMessage);
+    }
+
+    /**
+     * Update an existing message.
+     *
+     * @param customMessage message with the same id of an already existing message
+     */
+    public static void updateMessage(CustomMessage customMessage) {
+        CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
+            .findFirst()
+            .ifPresent(m -> {
+                m.dateTime = customMessage.dateTime;
+                m.message = customMessage.message;
+                m.status = customMessage.status;
+                try {
+                    Message m2 = JmsProducer.getInstance().sendMessage(customMessage);
+                    CUSTOM_MESSAGES.put(m, m2);
+                } catch (JMSException e) {
+                    LOG.error("Cannot send message over JMS: {}", customMessage);
+                }
+            });
     }
 
     /**
@@ -476,18 +476,14 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     /* #### AUTHORIZATION #### */
 
     private boolean isValid(UserRoleName userRoleNeeded) {
-        /*
-         * Armin can perform all Actions.
-         */
+        /* Admin can perform any action */
         if (userRoleNeeded.equals(UserRoleName.Admin)) {
             if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
                 return true;
             }
         }
 
-        /*
-         * Libararian can perfrom Lending and Reservations.
-         */
+        /* Librarian can lend and make reservations */
         if (userRoleNeeded.equals(UserRoleName.Librarian)) {
             if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
                 || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
@@ -496,27 +492,12 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             }
         }
 
-        /*
-         * Customer are "Guest User" can only search.
-         */
+        /* Customer (guest user) can search only */
         if (userRoleNeeded.equals(UserRoleName.Customer)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
+            return loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
                 || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
-            ) {
-                return true;
-            }
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin);
         }
         return false;
     }
-
-    /* Try to make no Code duplicating (But Failed :D )
-    public static MessageDto<Dto> getFailureMessage(String message, Class clazz) {
-        MessageDto<clazz> result = new MessageDto.MessageDtoBuilder<>()
-            .withType(MessageDto.MessageType.FAILURE)
-            .withMessage(message)
-            .build();
-        return result;
-    }
-    */
 }
