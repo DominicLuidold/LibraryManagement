@@ -35,7 +35,7 @@ public class Main {
                     + ".EjbTestRemote");
             System.out.println(etr.getName("Team G"));
 
-        } catch (NamingException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         MainGui.main();
