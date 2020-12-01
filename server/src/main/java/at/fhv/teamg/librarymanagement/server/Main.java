@@ -19,8 +19,8 @@ public class Main {
      * @param args A string array that will most-likely be empty for ad infinitum
      */
     public static void main(String[] args) {
-        //Cache.getInstance();
-        //TaskRunner.run();
+        Cache.getInstance();
+//        TaskRunner.run();
         Rest.start(args);
         //new RmiServer();
         //try {
