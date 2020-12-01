@@ -2,12 +2,14 @@ package at.fhv.teamg.librarymanagement.server.rest;
 
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
+import java.time.LocalDate;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.apache.camel.json.simple.JsonObject;
@@ -18,9 +20,9 @@ public class SearchController {
      * Search books.
      *
      * @param request http request
-     * @param title   title string
-     * @param author  author string
-     * @param isbn13  isbn13 string
+     * @param title   title
+     * @param author  author
+     * @param isbn13  isbn13
      * @param topic   topic uuid
      * @return http response
      */
@@ -44,17 +46,34 @@ public class SearchController {
         return HttpResponse.ok(response);
     }
 
+
     /**
      * Search dvds.
      *
-     * @param request http request
+     * @param request     http request
+     * @param title       title
+     * @param director    director
+     * @param releaseDate releaseDate
+     * @param topic       topic uuid
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
-    public HttpResponse<JsonObject> dvd(HttpRequest<String> request) {
+    public HttpResponse<JsonObject> dvd(HttpRequest<String> request,
+                                        @Nullable @QueryValue String title,
+                                        @Nullable @QueryValue String director,
+                                        @Nullable @QueryValue LocalDate releaseDate,
+                                        @Nullable @QueryValue UUID topic) {
+        var dvds = Cache.getInstance()
+            .searchDvd(
+                new DvdDto.DvdDtoBuilder()
+                    .title(title == null ? "" : title)
+                    .director(director == null ? "" : director)
+                    .releaseDate(releaseDate == null ? LocalDate.MIN : releaseDate)
+                    .topic(topic)
+                    .build());
 
         var response = new JsonObject();
-        response.put("dvd", "todo");
+        response.put("dvds", dvds);
         return HttpResponse.ok(response);
     }
 
