@@ -14,6 +14,16 @@ import org.apache.camel.json.simple.JsonObject;
 
 @Controller("/search")
 public class SearchController {
+    /**
+     * Search books.
+     *
+     * @param request http request
+     * @param title   title string
+     * @param author  author string
+     * @param isbn13  isbn13 string
+     * @param topic   topic uuid
+     * @return http response
+     */
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
     public HttpResponse<JsonObject> book(HttpRequest<String> request,
                                          @Nullable @QueryValue String title,
@@ -34,6 +44,12 @@ public class SearchController {
         return HttpResponse.ok(response);
     }
 
+    /**
+     * Search dvds.
+     *
+     * @param request http request
+     * @return http response
+     */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
     public HttpResponse<JsonObject> dvd(HttpRequest<String> request) {
 
@@ -42,6 +58,12 @@ public class SearchController {
         return HttpResponse.ok(response);
     }
 
+    /**
+     * Search games.
+     *
+     * @param request http request
+     * @return http response
+     */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
     public HttpResponse<JsonObject> game(HttpRequest<String> request) {
 

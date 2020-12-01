@@ -20,7 +20,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Cache.getInstance();
-//        TaskRunner.run();
+        //TaskRunner.run();
         Rest.start(args);
         //new RmiServer();
         //try {
