@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 public class RmiClient implements LibraryInterface {
     private static final Logger LOG = LogManager.getLogger(RmiClient.class);
+
     private static String SERVER_ADDRESS = "vsts-team007.westeurope.cloudapp.azure.com";
     private static RmiClient RMI_INSTANCE;
     private LibraryInterface library;
