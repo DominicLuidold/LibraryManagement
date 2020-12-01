@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server;
 
 import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
 import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
+import at.fhv.teamg.librarymanagement.server.rest.Rest;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.server.tasks.TaskRunner;
@@ -18,14 +19,15 @@ public class Main {
      * @param args A string array that will most-likely be empty for ad infinitum
      */
     public static void main(String[] args) {
-        Cache.getInstance();
-        TaskRunner.run();
-        new RmiServer();
-        try {
-            JmsConsumer.getInstance().startListener();
-        } catch (JMSException e) {
-            LOG.error("Cannot start message JMS listener", e);
-        }
-        LOG.info("Project initialized successfully");
+        //Cache.getInstance();
+        //TaskRunner.run();
+        Rest.start(args);
+        //new RmiServer();
+        //try {
+        //    JmsConsumer.getInstance().startListener();
+        //} catch (JMSException e) {
+        //    LOG.error("Cannot start message JMS listener", e);
+        //}
+        //LOG.info("Project initialized successfully");
     }
 }

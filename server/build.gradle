@@ -5,7 +5,7 @@ plugins {
     /* Project specific plugins */
     id 'checkstyle'
     id 'jacoco'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id("io.micronaut.application") version "1.2.0"
 }
 
 group = 'at.fhv.teamg.librarymanagement'
@@ -13,6 +13,7 @@ version = '0.0.1'
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -37,6 +38,11 @@ dependencies {
 
     implementation 'at.fhv.teamg.librarymanagement:LibraryManagement_Shared:0.+'
 
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("javax.annotation:javax.annotation-api")
+    implementation("io.micronaut:micronaut-http-client")
+
     testCompile 'org.mockito:mockito-core:3.5.15'
 }
 
@@ -59,6 +65,14 @@ jacoco {
     toolVersion = '0.8.5'
 }
 
+micronaut {
+    runtime("netty")
+    processing {
+        incremental(true)
+        annotations("cat.fhv.teamg.librarymanagement.server.*")
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
@@ -75,24 +89,24 @@ jacocoTestReport {
     }
 }
 build.dependsOn jacocoTestReport
-
-/* ShadowJar configuration */
-shadowJar {
-    archiveFileName = 'LibraryServer.jar'
-    mergeServiceFiles()
-    manifest {
-        attributes(
-                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
-        )
-    }
-}
-
-/* Distribution configuration */
-distributions {
-    main {
-        distributionBaseName = 'main'
-        contents {
-            from shadowJar
-        }
-    }
-}
+//
+///* ShadowJar configuration */
+//shadowJar {
+//    archiveFileName = 'LibraryServer.jar'
+//    mergeServiceFiles()
+//    manifest {
+//        attributes(
+//                'Main-Class': 'at.fhv.teamg.librarymanagement.server.Main'
+//        )
+//    }
+//}
+//
+///* Distribution configuration */
+//distributions {
+//    main {
+//        distributionBaseName = 'main'
+//        contents {
+//            from shadowJar
+//        }
+//    }
+//}

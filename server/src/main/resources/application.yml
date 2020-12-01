@@ -1,0 +1,23 @@
+micronaut:
+  application:
+    name: helloworld
+  server:
+    port: 8080
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins:
+            - .*
+          allowedMethods:
+            - POST
+            - PUT
+            - GET
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: ***REMOVED***
