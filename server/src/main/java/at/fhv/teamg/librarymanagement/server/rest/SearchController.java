@@ -3,6 +3,7 @@ package at.fhv.teamg.librarymanagement.server.rest;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -80,14 +81,31 @@ public class SearchController {
     /**
      * Search games.
      *
-     * @param request http request
+     * @param request   http request
+     * @param title     title
+     * @param developer developer
+     * @param platforms platforms
+     * @param topic     topic uuid
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
-    public HttpResponse<JsonObject> game(HttpRequest<String> request) {
+    public HttpResponse<JsonObject> game(HttpRequest<String> request,
+                                         @Nullable @QueryValue String title,
+                                         @Nullable @QueryValue String developer,
+                                         @Nullable @QueryValue String platforms,
+                                         @Nullable @QueryValue UUID topic) {
+        var games = Cache.getInstance()
+            .searchGame(
+                new GameDto.GameDtoBuilder()
+                    .title(title == null ? "" : title)
+                    .developer(developer == null ? "" : developer)
+                    .platforms(platforms == null ? "" : platforms)
+                    .topic(topic)
+                    .build()
+            );
 
         var response = new JsonObject();
-        response.put("game", "todo");
+        response.put("games", games);
         return HttpResponse.ok(response);
     }
 }
