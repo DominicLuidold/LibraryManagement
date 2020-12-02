@@ -1,5 +1,8 @@
 package at.fhv.teamg.librarymanagement.server.rest;
 
+import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
+import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
+
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
@@ -27,6 +30,7 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book/{uuid}")
+    @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> book(HttpRequest<String> request, UUID uuid) {
         var book = Cache.getInstance().getBookDetail(uuid);
         var copies = new MediumCopyService().getCopies(new BookDto.BookDtoBuilder(uuid).build());
@@ -48,6 +52,7 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd/{uuid}")
+    @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> dvd(HttpRequest<String> request, UUID uuid) {
         var dvd = Cache.getInstance().getDvdDetail(uuid);
         var copies = new MediumCopyService().getCopies(new DvdDto.DvdDtoBuilder(uuid).build());
@@ -69,6 +74,7 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game/{uuid}")
+    @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> game(HttpRequest<String> request, UUID uuid) {
         var game = Cache.getInstance().getGameDetail(uuid);
         var copies = new MediumCopyService().getCopies(new GameDto.GameDtoBuilder(uuid).build());

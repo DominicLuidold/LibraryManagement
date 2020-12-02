@@ -1,5 +1,8 @@
 package at.fhv.teamg.librarymanagement.server.rest;
 
+import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
+import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
+
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -20,6 +23,7 @@ public class UserController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON)
+    @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> all(HttpRequest<String> request) {
         var users = Cache.getInstance().getAllUsers();
         var response = new JsonObject();
@@ -34,6 +38,7 @@ public class UserController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "customer")
+    @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> customer(HttpRequest<String> request) {
         var customers = Cache.getInstance().getAllCustomers();
         var response = new JsonObject();

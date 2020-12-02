@@ -20,7 +20,6 @@ import org.reactivestreams.Publisher;
 
 @Singleton
 public class AuthenticationProviderUserPassword implements AuthenticationProvider {
-
     @Override
     public Publisher<AuthenticationResponse> authenticate(
         @Nullable HttpRequest<?> httpRequest,

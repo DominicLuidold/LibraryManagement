@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Rest {
     private static final Logger LOG = LogManager.getLogger(Rest.class);
+    public static final String ADMIN = "Admin";
+    public static final String LIBRARIAN = "Librarian";
 
     /**
      * Start Micronaut.
