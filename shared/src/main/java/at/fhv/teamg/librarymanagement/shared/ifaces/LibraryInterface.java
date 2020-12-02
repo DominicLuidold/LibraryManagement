@@ -67,9 +67,9 @@ public interface LibraryInterface extends Remote {
 
     MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException;
 
-    MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
-
     MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException;
+
+    MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
 
     MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException;
 

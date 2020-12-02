@@ -1,11 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.rmi;
 
-import at.fhv.teamg.librarymanagement.server.domain.LendingService;
-import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
-import at.fhv.teamg.librarymanagement.server.domain.MessageService;
-import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
-import at.fhv.teamg.librarymanagement.server.domain.UserService;
-import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
+import at.fhv.teamg.librarymanagement.server.BaseLibrary;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -18,35 +13,17 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
-import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import javax.jms.JMSException;
 import javax.jms.Message;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Library extends UnicastRemoteObject implements LibraryInterface {
-    private static final Logger LOG = LogManager.getLogger(Library.class);
-    private static final long serialVersionUID = -443483629739057113L;
+    private static final long serialVersionUID = 4717665108551967512L;
 
-    private static final List<MessageClientInterface> CLIENTS = new LinkedList<>();
-    private static final Map<CustomMessage, Message> CUSTOM_MESSAGES = new HashMap<>();
-    private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
-
-    private final Cache cache = Cache.getInstance();
-    private final LendingService lendingService = new LendingService();
-    private final MediumCopyService mediumCopyService = new MediumCopyService();
-    private final ReservationService reservationService = new ReservationService();
-    private final UserService userService = new UserService();
-
-    private LoginDto loggedInUser;
+    private final BaseLibrary baseLibrary = BaseLibrary.getInstance();
 
     public Library() throws RemoteException {
         super();
@@ -56,72 +33,66 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<BookDto> searchBook(BookDto bookDto) throws RemoteException {
-        return cache.searchBook(bookDto);
+        return baseLibrary.searchBook(bookDto);
     }
 
     @Override
     public List<DvdDto> searchDvd(DvdDto dvdDto) throws RemoteException {
-        return cache.searchDvd(dvdDto);
+        return baseLibrary.searchDvd(dvdDto);
     }
 
     @Override
     public List<GameDto> searchGame(GameDto gameDto) throws RemoteException {
-        return cache.searchGame(gameDto);
+        return baseLibrary.searchGame(gameDto);
     }
 
     /* #### DETAILS #### */
 
     @Override
     public BookDto getBookDetail(BookDto bookDto) throws RemoteException {
-        return cache.getBookDetail(bookDto.getId());
+        return baseLibrary.getBookDetail(bookDto);
     }
 
     @Override
     public DvdDto getDvdDetail(DvdDto dvdDto) throws RemoteException {
-        return cache.getDvdDetail(dvdDto.getId());
+        return baseLibrary.getDvdDetail(dvdDto);
     }
 
     @Override
     public GameDto getGameDetail(GameDto gameDto) throws RemoteException {
-        return cache.getGameDetail(gameDto.getId());
+        return baseLibrary.getGameDetail(gameDto);
     }
 
     /* #### GET ALL #### */
 
     @Override
     public List<MediumCopyDto> getAllBookCopies(BookDto bookDto) throws RemoteException {
-        return mediumCopyService.getCopies(bookDto);
+        return baseLibrary.getAllBookCopies(bookDto);
     }
 
     @Override
     public List<MediumCopyDto> getAllDvdCopies(DvdDto dvdDto) throws RemoteException {
-        return mediumCopyService.getCopies(dvdDto);
+        return baseLibrary.getAllDvdCopies(dvdDto);
     }
 
     @Override
     public List<MediumCopyDto> getAllGameCopies(GameDto gameDto) throws RemoteException {
-        return mediumCopyService.getCopies(gameDto);
+        return baseLibrary.getAllGameCopies(gameDto);
     }
 
     @Override
     public List<TopicDto> getAllTopics() throws RemoteException {
-        return cache.getAllTopics();
+        return baseLibrary.getAllTopics();
     }
 
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
-        if (UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return cache.getAllUsers();
-        }
-        return new LinkedList<>();
+        return baseLibrary.getAllUsers();
     }
 
     @Override
     public List<UserDto> getAllCustomers() throws RemoteException {
-        if (UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return cache.getAllCustomers();
-        }
-        return new LinkedList<>();
+        return baseLibrary.getAllCustomers();
     }
 
     /* #### RESERVATION #### */
@@ -129,344 +100,135 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
         throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<ReservationDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-
-        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
-        cache.invalidateBookCacheMedium(reservationDto.getMediumId());
-        return result;
+        return baseLibrary.reserveBook(reservationDto);
     }
 
     @Override
     public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<ReservationDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
-        cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
-        return result;
+        return baseLibrary.reserveDvd(reservationDto);
     }
 
     @Override
     public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto)
         throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<ReservationDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
-        cache.invalidateGameCacheMedium(reservationDto.getMediumId());
-        return result;
+        return baseLibrary.reserveGame(reservationDto);
     }
 
     @Override
     public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto)
         throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        return reservationService.deleteReservation(reservationDto);
+        return baseLibrary.removeReservation(reservationDto);
     }
 
     @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new LinkedList<>();
-        }
-        return reservationService.getReservations(bookDto);
+        return baseLibrary.getAllBookReservations(bookDto);
     }
 
     @Override
     public List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new LinkedList<>();
-        }
-        return reservationService.getReservations(dvdDto);
+        return baseLibrary.getAllDvdReservations(dvdDto);
     }
 
     @Override
     public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new LinkedList<>();
-        }
-        return reservationService.getReservations(gameDto);
+        return baseLibrary.getAllGameReservations(gameDto);
     }
 
     /* ##### LENDING ##### */
 
     @Override
     public MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<LendingDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
-        cache.invalidateBookCacheMediumCopy(lendingDto.getMediumCopyId());
-        return result;
-    }
-
-    @Override
-    public MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<LendingDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
-        cache.invalidateGameCacheMediumCopy(lendingDto.getMediumCopyId());
-        return result;
+        return baseLibrary.lendBook(lendingDto);
     }
 
     @Override
     public MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<LendingDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
-        cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
-        return result;
+        return baseLibrary.lendDvd(lendingDto);
+    }
+
+    @Override
+    public MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
+        return baseLibrary.lendGame(lendingDto);
     }
 
     @Override
     public MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
-        cache.invalidateBookCacheMediumCopy(mediumCopyDto.getId());
-        return result;
+        return baseLibrary.extendBook(mediumCopyDto);
     }
 
     @Override
     public MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
-        cache.invalidateDvdCacheMediumCopy(mediumCopyDto.getId());
-        return result;
+        return baseLibrary.extendDvd(mediumCopyDto);
     }
 
     @Override
     public MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
-        cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
-        return result;
+        return baseLibrary.extendGame(mediumCopyDto);
     }
 
     @Override
-    public MessageDto<EmptyDto> returnBook(MediumCopyDto copyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
-        cache.invalidateBookCacheMediumCopy(copyDto.getId());
-        return result;
+    public MessageDto<EmptyDto> returnBook(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return baseLibrary.returnBook(mediumCopyDto);
     }
 
     @Override
-    public MessageDto<EmptyDto> returnDvd(MediumCopyDto copyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
-        cache.invalidateDvdCacheMediumCopy(copyDto.getId());
-        return result;
+    public MessageDto<EmptyDto> returnDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return baseLibrary.returnDvd(mediumCopyDto);
     }
 
     @Override
-    public MessageDto<EmptyDto> returnGame(MediumCopyDto copyDto) throws RemoteException {
-        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
-            return new MessageDto.MessageDtoBuilder<EmptyDto>()
-                .withType(MessageDto.MessageType.FAILURE)
-                .withMessage(UNAUTHORIZED_MESSAGE)
-                .build();
-        }
-        MessageDto<EmptyDto> result = lendingService.returnLending(copyDto);
-        cache.invalidateGameCacheMediumCopy(copyDto.getId());
-        return result;
+    public MessageDto<EmptyDto> returnGame(MediumCopyDto mediumCopyDto) throws RemoteException {
+        return baseLibrary.returnGame(mediumCopyDto);
     }
 
     /* #### LOGIN #### */
 
-    /**
-     * Try to login User specified in loginDto.
-     *
-     * @param loginDto User to login
-     * @return dto with UserRoleName is the so the Gui know what View to load
-     */
+    @Override
     public MessageDto<LoginDto> loginUser(LoginDto loginDto) throws RemoteException {
-        if (!loginDto.getUsername().equals("guest")) {
-            MessageDto<LoginDto> loggedInUserMessage = userService.authenticateUser(loginDto);
-            loggedInUser = loggedInUserMessage.getResult();
-            return loggedInUserMessage;
-        }
-
-        return new MessageDto.MessageDtoBuilder<LoginDto>()
-            .withType(MessageDto.MessageType.SUCCESS)
-            .withResult(
-                new LoginDto.LoginDtoBuilder()
-                    .withIsValid(true)
-                    .withUsername("guest")
-                    .withUserRoleName(UserRoleName.Customer)
-                    .build()
-            ).build();
+        return baseLibrary.loginUser(loginDto);
     }
 
     /* #### MESSAGING #### */
 
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
-        LOG.debug("Registering new message subscriber [{}]", client.hashCode());
-        CLIENTS.add(client);
+        baseLibrary.registerForMessages(client);
     }
 
     @Override
     public List<CustomMessage> getAllMessages() throws RemoteException {
-        LOG.debug("Returning all Messages to client");
-        return new LinkedList<>(CUSTOM_MESSAGES.keySet());
+        return baseLibrary.getAllMessages();
     }
 
     @Override
     public void addMessage(CustomMessage message) throws RemoteException {
-        Library.addAndSendMessage(message);
+        baseLibrary.addMessage(message);
     }
 
-    /**
-     * Update message Status.
-     *
-     * @param customMessage message with the same id of an already existing message
-     */
+    @Override
     public void updateMessageStatus(CustomMessage customMessage) throws RemoteException {
-        var messageOptional = CUSTOM_MESSAGES.keySet().stream()
-            .filter(m -> m.id.equals(customMessage.id))
-            .findFirst();
-
-        if (messageOptional.isEmpty()) {
-            LOG.error("Got message with invalid Id");
-            return;
-        }
-
-        var messageToUpdate = messageOptional.get();
-
-        if (messageToUpdate.userId == null) {
-            messageToUpdate.userId = loggedInUser.getId();
-        } else if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
-            LOG.info("message admin override");
-        } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
-            LOG.error("Logged-in user is not allowed to update this message");
-            return;
-        }
-
-        messageToUpdate.status = customMessage.status;
-
-        updateMessage(messageToUpdate);
-
-        if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
-            if (new MessageService().archiveMessage(messageToUpdate).getType().equals(
-                MessageDto.MessageType.ERROR)
-            ) {
-                LOG.error("Unable to archive message to DB");
-            }
-
-            Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
-            try {
-                jmsMessage.acknowledge();
-            } catch (JMSException e) {
-                LOG.error("Unable to archive (acknowledge) message", e);
-            }
-
-            CUSTOM_MESSAGES.remove(messageToUpdate);
-        }
+        baseLibrary.updateMessageStatus(customMessage);
     }
 
-    /**
-     * Add a new message.
-     *
-     * @param customMessage the new message
-     */
     public static void addAndSendMessage(CustomMessage customMessage) {
-        try {
-            Message m = JmsProducer.getInstance().sendMessage(customMessage);
-            CUSTOM_MESSAGES.put(customMessage, m);
-        } catch (JMSException e) {
-            LOG.error("Cannot send message to queue", e);
-        }
+        BaseLibrary.addAndSendMessage(customMessage);
     }
 
     public static void addMessageWithoutSending(CustomMessage customMessage, Message m) {
-        CUSTOM_MESSAGES.put(customMessage, m);
+        BaseLibrary.addMessageWithoutSending(customMessage, m);
     }
 
-    /**
-     * Checks if library contains a message.
-     *
-     * @param customMessage Message to check
-     */
     public static boolean containsMessage(CustomMessage customMessage) {
-        return CUSTOM_MESSAGES.containsKey(customMessage);
+        return BaseLibrary.containsMessage(customMessage);
     }
 
-    /**
-     * Update an existing message.
-     *
-     * @param customMessage message with the same id of an already existing message
-     */
     public static void updateMessage(CustomMessage customMessage) {
-        CUSTOM_MESSAGES.keySet().stream()
-            .filter(m -> m.id.equals(customMessage.id))
-            .findFirst()
-            .ifPresent(m -> {
-                m.dateTime = customMessage.dateTime;
-                m.message = customMessage.message;
-                m.status = customMessage.status;
-                try {
-                    Message m2 = JmsProducer.getInstance().sendMessage(customMessage);
-                    CUSTOM_MESSAGES.put(m, m2);
-                } catch (JMSException e) {
-                    LOG.error("Cannot send message over JMS: {}", customMessage);
-                }
-            });
+        BaseLibrary.updateMessage(customMessage);
     }
 
     public static List<MessageClientInterface> getClients() {
-        return CLIENTS;
+        return BaseLibrary.getClients();
     }
 }
