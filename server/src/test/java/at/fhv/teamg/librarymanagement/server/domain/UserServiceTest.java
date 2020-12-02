@@ -6,10 +6,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Lending;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;

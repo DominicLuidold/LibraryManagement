@@ -10,10 +10,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import java.time.LocalDate;
 import java.util.LinkedList;

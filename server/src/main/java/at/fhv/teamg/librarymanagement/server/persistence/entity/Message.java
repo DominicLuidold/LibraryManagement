@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server.persistance.entity;
+package at.fhv.teamg.librarymanagement.server.persistence.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

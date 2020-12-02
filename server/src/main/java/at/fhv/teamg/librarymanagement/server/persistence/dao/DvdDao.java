@@ -1,8 +1,7 @@
-package at.fhv.teamg.librarymanagement.server.persistance.dao;
+package at.fhv.teamg.librarymanagement.server.persistence.dao;
 
-import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
+import at.fhv.teamg.librarymanagement.server.persistence.BaseDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;

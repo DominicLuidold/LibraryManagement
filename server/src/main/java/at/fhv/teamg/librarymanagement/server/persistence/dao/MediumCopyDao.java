@@ -1,7 +1,7 @@
-package at.fhv.teamg.librarymanagement.server.persistance.dao;
+package at.fhv.teamg.librarymanagement.server.persistence.dao;
 
-import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.BaseDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
 import java.util.Optional;
 import java.util.UUID;
 

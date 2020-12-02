@@ -7,19 +7,19 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Entity classes -->
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Book</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Game</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Lending</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Medium</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.MediumType</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Tag</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Topic</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.User</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistance.entity.Message</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Book</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Game</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Lending</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Medium</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.MediumType</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Tag</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Topic</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.User</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Message</class>
 
         <!-- Properties -->
         <properties>
