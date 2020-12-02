@@ -17,21 +17,23 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import java.util.UUID;
+import javax.print.attribute.standard.Media;
 import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/lending")
 public class LendingController {
 
-    @Post(produces = MediaType.TEXT_JSON)
+    @Post(produces = MediaType.TEXT_JSON, consumes = MediaType.TEXT_JSON)
     @Secured({ADMIN, LIBRARIAN, LIBRARIAN_EXTERNAL_LIBRARY})
-    public HttpResponse<JsonObject> lend(HttpRequest<String> request, LendingDto dto) {
+    public HttpResponse<JsonObject> lend(HttpRequest<String> request, @Body LendingDto dto) {
         var msgDto = new LendingService().createLending(dto);
 
         var response = new JsonObject();
