@@ -1,6 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import at.fhv.teamg.librarymanagement.client.controller.internal.ConnectionType;
 import at.fhv.teamg.librarymanagement.client.controller.internal.UserLoginTask;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
@@ -43,6 +44,7 @@ public class LoginController implements Initializable {
 
     private final ValidationSupport validationSupport = new ValidationSupport();
     private LoginDto loggedInUser;
+    private ConnectionType connectionType;
 
     @FXML
     private AnchorPane pane;
@@ -58,6 +60,8 @@ public class LoginController implements Initializable {
     private Button guestButton;
     @FXML
     private ComboBox<String> serverDropdown;
+    @FXML
+    private ComboBox<String> connectionTypeDropdown;
 
     private boolean isValid = false;
     private ResourceBundle resources;
@@ -102,6 +106,15 @@ public class LoginController implements Initializable {
 
         this.serverDropdown.setItems(FXCollections.observableList(servers));
         this.serverDropdown.getSelectionModel().select(0);
+
+        //Fill connectionType List
+        List<String> connectionTypes = new LinkedList<>();
+        connectionTypes.add("RMI");
+        connectionTypes.add("EJB");
+
+        this.connectionTypeDropdown.setItems(FXCollections.observableList(connectionTypes));
+        this.connectionTypeDropdown.getSelectionModel().select(0);
+
     }
 
     /**
@@ -132,9 +145,16 @@ public class LoginController implements Initializable {
             .withPassword(passwordField.getText())
             .build();
 
+        if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
+            this.connectionType = ConnectionType.RMI;
+        } else {
+            this.connectionType = ConnectionType.EJB;
+        }
+
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
             this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.connectionType,
             this.pane
         );
 
@@ -171,9 +191,16 @@ public class LoginController implements Initializable {
             .withPassword("")
             .build();
 
+        if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
+            this.connectionType = ConnectionType.RMI;
+        } else {
+            this.connectionType = ConnectionType.EJB;
+        }
+
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
             this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.connectionType,
             this.pane
         );
 
@@ -208,6 +235,7 @@ public class LoginController implements Initializable {
                 this.submitButton
             );
             controller.setLoginUser(this.loggedInUser);
+            controller.setConnectionType(this.connectionType);
             LOG.debug("MainController is fully loaded now :-)");
         } catch (IOException e) {
             LOG.error("Cannot load main scene", e);

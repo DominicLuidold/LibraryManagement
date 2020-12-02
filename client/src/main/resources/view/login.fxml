@@ -53,16 +53,18 @@
 
         <ComboBox fx:id="serverDropdown" style="-fx-font-size: 18;" prefHeight="40" prefWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER" />
 
+        <ComboBox fx:id="connectionTypeDropdown" style="-fx-font-size: 18;" prefHeight="40" prefWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER" />
+
         <!-- Add Name Text Field -->
-        <TextField fx:id="usernameField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="4" promptText="%login.field.username.prompt" GridPane.halignment="CENTER" />
+        <TextField fx:id="usernameField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="%login.field.username.prompt" GridPane.halignment="CENTER" />
 
         <!-- Add Password Field -->
-        <PasswordField fx:id="passwordField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="%login.field.password.prompt" GridPane.halignment="CENTER" />
+        <PasswordField fx:id="passwordField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="6" promptText="%login.field.password.prompt" GridPane.halignment="CENTER" />
 
         <!-- Add Submit Button -->
         <Button fx:id="submitButton" text="%login.submit"
                 prefWidth="300" prefHeight="40" defaultButton="true"
-                GridPane.columnIndex="0" GridPane.rowIndex="6"
+                GridPane.columnIndex="0" GridPane.rowIndex="7"
                 GridPane.columnSpan="1" GridPane.rowSpan="1"
                 GridPane.halignment="CENTER"
                 onAction="#processLoginCredentials"
@@ -74,7 +76,7 @@
 
         <Button fx:id="guestButton" text="%login.guestlogin"
                 prefWidth="300" prefHeight="40" defaultButton="true"
-                GridPane.columnIndex="0" GridPane.rowIndex="7"
+                GridPane.columnIndex="0" GridPane.rowIndex="8"
                 GridPane.columnSpan="1" GridPane.rowSpan="1"
                 GridPane.halignment="CENTER"
                 onAction="#loginAsGuest"
