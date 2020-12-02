@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server.rmi;
+package at.fhv.teamg.librarymanagement.server.common;
 
 import at.fhv.teamg.librarymanagement.server.domain.BookService;
 import at.fhv.teamg.librarymanagement.server.domain.DvdService;

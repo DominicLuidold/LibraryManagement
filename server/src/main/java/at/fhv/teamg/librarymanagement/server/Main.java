@@ -1,9 +1,7 @@
 package at.fhv.teamg.librarymanagement.server;
 
+import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
-import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
-import at.fhv.teamg.librarymanagement.server.rest.Rest;
-import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.server.tasks.TaskRunner;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
