@@ -70,9 +70,9 @@ public interface EjbLibraryRemote extends Serializable {
 
     MessageDto<LendingDto> lendBook(LendingDto lendingDto);
 
-    MessageDto<LendingDto> lendGame(LendingDto lendingDto);
-
     MessageDto<LendingDto> lendDvd(LendingDto lendingDto);
+
+    MessageDto<LendingDto> lendGame(LendingDto lendingDto);
 
     MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto);
 
