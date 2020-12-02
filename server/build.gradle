@@ -46,6 +46,9 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-http-client")
     annotationProcessor "io.micronaut.security:micronaut-security-annotations"
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi:2.2.0")
+    implementation("io.swagger.core.v3:swagger-annotations")
+
     implementation "io.micronaut.security:micronaut-security-jwt"
     /* JAVA EE, EJBs */
     compile group: 'javax', name: 'javaee-api', version: '8.0.1'
@@ -120,4 +123,9 @@ distributions {
             from shadowJar
         }
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.jvmArgs << '-Dmicronaut.openapi.views.spec=rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=flattop'
 }
