@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.rest;
 
-import at.fhv.teamg.librarymanagement.server.rmi.Cache;
+import at.fhv.teamg.librarymanagement.server.common.Cache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;

@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.rest;
 
-import at.fhv.teamg.librarymanagement.server.rmi.Cache;
+import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -31,11 +31,12 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
-    public HttpResponse<JsonObject> book(HttpRequest<String> request,
-                                         @Nullable @QueryValue String title,
-                                         @Nullable @QueryValue String author,
-                                         @Nullable @QueryValue String isbn13,
-                                         @Nullable @QueryValue UUID topic
+    public HttpResponse<JsonObject> book(
+        HttpRequest<String> request,
+        @Nullable @QueryValue String title,
+        @Nullable @QueryValue String author,
+        @Nullable @QueryValue String isbn13,
+        @Nullable @QueryValue UUID topic
     ) {
         var books = Cache.getInstance()
             .searchBook(
@@ -62,11 +63,13 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
-    public HttpResponse<JsonObject> dvd(HttpRequest<String> request,
-                                        @Nullable @QueryValue String title,
-                                        @Nullable @QueryValue String director,
-                                        @Nullable @QueryValue LocalDate releaseDate,
-                                        @Nullable @QueryValue UUID topic) {
+    public HttpResponse<JsonObject> dvd(
+        HttpRequest<String> request,
+        @Nullable @QueryValue String title,
+        @Nullable @QueryValue String director,
+        @Nullable @QueryValue LocalDate releaseDate,
+        @Nullable @QueryValue UUID topic
+    ) {
         var dvds = Cache.getInstance()
             .searchDvd(
                 new DvdDto.DvdDtoBuilder()
@@ -92,11 +95,13 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
-    public HttpResponse<JsonObject> game(HttpRequest<String> request,
-                                         @Nullable @QueryValue String title,
-                                         @Nullable @QueryValue String developer,
-                                         @Nullable @QueryValue String platforms,
-                                         @Nullable @QueryValue UUID topic) {
+    public HttpResponse<JsonObject> game(
+        HttpRequest<String> request,
+        @Nullable @QueryValue String title,
+        @Nullable @QueryValue String developer,
+        @Nullable @QueryValue String platforms,
+        @Nullable @QueryValue UUID topic
+    ) {
         var games = Cache.getInstance()
             .searchGame(
                 new GameDto.GameDtoBuilder()
