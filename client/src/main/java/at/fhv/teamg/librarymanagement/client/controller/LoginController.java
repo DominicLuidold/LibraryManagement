@@ -187,7 +187,6 @@ public class LoginController implements Initializable {
      */
     public void loginAsGuest() {
         LOG.debug("LoginAsGuest btn pressed");
-        Window owner = this.submitButton.getScene().getWindow();
 
         LoginDto loginUser = new LoginDto.LoginDtoBuilder()
             .withUsername("guest")
@@ -208,6 +207,8 @@ public class LoginController implements Initializable {
             this.connectionType,
             this.pane
         );
+
+        Window owner = this.submitButton.getScene().getWindow();
 
         Thread thread = new Thread(loginTask, "User login Task");
         thread.start();
