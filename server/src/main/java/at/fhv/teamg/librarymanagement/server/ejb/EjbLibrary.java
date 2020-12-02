@@ -157,6 +157,21 @@ public class EjbLibrary implements EjbLibraryRemote {
         return baseLibrary.extendGame(mediumCopyDto);
     }
 
+    @Override
+    public MessageDto<EmptyDto> returnBook(MediumCopyDto mediumCopyDto) {
+        return baseLibrary.returnBook(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto<EmptyDto> returnDvd(MediumCopyDto mediumCopyDto) {
+        return baseLibrary.returnDvd(mediumCopyDto);
+    }
+
+    @Override
+    public MessageDto<EmptyDto> returnGame(MediumCopyDto mediumCopyDto) {
+        return baseLibrary.returnGame(mediumCopyDto);
+    }
+
     /* #### LOGIN #### */
 
     @Override

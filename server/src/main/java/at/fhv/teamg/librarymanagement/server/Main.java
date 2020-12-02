@@ -2,6 +2,7 @@ package at.fhv.teamg.librarymanagement.server;
 
 import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
+import at.fhv.teamg.librarymanagement.server.rest.Rest;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.server.tasks.TaskRunner;
 import javax.jms.JMSException;
@@ -19,6 +20,7 @@ public class Main {
     public static void main(String[] args) {
         Cache.getInstance();
         TaskRunner.run();
+        Rest.start(args);
         new RmiServer();
         try {
             JmsConsumer.getInstance().startListener();
