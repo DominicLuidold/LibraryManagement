@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.ConnectionType;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
@@ -46,6 +47,8 @@ public class MainController implements Initializable {
     private LoginDto currentUser;
 
     private UserRoleName userRole;
+
+    private ConnectionType connectionType;
 
     /**
      * Shows an error alert with a custom title and error message.
@@ -164,6 +167,11 @@ public class MainController implements Initializable {
         this.userHeaderMenuController.setUserShortcut(currentUser.getUsername());
         this.userHeaderMenuController.setUserTxtRole(userRole.toString());
 
+    }
+
+    public synchronized void setConnectionType(
+        ConnectionType connectionType) {
+        this.connectionType = connectionType;
     }
 
     public UserRoleName getUserRole() {
