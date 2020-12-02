@@ -26,7 +26,7 @@ public class RemoteClient implements LibraryInterface {
     private ConnectionType connectionType;
 
     /**
-     * Singleton Client
+     * Singleton Client.
      */
     private RemoteClient() {
         // Intentionally empty
@@ -35,7 +35,7 @@ public class RemoteClient implements LibraryInterface {
     /**
      * Returns a singleton instance.
      *
-     * @return RemoteClient singleton instance
+     * @return RemoteClient singleton instance.
      */
     public static RemoteClient getInstance() {
         if (CLIENT_INSTANCE == null) {
