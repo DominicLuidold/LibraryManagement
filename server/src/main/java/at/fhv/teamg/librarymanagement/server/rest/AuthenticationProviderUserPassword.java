@@ -14,6 +14,7 @@ import io.micronaut.security.authentication.UserDetails;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.inject.Singleton;
 import org.reactivestreams.Publisher;
 
@@ -35,8 +36,10 @@ public class AuthenticationProviderUserPassword implements AuthenticationProvide
             if (loginResult.getType().equals(MessageDto.MessageType.SUCCESS)) {
                 var roles = new ArrayList<String>();
                 roles.add(loginResult.getResult().getUserRoleName().name());
-                roles.add(String.valueOf(loginResult.getResult().isExternalLibrary()));
-                emitter.onNext(new UserDetails(loginResult.getResult().getUsername(), roles));
+                var attributes = new HashMap<String, Object>();
+                attributes.put("isExternalLibrary", loginResult.getResult().isExternalLibrary());
+                emitter.onNext(
+                    new UserDetails(loginResult.getResult().getUsername(), roles, attributes));
                 emitter.onComplete();
             } else {
                 emitter.onError(new AuthenticationException(new AuthenticationFailed()));
