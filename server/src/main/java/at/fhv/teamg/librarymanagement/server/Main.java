@@ -2,9 +2,14 @@ package at.fhv.teamg.librarymanagement.server;
 
 import at.fhv.teamg.librarymanagement.server.jms.JmsConsumer;
 import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
+import at.fhv.teamg.librarymanagement.server.rest.Rest;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.server.rmi.RmiServer;
 import at.fhv.teamg.librarymanagement.server.tasks.TaskRunner;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import javax.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +25,7 @@ public class Main {
     public static void main(String[] args) {
         Cache.getInstance();
         TaskRunner.run();
+        Rest.start(args);
         new RmiServer();
         try {
             JmsConsumer.getInstance().startListener();

@@ -18,6 +18,12 @@
         <Logger name="org.apache.activemq" level="INFO">
             <AppenderRef ref="LogToConsole" />
         </Logger>
+        <Logger name="io.micronaut" level="ERROR">
+            <AppenderRef ref="LogToConsole" />
+        </Logger>
+        <Logger name="io.netty" level="ERROR">
+            <AppenderRef ref="LogToConsole" />
+        </Logger>
         <Root level="debug">
             <AppenderRef ref="LogToConsole"/>
         </Root>
