@@ -4,7 +4,7 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -167,7 +167,7 @@ public class ReservationController implements Initializable, Parentable<MediaDet
                     ReservationDto.ReservationDtoBuilder dtoBuilder =
                         new ReservationDto.ReservationDtoBuilder();
 
-                    RmiClient client = RmiClient.getInstance();
+                    RemoteClient client = RemoteClient.getInstance();
                     MessageDto<ReservationDto> response = null;
 
 
@@ -411,8 +411,8 @@ public class ReservationController implements Initializable, Parentable<MediaDet
 
     private void loadAdditionalData() {
         try {
-            this.topics = RmiClient.getInstance().getAllTopics();
-            this.allCustomerList = RmiClient.getInstance().getAllCustomers();
+            this.topics = RemoteClient.getInstance().getAllTopics();
+            this.allCustomerList = RemoteClient.getInstance().getAllCustomers();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -3,7 +3,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;

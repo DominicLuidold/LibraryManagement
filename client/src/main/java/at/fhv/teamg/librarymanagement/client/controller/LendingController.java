@@ -4,7 +4,7 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
@@ -174,7 +174,7 @@ public class LendingController implements Initializable, Parentable<MediaDetails
                     .mediumCopyId(currentUuid)
                     .renewalCount(0);
 
-                RmiClient client = RmiClient.getInstance();
+                RemoteClient client = RemoteClient.getInstance();
 
                 MessageDto<LendingDto> response = null;
                 try {
@@ -246,8 +246,8 @@ public class LendingController implements Initializable, Parentable<MediaDetails
 
     private void loadAdditionalData() {
         try {
-            this.allCustomerList = RmiClient.getInstance().getAllCustomers();
-            this.topics = RmiClient.getInstance().getAllTopics();
+            this.allCustomerList = RemoteClient.getInstance().getAllCustomers();
+            this.topics = RemoteClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

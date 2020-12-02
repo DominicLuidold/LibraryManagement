@@ -2,8 +2,8 @@ package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
-import at.fhv.teamg.librarymanagement.client.rmi.MessageClient;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
+import at.fhv.teamg.librarymanagement.client.remote.MessageClient;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.net.URL;

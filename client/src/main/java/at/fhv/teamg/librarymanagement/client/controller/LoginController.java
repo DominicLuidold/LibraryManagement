@@ -3,6 +3,7 @@ package at.fhv.teamg.librarymanagement.client.controller;
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.ConnectionType;
 import at.fhv.teamg.librarymanagement.client.controller.internal.UserLoginTask;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.io.IOException;
@@ -235,7 +236,8 @@ public class LoginController implements Initializable {
                 this.submitButton
             );
             controller.setLoginUser(this.loggedInUser);
-            controller.setConnectionType(this.connectionType);
+            RemoteClient remoteClient = RemoteClient.getInstance();
+            remoteClient.setConnectionType(this.connectionType);
             LOG.debug("MainController is fully loaded now :-)");
         } catch (IOException e) {
             LOG.error("Cannot load main scene", e);

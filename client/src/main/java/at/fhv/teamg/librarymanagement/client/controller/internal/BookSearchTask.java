@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import java.util.List;
 import javafx.scene.layout.AnchorPane;

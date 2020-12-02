@@ -1,7 +1,8 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.ejb.EjbClient;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.EjbClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
+import at.fhv.teamg.librarymanagement.client.remote.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import javafx.scene.control.Alert;

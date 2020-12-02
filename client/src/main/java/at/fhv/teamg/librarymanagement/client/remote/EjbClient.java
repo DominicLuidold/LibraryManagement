@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.client.ejb;
+package at.fhv.teamg.librarymanagement.client.remote;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;

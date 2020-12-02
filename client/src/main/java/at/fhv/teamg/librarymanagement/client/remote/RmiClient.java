@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.client.rmi;
+package at.fhv.teamg.librarymanagement.client.remote;
 
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
@@ -55,7 +55,7 @@ public class RmiClient implements LibraryInterface {
      *
      * @return RmiClient Singleton Instance
      */
-    public static RmiClient getInstance() {
+    protected static RmiClient getInstance() {
         if (RMI_INSTANCE == null) {
             RMI_INSTANCE = new RmiClient();
         }

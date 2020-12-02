@@ -48,8 +48,6 @@ public class MainController implements Initializable {
 
     private UserRoleName userRole;
 
-    private ConnectionType connectionType;
-
     /**
      * Shows an error alert with a custom title and error message.
      *
@@ -167,11 +165,6 @@ public class MainController implements Initializable {
         this.userHeaderMenuController.setUserShortcut(currentUser.getUsername());
         this.userHeaderMenuController.setUserTxtRole(userRole.toString());
 
-    }
-
-    public synchronized void setConnectionType(
-        ConnectionType connectionType) {
-        this.connectionType = connectionType;
     }
 
     public UserRoleName getUserRole() {

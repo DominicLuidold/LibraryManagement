@@ -1,7 +1,8 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal.media.details;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AsyncTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
+import at.fhv.teamg.librarymanagement.client.remote.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import java.util.List;
@@ -28,7 +29,7 @@ public class BookMediumCopyTask extends AsyncTask<List<MediumCopyDto>> {
     protected List<MediumCopyDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Book Copies");
-        return RmiClient.getInstance().getAllBookCopies(this.dto);
+        return RemoteClient.getInstance().getAllBookCopies(this.dto);
     }
 
 }

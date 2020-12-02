@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.client.rmi;
+package at.fhv.teamg.librarymanagement.client.remote;
 
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
