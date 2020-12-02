@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server;
+package at.fhv.teamg.librarymanagement.server.common;
 
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
@@ -6,7 +6,6 @@ import at.fhv.teamg.librarymanagement.server.domain.MessageService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.server.jms.JmsProducer;
-import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;

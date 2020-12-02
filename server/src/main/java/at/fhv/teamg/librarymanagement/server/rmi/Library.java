@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.rmi;
 
-import at.fhv.teamg.librarymanagement.server.BaseLibrary;
+import at.fhv.teamg.librarymanagement.server.common.BaseLibrary;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
