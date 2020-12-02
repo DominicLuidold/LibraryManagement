@@ -6,19 +6,25 @@ import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
 import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LendingService extends BaseMediaService {
+
+    private static final Logger LOG = LogManager.getLogger(LendingService.class);
     public static final int EXTENDING_DURATION_IN_DAYS = 14;
     public static final int MAX_RENEWAL_COUNT = 2;
 
@@ -72,6 +78,23 @@ public class LendingService extends BaseMediaService {
         MediumCopy copy = mediumCopy.get();
         copy.setAvailable(false);
         updateMediumCopy(copy);
+
+        // Inter-Library Lend, send  message.
+        UserRole role = user.get().getRole();
+        if (role.getName().equals(UserRoleName.CustomerExternalLibrary)) {
+            LOG.info("Current lending is a ILL");
+            Library.addAndSendMessage(new CustomMessage(
+                UUID.randomUUID(),
+                String.format(
+                    "New Inter-Library Lending: Medium Copy: %s,Medium: %,  Library: %s",
+                    copy.getId(),
+                    copy.getMedium().getTitle(),
+                    user.get().getName()
+                    ),
+                CustomMessage.Status.Open,
+                LocalDateTime.now()
+            ));
+        }
 
         LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder(lending.getId());
         builder.endDate(lending.getEndDate())
