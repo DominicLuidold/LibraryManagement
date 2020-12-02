@@ -5,6 +5,7 @@ import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
@@ -78,4 +79,8 @@ public interface EjbLibraryRemote extends Serializable {
     MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto);
 
     MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto);
+
+    /* #### LOGIN #### */
+
+    MessageDto<LoginDto> loginUser(LoginDto loginDto);
 }

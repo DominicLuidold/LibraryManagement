@@ -15,7 +15,9 @@ import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryFactoryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.LibraryInterface;
 import at.fhv.teamg.librarymanagement.shared.ifaces.MessageClientInterface;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +45,7 @@ public class RmiClient implements LibraryInterface {
                 "rmi://" + SERVER_ADDRESS + "/libraryfactory"
             );
             library = libraryFactory.getLibrary();
-        } catch (Exception e) {
+        } catch (RemoteException | NotBoundException | MalformedURLException e) {
             LOG.error(e);
         }
     }

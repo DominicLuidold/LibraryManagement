@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public class LibraryFactory extends UnicastRemoteObject implements LibraryFactoryInterface {
     private static final Logger LOG = LogManager.getLogger(LibraryFactory.class);
+    private static final long serialVersionUID = 4376711570326569008L;
 
     public LibraryFactory() throws RemoteException {
         super();
