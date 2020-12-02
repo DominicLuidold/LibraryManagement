@@ -36,27 +36,20 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     private static final Logger LOG = LogManager.getLogger(Library.class);
     private static final long serialVersionUID = -443483629739057113L;
 
-    private static final List<MessageClientInterface> clients = new LinkedList<>();
+    private static final List<MessageClientInterface> CLIENTS = new LinkedList<>();
     private static final Map<CustomMessage, Message> CUSTOM_MESSAGES = new HashMap<>();
     private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
+
+    private final Cache cache = Cache.getInstance();
     private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
     private final ReservationService reservationService = new ReservationService();
     private final UserService userService = new UserService();
-    private final Cache cache = Cache.getInstance();
+
     private LoginDto loggedInUser;
 
-    /**
-     * Constructs a new library.
-     *
-     * @throws RemoteException when unable to receive messages
-     */
     public Library() throws RemoteException {
         super();
-    }
-
-    public static List<MessageClientInterface> getClients() {
-        return clients;
     }
 
     /* #### SEARCH #### */
@@ -115,11 +108,9 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
         return cache.getAllTopics();
     }
 
-    /* #### RESERVATION #### */
-
     @Override
     public List<UserDto> getAllUsers() throws RemoteException {
-        if (isValid(UserRoleName.Librarian)) {
+        if (UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return cache.getAllUsers();
         }
         return new LinkedList<>();
@@ -127,16 +118,18 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<UserDto> getAllCustomers() throws RemoteException {
-        if (isValid(UserRoleName.Librarian)) {
+        if (UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return cache.getAllCustomers();
         }
         return new LinkedList<>();
     }
 
+    /* #### RESERVATION #### */
+
     @Override
     public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto)
         throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<ReservationDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -151,7 +144,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto)
         throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<ReservationDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -165,7 +158,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto)
         throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<ReservationDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -179,7 +172,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto)
         throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -190,33 +183,33 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
-            return new LinkedList<ReservationDto>();
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
         }
         return reservationService.getReservations(bookDto);
     }
 
-    /* ##### LENDING ##### */
-
     @Override
     public List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
-            return new LinkedList<ReservationDto>();
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
         }
         return reservationService.getReservations(dvdDto);
     }
 
     @Override
     public List<ReservationDto> getAllGameReservations(GameDto gameDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
-            return new LinkedList<ReservationDto>();
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
         }
         return reservationService.getReservations(gameDto);
     }
 
+    /* ##### LENDING ##### */
+
     @Override
     public MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<LendingDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -229,7 +222,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<LendingDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -242,7 +235,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<LendingDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -255,7 +248,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -268,7 +261,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -281,7 +274,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -294,7 +287,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnBook(MediumCopyDto copyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -307,7 +300,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnDvd(MediumCopyDto copyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -320,7 +313,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
 
     @Override
     public MessageDto<EmptyDto> returnGame(MediumCopyDto copyDto) throws RemoteException {
-        if (!isValid(UserRoleName.Librarian)) {
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
             return new MessageDto.MessageDtoBuilder<EmptyDto>()
                 .withType(MessageDto.MessageType.FAILURE)
                 .withMessage(UNAUTHORIZED_MESSAGE)
@@ -345,6 +338,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             loggedInUser = loggedInUserMessage.getResult();
             return loggedInUserMessage;
         }
+
         return new MessageDto.MessageDtoBuilder<LoginDto>()
             .withType(MessageDto.MessageType.SUCCESS)
             .withResult(
@@ -353,8 +347,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
                     .withUsername("guest")
                     .withUserRoleName(UserRoleName.Customer)
                     .build()
-            )
-            .build();
+            ).build();
     }
 
     /* #### MESSAGING #### */
@@ -362,13 +355,66 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
     @Override
     public void registerForMessages(MessageClientInterface client) throws RemoteException {
         LOG.debug("Registering new message subscriber [{}]", client.hashCode());
-        clients.add(client);
+        CLIENTS.add(client);
     }
 
     @Override
     public List<CustomMessage> getAllMessages() throws RemoteException {
         LOG.debug("Returning all Messages to client");
         return new LinkedList<>(CUSTOM_MESSAGES.keySet());
+    }
+
+    @Override
+    public void addMessage(CustomMessage message) throws RemoteException {
+        Library.addAndSendMessage(message);
+    }
+
+    /**
+     * Update message Status.
+     *
+     * @param customMessage message with the same id of an already existing message
+     */
+    public void updateMessageStatus(CustomMessage customMessage) throws RemoteException {
+        var messageOptional = CUSTOM_MESSAGES.keySet().stream()
+            .filter(m -> m.id.equals(customMessage.id))
+            .findFirst();
+
+        if (messageOptional.isEmpty()) {
+            LOG.error("Got message with invalid Id");
+            return;
+        }
+
+        var messageToUpdate = messageOptional.get();
+
+        if (messageToUpdate.userId == null) {
+            messageToUpdate.userId = loggedInUser.getId();
+        } else if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
+            LOG.info("message admin override");
+        } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
+            LOG.error("Logged-in user is not allowed to update this message");
+            return;
+        }
+
+        messageToUpdate.status = customMessage.status;
+
+        updateMessage(messageToUpdate);
+
+        if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
+            if (new MessageService().archiveMessage(messageToUpdate).getType().equals(
+                MessageDto.MessageType.ERROR)
+            ) {
+                LOG.error("Unable to archive message to DB");
+            }
+
+            Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
+            try {
+                jmsMessage.acknowledge();
+            } catch (JMSException e) {
+                LOG.error("Unable to archive (acknowledge) message", e);
+            }
+
+            CUSTOM_MESSAGES.remove(messageToUpdate);
+        }
     }
 
     /**
@@ -420,84 +466,7 @@ public class Library extends UnicastRemoteObject implements LibraryInterface {
             });
     }
 
-    /**
-     * Update message Status.
-     *
-     * @param customMessage message with the same id of an already existing message
-     */
-    public void updateMessageStatus(CustomMessage customMessage) throws RemoteException {
-        var messageOptional = CUSTOM_MESSAGES.keySet().stream()
-            .filter(m -> m.id.equals(customMessage.id))
-            .findFirst();
-
-        if (messageOptional.isEmpty()) {
-            LOG.error("Got message with invalid Id");
-            return;
-        }
-
-        var messageToUpdate = messageOptional.get();
-
-        if (messageToUpdate.userId == null) {
-            messageToUpdate.userId = loggedInUser.getId();
-        } else if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
-            LOG.info("message admin override");
-        } else if (!messageToUpdate.userId.equals(loggedInUser.getId())) {
-            LOG.error("Logged-in user is not allowed to update this message");
-            return;
-        }
-
-        messageToUpdate.status = customMessage.status;
-
-        updateMessage(messageToUpdate);
-
-        if (messageToUpdate.status.equals(CustomMessage.Status.Archived)) {
-            if (new MessageService().archiveMessage(messageToUpdate).getType().equals(
-                MessageDto.MessageType.ERROR)
-            ) {
-                LOG.error("Unable to archive message to DB");
-            }
-
-            Message jmsMessage = CUSTOM_MESSAGES.get(messageToUpdate);
-            try {
-                jmsMessage.acknowledge();
-            } catch (JMSException e) {
-                LOG.error("Unable to archive (acknowledge) message", e);
-            }
-
-            CUSTOM_MESSAGES.remove(messageToUpdate);
-        }
-    }
-
-    @Override
-    public void addMessage(CustomMessage message) throws RemoteException {
-        Library.addAndSendMessage(message);
-    }
-
-    /* #### AUTHORIZATION #### */
-
-    private boolean isValid(UserRoleName userRoleNeeded) {
-        /* Admin can perform any action */
-        if (userRoleNeeded.equals(UserRoleName.Admin)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
-                return true;
-            }
-        }
-
-        /* Librarian can lend and make reservations */
-        if (userRoleNeeded.equals(UserRoleName.Librarian)) {
-            if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
-            ) {
-                return true;
-            }
-        }
-
-        /* Customer (guest user) can search only */
-        if (userRoleNeeded.equals(UserRoleName.Customer)) {
-            return loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin);
-        }
-        return false;
+    public static List<MessageClientInterface> getClients() {
+        return CLIENTS;
     }
 }

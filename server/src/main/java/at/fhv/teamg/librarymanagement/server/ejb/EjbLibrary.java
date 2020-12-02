@@ -1,6 +1,9 @@
 package at.fhv.teamg.librarymanagement.server.ejb;
 
+import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
+import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
+import at.fhv.teamg.librarymanagement.server.domain.UserService;
 import at.fhv.teamg.librarymanagement.server.rmi.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -13,7 +16,9 @@ import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import at.fhv.teamg.librarymanagement.shared.ifaces.ejb.EjbLibraryRemote;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -26,8 +31,15 @@ public class EjbLibrary implements EjbLibraryRemote {
     private static final Logger LOG = LogManager.getLogger(EjbLibrary.class);
     private static final long serialVersionUID = -7519307780728640540L;
 
+    private static final String UNAUTHORIZED_MESSAGE = "User not authorized to perform this action";
+
     private final Cache cache = Cache.getInstance();
+    private final LendingService lendingService = new LendingService();
     private final MediumCopyService mediumCopyService = new MediumCopyService();
+    private final ReservationService reservationService = new ReservationService();
+    private final UserService userService = new UserService();
+
+    private LoginDto loggedInUser;
 
     /* #### SEARCH #### */
 
@@ -87,82 +99,187 @@ public class EjbLibrary implements EjbLibraryRemote {
 
     @Override
     public List<UserDto> getAllCustomers() {
-        return null;
+        if (UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return cache.getAllCustomers();
+        }
+        return new LinkedList<>();
     }
 
     /* #### RESERVATION #### */
 
     @Override
     public MessageDto<ReservationDto> reserveBook(ReservationDto reservationDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateBookCacheMedium(reservationDto.getMediumId());
+        return result;
     }
 
     @Override
     public MessageDto<ReservationDto> reserveDvd(ReservationDto reservationDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateDvdCacheMedium(reservationDto.getMediumId());
+        return result;
     }
 
     @Override
     public MessageDto<ReservationDto> reserveGame(ReservationDto reservationDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<ReservationDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<ReservationDto> result = reservationService.createReservation(reservationDto);
+        cache.invalidateGameCacheMedium(reservationDto.getMediumId());
+        return result;
     }
 
     @Override
     public MessageDto<EmptyDto> removeReservation(ReservationDto reservationDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        return reservationService.deleteReservation(reservationDto);
     }
 
     @Override
     public List<ReservationDto> getAllBookReservations(BookDto bookDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
+        }
+        return reservationService.getReservations(bookDto);
     }
 
     @Override
     public List<ReservationDto> getAllDvdReservations(DvdDto dvdDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
+        }
+        return reservationService.getReservations(dvdDto);
     }
 
     @Override
     public List<ReservationDto> getAllGameReservations(GameDto gameDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new LinkedList<>();
+        }
+        return reservationService.getReservations(gameDto);
     }
 
     /* ##### LENDING ##### */
 
     @Override
     public MessageDto<LendingDto> lendBook(LendingDto lendingDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
+        cache.invalidateBookCacheMediumCopy(lendingDto.getMediumCopyId());
+        return result;
     }
 
     @Override
     public MessageDto<LendingDto> lendGame(LendingDto lendingDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
+        cache.invalidateGameCacheMediumCopy(lendingDto.getMediumCopyId());
+        return result;
     }
 
     @Override
     public MessageDto<LendingDto> lendDvd(LendingDto lendingDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<LendingDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<LendingDto> result = lendingService.createLending(lendingDto);
+        cache.invalidateDvdCacheMediumCopy(lendingDto.getMediumCopyId());
+        return result;
     }
 
     @Override
     public MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateBookCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 
     @Override
     public MessageDto<EmptyDto> extendDvd(MediumCopyDto mediumCopyDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateDvdCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 
     @Override
     public MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto) {
-        return null;
+        if (!UserService.isUserRoleSufficient(UserRoleName.Librarian, loggedInUser)) {
+            return new MessageDto.MessageDtoBuilder<EmptyDto>()
+                .withType(MessageDto.MessageType.FAILURE)
+                .withMessage(UNAUTHORIZED_MESSAGE)
+                .build();
+        }
+        MessageDto<EmptyDto> result = lendingService.extendLending(mediumCopyDto);
+        cache.invalidateGameCacheMediumCopy(mediumCopyDto.getId());
+        return result;
     }
 
     /* #### LOGIN #### */
 
     @Override
     public MessageDto<LoginDto> loginUser(LoginDto loginDto) {
-        return null;
+        if (!loginDto.getUsername().equals("guest")) {
+            MessageDto<LoginDto> loggedInUserMessage = userService.authenticateUser(loginDto);
+            loggedInUser = loggedInUserMessage.getResult();
+            return loggedInUserMessage;
+        }
+
+        return new MessageDto.MessageDtoBuilder<LoginDto>()
+            .withType(MessageDto.MessageType.SUCCESS)
+            .withResult(
+                new LoginDto.LoginDtoBuilder()
+                    .withIsValid(true)
+                    .withUsername("guest")
+                    .withUserRoleName(UserRoleName.Customer)
+                    .build()
+            ).build();
     }
 }
