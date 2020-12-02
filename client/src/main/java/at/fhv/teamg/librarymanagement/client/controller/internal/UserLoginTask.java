@@ -42,7 +42,7 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     protected MessageDto<LoginDto> call() throws Exception {
         super.call();
         LOG.debug("Perform user login");
-        if (connectionType == ConnectionType.RMI) {
+        if (connectionType.equals(ConnectionType.RMI)) {
             RmiClient.setServerAddress(server);
             return RemoteClient.getInstance().loginUser(loginUser);
         } else {
