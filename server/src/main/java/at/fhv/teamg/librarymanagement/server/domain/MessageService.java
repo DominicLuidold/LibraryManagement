@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.MessageDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Message;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.MessageDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Message;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
@@ -46,7 +46,7 @@ public class MessageService extends BaseMediaService {
     }
 
     protected Optional<Message> updateMessage(
-        at.fhv.teamg.librarymanagement.server.persistance.entity.Message message) {
+        at.fhv.teamg.librarymanagement.server.persistence.entity.Message message) {
         return new MessageDao().update(message);
     }
 }

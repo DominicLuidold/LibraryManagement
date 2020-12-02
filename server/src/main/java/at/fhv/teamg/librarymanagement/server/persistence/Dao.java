@@ -1,4 +1,4 @@
-package at.fhv.teamg.librarymanagement.server.persistance;
+package at.fhv.teamg.librarymanagement.server.persistence;
 
 import java.util.Optional;
 import java.util.UUID;

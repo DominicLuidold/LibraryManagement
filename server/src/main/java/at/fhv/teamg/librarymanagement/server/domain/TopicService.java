@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.TopicDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.TopicDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.LinkedList;
 import java.util.List;

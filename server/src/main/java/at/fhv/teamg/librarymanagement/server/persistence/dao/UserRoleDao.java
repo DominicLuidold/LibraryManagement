@@ -1,12 +1,10 @@
-package at.fhv.teamg.librarymanagement.server.persistance.dao;
+package at.fhv.teamg.librarymanagement.server.persistence.dao;
 
-import at.fhv.teamg.librarymanagement.server.persistance.BaseDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
+import at.fhv.teamg.librarymanagement.server.persistence.BaseDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

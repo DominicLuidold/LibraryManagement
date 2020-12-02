@@ -1,19 +1,19 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.TopicDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.BookDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.DvdDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.GameDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.MediumCopyDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.MediumDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.TopicDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.UserDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Book;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 

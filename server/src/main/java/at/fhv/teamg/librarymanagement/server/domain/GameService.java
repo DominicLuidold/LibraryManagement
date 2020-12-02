@@ -1,10 +1,10 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.GameDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import java.util.LinkedList;
 import java.util.List;
