@@ -80,6 +80,12 @@ public interface EjbLibraryRemote extends Serializable {
 
     MessageDto<EmptyDto> extendGame(MediumCopyDto mediumCopyDto);
 
+    MessageDto<EmptyDto> returnBook(MediumCopyDto mediumCopyDto);
+
+    MessageDto<EmptyDto> returnDvd(MediumCopyDto mediumCopyDto);
+
+    MessageDto<EmptyDto> returnGame(MediumCopyDto mediumCopyDto);
+
     /* #### LOGIN #### */
 
     MessageDto<LoginDto> loginUser(LoginDto loginDto);
