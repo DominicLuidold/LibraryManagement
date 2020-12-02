@@ -180,7 +180,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
         // Load Topics
         try {
-            this.topics = RmiClient.getInstance().getAllTopics();
+            this.topics = RemoteClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -355,7 +355,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (ReservationDto dto) -> {
                     LOG.debug("Remove reservation button has been pressed");
                     try {
-                        MessageDto<EmptyDto> msgDto = RmiClient.getInstance()
+                        MessageDto<EmptyDto> msgDto = RemoteClient.getInstance()
                             .removeReservation(dto);
 
                         if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
@@ -649,13 +649,13 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
         try {
             switch (type) {
                 case BOOK:
-                    res = RmiClient.getInstance().getAllBookReservations(this.currentBook);
+                    res = RemoteClient.getInstance().getAllBookReservations(this.currentBook);
                     break;
                 case DVD:
-                    res = RmiClient.getInstance().getAllDvdReservations(this.currentDvd);
+                    res = RemoteClient.getInstance().getAllDvdReservations(this.currentDvd);
                     break;
                 case GAME:
-                    res = RmiClient.getInstance().getAllGameReservations(this.currentGame);
+                    res = RemoteClient.getInstance().getAllGameReservations(this.currentGame);
                     break;
                 default:
                     break;

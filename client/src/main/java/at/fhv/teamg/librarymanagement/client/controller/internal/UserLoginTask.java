@@ -25,8 +25,12 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
      * @param connectionType Type to fetch data (RMI or EJB)
      * @param pane           AnchorPane
      */
-    public UserLoginTask(LoginDto loginUser, String server, ConnectionType connectionType,
-                         AnchorPane pane) {
+    public UserLoginTask(
+        LoginDto loginUser,
+        String server,
+        ConnectionType connectionType,
+        AnchorPane pane
+    ) {
         super(pane);
         this.loginUser = loginUser;
         this.server = server;
@@ -38,18 +42,19 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     protected MessageDto<LoginDto> call() throws Exception {
         super.call();
         LOG.debug("Perform user login");
-        RmiClient.setServerAddress(server);
         if (connectionType == ConnectionType.RMI) {
-            return RmiClient.getInstance().loginUser(loginUser);
+            RmiClient.setServerAddress(server);
+            return RemoteClient.getInstance().loginUser(loginUser);
         } else {
-            return EjbClient.getInstance().loginUser(loginUser);
+            EjbClient.setServerAddress(server);
+            return RemoteClient.getInstance().loginUser(loginUser);
         }
     }
 
     @Override
     protected void failed() {
         super.failed();
-        if (connectionType == ConnectionType.RMI) {
+        if (connectionType.equals(ConnectionType.RMI)) {
             AlertHelper.showAlert(
                 Alert.AlertType.ERROR,
                 this.pane.getScene().getWindow(),
@@ -61,7 +66,7 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
                 Alert.AlertType.ERROR,
                 this.pane.getScene().getWindow(),
                 "EJB server unreachable",
-                "Could not connect to server. Please make sure the server is up and running!"
+                "Could not connect to EJB server. Please make sure the server is up and running!"
             );
         }
     }

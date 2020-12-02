@@ -26,7 +26,6 @@ public class GameSearchTask extends AsyncTask<List<GameDto>> {
     protected List<GameDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Games..");
-        return RmiClient.getInstance().searchGame(this.dto);
+        return RemoteClient.getInstance().searchGame(this.dto);
     }
-
 }

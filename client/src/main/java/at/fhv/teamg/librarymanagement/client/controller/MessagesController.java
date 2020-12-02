@@ -58,7 +58,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                 }
             );
 
-            RmiClient.getInstance().registerForMessages(messageClient);
+            RemoteClient.getInstance().registerForMessages(messageClient);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
             dlg.setWidth(500);
             dlg.setOnCloseRequest((event) -> {
                 try {
-                    RmiClient.getInstance().addMessage(new CustomMessage(
+                    RemoteClient.getInstance().addMessage(new CustomMessage(
                         UUID.randomUUID(),
                         dlg.getEditor().getText(),
                         CustomMessage.Status.Open,
@@ -116,7 +116,7 @@ public class MessagesController implements Initializable, Parentable<TabPaneCont
                                 btnArchive.setPrefSize(120, 10);
                                 btnArchive.setAlignment(Pos.CENTER);
 
-                                RmiClient client = RmiClient.getInstance();
+                                RemoteClient client = RemoteClient.getInstance();
 
                                 btnTake.setOnAction((ActionEvent event) -> {
                                     CustomMessage msg = getTableView()

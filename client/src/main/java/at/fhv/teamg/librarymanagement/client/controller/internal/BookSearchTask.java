@@ -26,7 +26,7 @@ public class BookSearchTask extends AsyncTask<List<BookDto>> {
     protected List<BookDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Books..");
-        return RmiClient.getInstance().searchBook(this.dto);
+        return RemoteClient.getInstance().searchBook(this.dto);
     }
 
 }

@@ -26,7 +26,7 @@ public class DvdSearchTask extends AsyncTask<List<DvdDto>> {
     protected List<DvdDto> call() throws Exception {
         super.call();
         LOG.debug("Loading DVDs..");
-        return RmiClient.getInstance().searchDvd(this.dto);
+        return RemoteClient.getInstance().searchDvd(this.dto);
     }
 
 }

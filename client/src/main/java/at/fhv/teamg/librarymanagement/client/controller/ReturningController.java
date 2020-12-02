@@ -149,7 +149,7 @@ public class ReturningController implements Initializable, Parentable<MediaDetai
             MediumCopyDto.MediumCopyDtoBuilder builder =
                 new MediumCopyDto.MediumCopyDtoBuilder(currentUuid);
 
-            RmiClient client = RmiClient.getInstance();
+            RemoteClient client = RemoteClient.getInstance();
             MessageDto<EmptyDto> response = null;
             try {
                 switch (currentMediumType) {
@@ -209,8 +209,8 @@ public class ReturningController implements Initializable, Parentable<MediaDetai
 
     private void loadAdditionalData() {
         try {
-            allUsers = RmiClient.getInstance().getAllUsers();
-            topics = RmiClient.getInstance().getAllTopics();
+            allUsers = RemoteClient.getInstance().getAllUsers();
+            topics = RemoteClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

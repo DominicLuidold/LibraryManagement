@@ -21,5 +21,4 @@ public class GetAllUserTask extends AsyncTask<List<UserDto>> {
         LOG.debug("Loading Users..");
         return RemoteClient.getInstance().getAllUsers();
     }
-
 }
