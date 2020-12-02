@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 public class EjbClient implements EjbLibraryRemote {
     private static final Logger LOG = LogManager.getLogger(EjbClient.class);
+    private static final long serialVersionUID = -3680263646672901253L;
     private static final String SERVER_ADDRESS = "vsts-team007.westeurope.cloudapp.azure.com";
 
     private static EjbClient EJB_INSTANCE;
