@@ -67,9 +67,9 @@ public interface LibraryInterface extends Remote {
 
     MessageDto<LendingDto> lendBook(LendingDto lendingDto) throws RemoteException;
 
-    MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
-
     MessageDto<LendingDto> lendDvd(LendingDto lendingDto) throws RemoteException;
+
+    MessageDto<LendingDto> lendGame(LendingDto lendingDto) throws RemoteException;
 
     MessageDto<EmptyDto> extendBook(MediumCopyDto mediumCopyDto) throws RemoteException;
 
@@ -93,8 +93,7 @@ public interface LibraryInterface extends Remote {
 
     List<CustomMessage> getAllMessages() throws RemoteException;
 
-    void updateMessageStatus(CustomMessage customMessage) throws RemoteException;
-
     void addMessage(CustomMessage message) throws RemoteException;
 
+    void updateMessageStatus(CustomMessage customMessage) throws RemoteException;
 }

@@ -1,23 +1,24 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.GameDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.GameDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GameService extends BaseMediaService implements Searchable<GameDto> {
+public class GameService extends BaseMediaService {
+
     /**
-     * {@inheritDoc}
+     * Finds a specific ({@link Game} provided information within the DTO.
+     *
+     * @param gameDto The DTO containing the information to search for
+     * @return A List of DTOs
      */
-    @Override
     public List<GameDto> search(GameDto gameDto) {
         String topic = "";
         if (gameDto.getTopic() != null) {
@@ -35,9 +36,10 @@ public class GameService extends BaseMediaService implements Searchable<GameDto>
         );
 
         List<GameDto> dtoList = new LinkedList<>();
-        entities.forEach(game -> {
-            dtoList.add(Utils.createGameDto(game, getAvailability(game.getMedium())));
-        });
+        entities.forEach(game -> dtoList.add(Utils.createGameDto(
+            game,
+            getAvailability(game.getMedium())
+        )));
 
         return dtoList;
     }

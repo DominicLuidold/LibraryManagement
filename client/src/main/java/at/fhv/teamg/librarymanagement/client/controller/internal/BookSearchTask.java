@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import java.util.List;
 import javafx.scene.layout.AnchorPane;
@@ -26,7 +26,7 @@ public class BookSearchTask extends AsyncTask<List<BookDto>> {
     protected List<BookDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Books..");
-        return RmiClient.getInstance().searchBook(this.dto);
+        return RemoteClient.getInstance().searchBook(this.dto);
     }
 
 }

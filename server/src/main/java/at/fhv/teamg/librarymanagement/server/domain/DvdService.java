@@ -1,12 +1,10 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.DvdDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.DvdDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -14,16 +12,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
+public class DvdService extends BaseMediaService {
+
     /**
-     * {@inheritDoc}
+     * Finds a specific ({@link Dvd} provided information within the DTO.
+     *
+     * @param dvdDto The DTO containing the information to search for
+     * @return A List of DTOs
      */
-    @Override
     public List<DvdDto> search(DvdDto dvdDto) {
         String topic = "";
         if (dvdDto.getTopic() != null) {
             Optional<Topic> topicEntity = findTopicById(dvdDto.getTopic());
-
             if (topicEntity.isPresent()) {
                 topic = topicEntity.get().getName();
             }
@@ -37,9 +37,10 @@ public class DvdService extends BaseMediaService implements Searchable<DvdDto> {
         );
 
         List<DvdDto> dtoList = new LinkedList<>();
-        entities.forEach(dvd -> {
-            dtoList.add(Utils.createDvdDto(dvd, getAvailability(dvd.getMedium())));
-        });
+        entities.forEach(dvd -> dtoList.add(Utils.createDvdDto(
+            dvd,
+            getAvailability(dvd.getMedium())
+        )));
 
         return dtoList;
     }

@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.util.List;
 import javafx.scene.layout.AnchorPane;
@@ -19,7 +19,6 @@ public class GetAllUserTask extends AsyncTask<List<UserDto>> {
     protected List<UserDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Users..");
-        return RmiClient.getInstance().getAllUsers();
+        return RemoteClient.getInstance().getAllUsers();
     }
-
 }

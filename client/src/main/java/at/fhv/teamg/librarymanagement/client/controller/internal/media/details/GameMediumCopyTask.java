@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal.media.details;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AsyncTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import java.util.List;
@@ -28,7 +28,7 @@ public class GameMediumCopyTask extends AsyncTask<List<MediumCopyDto>> {
     protected List<MediumCopyDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Game Copies");
-        return RmiClient.getInstance().getAllGameCopies(this.dto);
+        return RemoteClient.getInstance().getAllGameCopies(this.dto);
     }
 
 }

@@ -1,11 +1,9 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.UserRoleDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.UserDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.UserRoleDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -152,6 +150,42 @@ public class UserService {
         }
 
         return null;
+    }
+
+    /**
+     * Checks whether the the logged in user has sufficient permissions to perform the action.
+     *
+     * @param requiredUserRole User role required for performing the action
+     * @param loggedInUser     Currently logged in user
+     * @return true if user has sufficient permissions, false otherwise
+     */
+    public static boolean isUserRoleSufficient(
+        UserRoleName requiredUserRole,
+        LoginDto loggedInUser
+    ) {
+        /* Admin can perform any action */
+        if (requiredUserRole.equals(UserRoleName.Admin)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Admin)) {
+                return true;
+            }
+        }
+
+        /* Librarian can lend and make reservations */
+        if (requiredUserRole.equals(UserRoleName.Librarian)) {
+            if (loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+            ) {
+                return true;
+            }
+        }
+
+        /* Customer (guest user) can search only */
+        if (requiredUserRole.equals(UserRoleName.Customer)) {
+            return loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin);
+        }
+        return false;
     }
 
     protected List<User> getAll() {

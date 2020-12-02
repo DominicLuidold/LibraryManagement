@@ -1,11 +1,7 @@
 package at.fhv.teamg.librarymanagement.server.tasks;
 
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Lending;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 public class Utils {
     /**

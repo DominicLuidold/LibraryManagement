@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.server.tasks;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.LendingDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.LendingDao;
 import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import java.time.LocalDate;

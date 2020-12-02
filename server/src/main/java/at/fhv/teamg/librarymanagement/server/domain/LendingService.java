@@ -1,11 +1,10 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.LendingDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.LendingDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.MediumCopyDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Lending;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
 import at.fhv.teamg.librarymanagement.server.rmi.Library;
 import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;

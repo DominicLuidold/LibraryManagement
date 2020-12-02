@@ -1,7 +1,9 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
+import at.fhv.teamg.librarymanagement.client.controller.internal.ConnectionType;
 import at.fhv.teamg.librarymanagement.client.controller.internal.UserLoginTask;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import java.io.IOException;
@@ -43,6 +45,7 @@ public class LoginController implements Initializable {
 
     private final ValidationSupport validationSupport = new ValidationSupport();
     private LoginDto loggedInUser;
+    private ConnectionType connectionType;
 
     @FXML
     private AnchorPane pane;
@@ -58,6 +61,8 @@ public class LoginController implements Initializable {
     private Button guestButton;
     @FXML
     private ComboBox<String> serverDropdown;
+    @FXML
+    private ComboBox<String> connectionTypeDropdown;
 
     private boolean isValid = false;
     private ResourceBundle resources;
@@ -102,6 +107,15 @@ public class LoginController implements Initializable {
 
         this.serverDropdown.setItems(FXCollections.observableList(servers));
         this.serverDropdown.getSelectionModel().select(0);
+
+        //Fill connectionType List
+        List<String> connectionTypes = new LinkedList<>();
+        connectionTypes.add("RMI");
+        connectionTypes.add("EJB");
+
+        this.connectionTypeDropdown.setItems(FXCollections.observableList(connectionTypes));
+        this.connectionTypeDropdown.getSelectionModel().select(0);
+
     }
 
     /**
@@ -132,9 +146,18 @@ public class LoginController implements Initializable {
             .withPassword(passwordField.getText())
             .build();
 
+        if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
+            this.connectionType = ConnectionType.RMI;
+        } else {
+            this.connectionType = ConnectionType.EJB;
+        }
+        RemoteClient remoteClient = RemoteClient.getInstance();
+        remoteClient.setConnectionType(this.connectionType);
+
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
             this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.connectionType,
             this.pane
         );
 
@@ -164,18 +187,28 @@ public class LoginController implements Initializable {
      */
     public void loginAsGuest() {
         LOG.debug("LoginAsGuest btn pressed");
-        Window owner = this.submitButton.getScene().getWindow();
 
         LoginDto loginUser = new LoginDto.LoginDtoBuilder()
             .withUsername("guest")
             .withPassword("")
             .build();
 
+        if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
+            this.connectionType = ConnectionType.RMI;
+        } else {
+            this.connectionType = ConnectionType.EJB;
+        }
+        RemoteClient remoteClient = RemoteClient.getInstance();
+        remoteClient.setConnectionType(this.connectionType);
+
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
             this.serverDropdown.getSelectionModel().getSelectedItem(),
+            this.connectionType,
             this.pane
         );
+
+        Window owner = this.submitButton.getScene().getWindow();
 
         Thread thread = new Thread(loginTask, "User login Task");
         thread.start();

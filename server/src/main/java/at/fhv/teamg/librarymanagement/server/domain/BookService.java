@@ -1,28 +1,28 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Searchable;
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.BookDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Topic;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.BookDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Book;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Topic;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class BookService extends BaseMediaService implements Searchable<BookDto> {
+public class BookService extends BaseMediaService {
+
     /**
-     * {@inheritDoc}
+     * Finds a specific ({@link Book} provided information within the DTO.
+     *
+     * @param bookDto The DTO containing the information to search for
+     * @return A List of DTOs
      */
-    @Override
     public List<BookDto> search(BookDto bookDto) {
         String topic = "";
         if (bookDto.getTopic() != null) {
             Optional<Topic> topicEntity = findTopicById(bookDto.getTopic());
-
             if (topicEntity.isPresent()) {
                 topic = topicEntity.get().getName();
             }
@@ -36,9 +36,10 @@ public class BookService extends BaseMediaService implements Searchable<BookDto>
         );
 
         List<BookDto> dtoList = new LinkedList<>();
-        entities.forEach(book -> {
-            dtoList.add(Utils.createBookDto(book, getAvailability(book.getMedium())));
-        });
+        entities.forEach(book -> dtoList.add(Utils.createBookDto(
+            book,
+            getAvailability(book.getMedium())
+        )));
 
         return dtoList;
     }

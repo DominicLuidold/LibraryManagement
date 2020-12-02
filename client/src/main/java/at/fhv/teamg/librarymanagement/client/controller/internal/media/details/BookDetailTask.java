@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal.media.details;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AsyncTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +26,7 @@ public class BookDetailTask extends AsyncTask<BookDto> {
     protected BookDto call() throws Exception {
         super.call();
         LOG.debug("Loading Book Detail");
-        return RmiClient.getInstance().getBookDetail(this.dto);
+        return RemoteClient.getInstance().getBookDetail(this.dto);
     }
 
 }

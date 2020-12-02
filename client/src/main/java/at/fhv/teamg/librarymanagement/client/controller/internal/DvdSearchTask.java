@@ -1,6 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import java.util.List;
 import javafx.scene.layout.AnchorPane;
@@ -26,7 +26,7 @@ public class DvdSearchTask extends AsyncTask<List<DvdDto>> {
     protected List<DvdDto> call() throws Exception {
         super.call();
         LOG.debug("Loading DVDs..");
-        return RmiClient.getInstance().searchDvd(this.dto);
+        return RemoteClient.getInstance().searchDvd(this.dto);
     }
 
 }
