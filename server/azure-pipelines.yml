@@ -42,6 +42,17 @@ steps:
     flattenFolders: true
   condition: succeededOrFailed()
 
+- task: CopyFiles@2
+  displayName: 'Copy WAR file to: $(build.artifactstagingdirectory)/server'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/LibraryServer.war'
+    TargetFolder: '$(build.artifactstagingdirectory)/server'
+    CleanTargetFolder: true
+    OverWrite: true
+    flattenFolders: true
+  condition: succeededOrFailed()
+  
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: Server'
   inputs:

@@ -39,8 +39,8 @@ public class EjbClient implements EjbLibraryRemote {
         try {
             Context context = new InitialContext(properties);
             ejbLibrary = (EjbLibraryRemote) context.lookup(
-                "ejb:/LibraryServer/EjbLibrary!at.fhv.teamg.librarymanagement.shared.ifaces.ejb"
-                    + ".EjbLibraryRemote"
+                "ejb:/LibraryServer/EjbLibrary!at.fhv.teamg.librarymanagement.shared"
+                    + ".ifaces.ejb.EjbLibraryRemote"
             );
         } catch (NamingException e) {
             LOG.error(e);
