@@ -151,6 +151,8 @@ public class LoginController implements Initializable {
         } else {
             this.connectionType = ConnectionType.EJB;
         }
+        RemoteClient remoteClient = RemoteClient.getInstance();
+        remoteClient.setConnectionType(this.connectionType);
 
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
@@ -197,6 +199,8 @@ public class LoginController implements Initializable {
         } else {
             this.connectionType = ConnectionType.EJB;
         }
+        RemoteClient remoteClient = RemoteClient.getInstance();
+        remoteClient.setConnectionType(this.connectionType);
 
         UserLoginTask loginTask = new UserLoginTask(
             loginUser,
@@ -236,8 +240,6 @@ public class LoginController implements Initializable {
                 this.submitButton
             );
             controller.setLoginUser(this.loggedInUser);
-            RemoteClient remoteClient = RemoteClient.getInstance();
-            remoteClient.setConnectionType(this.connectionType);
             LOG.debug("MainController is fully loaded now :-)");
         } catch (IOException e) {
             LOG.error("Cannot load main scene", e);
