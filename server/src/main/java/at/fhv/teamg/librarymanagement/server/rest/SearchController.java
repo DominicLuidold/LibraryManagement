@@ -10,11 +10,14 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import java.time.LocalDate;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.apache.camel.json.simple.JsonObject;
 
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/search")
 public class SearchController {
     /**

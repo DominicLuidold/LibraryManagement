@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: helloworld
+    name: teamGLibrary
   server:
     port: 8080
     cors:
@@ -14,9 +14,14 @@ micronaut:
             - PUT
             - GET
   security:
+    enabled: true
+    endpoints:
+      login:
+        enabled: true
     authentication: bearer
     token:
       jwt:
+        enabled: true
         signatures:
           secret:
             generator:

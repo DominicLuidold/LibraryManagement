@@ -6,8 +6,11 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import org.apache.camel.json.simple.JsonObject;
 
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/user")
 public class UserController {
     /**
