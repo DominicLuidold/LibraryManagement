@@ -93,7 +93,7 @@ public interface LibraryInterface extends Remote {
 
     List<CustomMessage> getAllMessages() throws RemoteException;
 
-    void updateMessageStatus(CustomMessage customMessage) throws RemoteException;
-
     void addMessage(CustomMessage message) throws RemoteException;
+
+    void updateMessageStatus(CustomMessage customMessage) throws RemoteException;
 }
