@@ -1,6 +1,5 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.UserRoleDao;

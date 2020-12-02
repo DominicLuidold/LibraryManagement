@@ -1,6 +1,5 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.domain.common.Utils;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumDao;
 import at.fhv.teamg.librarymanagement.server.persistance.dao.ReservationDao;
 import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
