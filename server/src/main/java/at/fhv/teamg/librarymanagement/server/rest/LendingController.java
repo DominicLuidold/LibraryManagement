@@ -6,12 +6,6 @@ import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN_EXTERNAL
 
 
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
-import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
-import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
-import at.fhv.teamg.librarymanagement.server.rmi.Cache;
-import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
-import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
-import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import io.micronaut.http.HttpRequest;
@@ -19,12 +13,9 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
-import java.util.UUID;
-import javax.print.attribute.standard.Media;
 import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
