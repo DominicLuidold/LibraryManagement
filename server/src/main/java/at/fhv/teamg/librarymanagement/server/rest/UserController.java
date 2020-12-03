@@ -11,6 +11,8 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -24,6 +26,8 @@ public class UserController {
      */
     @Get(produces = MediaType.TEXT_JSON)
     @Secured({ADMIN, LIBRARIAN})
+    @Operation(summary = "Get all users", description = "Get all users with their details")
+    @ApiResponse(responseCode = "200", description = "List of users")
     public HttpResponse<JsonObject> all(HttpRequest<String> request) {
         var users = Cache.getInstance().getAllUsers();
         var response = new JsonObject();
@@ -38,6 +42,8 @@ public class UserController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "customer")
+    @Operation(summary = "Get all customers", description = "Get all customers")
+    @ApiResponse(responseCode = "200", description = "List of customers")
     @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<JsonObject> customer(HttpRequest<String> request) {
         var customers = Cache.getInstance().getAllCustomers();

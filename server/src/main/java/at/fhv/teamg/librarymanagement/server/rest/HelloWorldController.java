@@ -7,6 +7,8 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.security.Principal;
 import org.apache.camel.json.simple.JsonObject;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +26,8 @@ public class HelloWorldController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON)
+    @Operation(summary = "Demo Endpoint", description = "Just a simple Hello World.")
+    @ApiResponse(responseCode = "201", description = "Book details")
     public HttpResponse<JsonObject> world(Principal principal) {
         JsonObject json = new JsonObject();
         json.put("hello", principal.getName());

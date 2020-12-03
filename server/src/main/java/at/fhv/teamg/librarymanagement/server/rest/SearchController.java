@@ -12,6 +12,8 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.LocalDate;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -31,6 +33,9 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
+    @Operation(summary = "Search for books", description = "One can search by title, " +
+        "author, isb1n13, topic")
+    @ApiResponse(responseCode = "200", description = "List of book results")
     public HttpResponse<JsonObject> book(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
@@ -63,6 +68,9 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
+    @Operation(summary = "Search for dvds", description = "One can search by title, " +
+        "director, releaseDate, topic")
+    @ApiResponse(responseCode = "200", description = "List of DVD results")
     public HttpResponse<JsonObject> dvd(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
@@ -95,6 +103,9 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
+    @Operation(summary = "Search for games", description = "One can search by title, " +
+        "developer, platforms, topic")
+    @ApiResponse(responseCode = "200", description = "List of game results")
     public HttpResponse<JsonObject> game(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,

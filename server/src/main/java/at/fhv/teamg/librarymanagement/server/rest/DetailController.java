@@ -16,6 +16,8 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
 import org.apache.camel.json.simple.JsonObject;
 
@@ -31,6 +33,9 @@ public class DetailController {
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book/{uuid}")
     @Secured({ADMIN, LIBRARIAN})
+    @Operation(summary = "Get the details of a book", description = "Get the details of a"
+        + "book with all attributes.")
+    @ApiResponse(responseCode = "201", description = "Book details")
     public HttpResponse<JsonObject> book(HttpRequest<String> request, UUID uuid) {
         var book = Cache.getInstance().getBookDetail(uuid);
         var copies = new MediumCopyService().getCopies(new BookDto.BookDtoBuilder(uuid).build());
@@ -53,6 +58,9 @@ public class DetailController {
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd/{uuid}")
     @Secured({ADMIN, LIBRARIAN})
+    @Operation(summary = "Get the details of a DVD", description = "Get the details of a"
+        + "DVD with all attributes.")
+    @ApiResponse(responseCode = "201", description = "DVD details")
     public HttpResponse<JsonObject> dvd(HttpRequest<String> request, UUID uuid) {
         var dvd = Cache.getInstance().getDvdDetail(uuid);
         var copies = new MediumCopyService().getCopies(new DvdDto.DvdDtoBuilder(uuid).build());
@@ -75,6 +83,9 @@ public class DetailController {
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game/{uuid}")
     @Secured({ADMIN, LIBRARIAN})
+    @Operation(summary = "Get the details of a game", description = "Get the details of a"
+        + "game with all attributes.")
+    @ApiResponse(responseCode = "201", description = "Game details")
     public HttpResponse<JsonObject> game(HttpRequest<String> request, UUID uuid) {
         var game = Cache.getInstance().getGameDetail(uuid);
         var copies = new MediumCopyService().getCopies(new GameDto.GameDtoBuilder(uuid).build());
