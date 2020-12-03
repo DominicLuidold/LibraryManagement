@@ -26,7 +26,7 @@ public class LendingController {
 
     @Post(produces = MediaType.TEXT_JSON, consumes = MediaType.TEXT_JSON)
     @Secured({ADMIN, LIBRARIAN, LIBRARIAN_EXTERNAL_LIBRARY})
-    @Operation(summary = "Create a new lending", description = "Create a new lending for"
+    @Operation(summary = "Create a new lending", description = "Create a new lending for "
         + "a specific medium copy and user.")
     @ApiResponse(responseCode = "201", description = "Created lending")
     public HttpResponse<JsonObject> lend(HttpRequest<String> request, @Body LendingDto dto) {
