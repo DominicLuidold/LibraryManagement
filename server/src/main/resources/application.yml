@@ -56,3 +56,6 @@ micronaut:
       - pattern: /redoc/**
         access:
           - isAnonymous()`
+      - pattern: /login
+        access:
+          - isAnonymous()`
