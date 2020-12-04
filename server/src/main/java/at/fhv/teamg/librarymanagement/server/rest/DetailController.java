@@ -7,8 +7,11 @@ import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
+import at.fhv.teamg.librarymanagement.shared.dto.DvdDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.GameDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.BookDetailsDto;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -35,18 +38,17 @@ public class DetailController {
     @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a book", description = "Get the details of a"
         + "book with all attributes.")
-    @ApiResponse(responseCode = "201", description = "Book details")
-    public HttpResponse<JsonObject> book(HttpRequest<String> request, UUID uuid) {
+    @ApiResponse(responseCode = "200", description = "Book details")
+    public HttpResponse<BookDetailsDto> book(HttpRequest<String> request, UUID uuid) {
         var book = Cache.getInstance().getBookDetail(uuid);
         var copies = new MediumCopyService().getCopies(new BookDto.BookDtoBuilder(uuid).build());
         var reservations =
             new ReservationService().getReservations(new BookDto.BookDtoBuilder(uuid).build());
 
-        var response = new JsonObject();
-        response.put("detail", book);
-        response.put("copies", copies);
-        response.put("reservations", reservations);
-        return HttpResponse.ok(response);
+        BookDetailsDto dto = new BookDetailsDto.BookDetailsDtoBuilder().details(book).copies(copies)
+            .reservations(reservations).build();
+
+        return HttpResponse.ok(dto);
     }
 
     /**
@@ -60,18 +62,17 @@ public class DetailController {
     @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a DVD", description = "Get the details of a"
         + "DVD with all attributes.")
-    @ApiResponse(responseCode = "201", description = "DVD details")
-    public HttpResponse<JsonObject> dvd(HttpRequest<String> request, UUID uuid) {
+    @ApiResponse(responseCode = "200", description = "DVD details")
+    public HttpResponse<DvdDetailsDto> dvd(HttpRequest<String> request, UUID uuid) {
         var dvd = Cache.getInstance().getDvdDetail(uuid);
         var copies = new MediumCopyService().getCopies(new DvdDto.DvdDtoBuilder(uuid).build());
         var reservations =
             new ReservationService().getReservations(new DvdDto.DvdDtoBuilder(uuid).build());
 
-        var response = new JsonObject();
-        response.put("detail", dvd);
-        response.put("copies", copies);
-        response.put("reservations", reservations);
-        return HttpResponse.ok(response);
+        DvdDetailsDto dto = new DvdDetailsDto.DvdDetailsDtoBuilder().details(dvd).copies(copies)
+            .reservations(reservations).build();
+
+        return HttpResponse.ok(dto);
     }
 
     /**
@@ -85,17 +86,17 @@ public class DetailController {
     @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a game", description = "Get the details of a"
         + "game with all attributes.")
-    @ApiResponse(responseCode = "201", description = "Game details")
-    public HttpResponse<JsonObject> game(HttpRequest<String> request, UUID uuid) {
+    @ApiResponse(responseCode = "200", description = "Game details")
+    public HttpResponse<GameDetailsDto> game(HttpRequest<String> request, UUID uuid) {
         var game = Cache.getInstance().getGameDetail(uuid);
         var copies = new MediumCopyService().getCopies(new GameDto.GameDtoBuilder(uuid).build());
         var reservations =
             new ReservationService().getReservations(new GameDto.GameDtoBuilder(uuid).build());
 
-        var response = new JsonObject();
-        response.put("detail", game);
-        response.put("copies", copies);
-        response.put("reservations", reservations);
-        return HttpResponse.ok(response);
+        GameDetailsDto dto =
+            new GameDetailsDto.GameDetailsDtoBuilder().details(game).copies(copies)
+            .reservations(reservations).build();
+
+        return HttpResponse.ok(dto);
     }
 }
