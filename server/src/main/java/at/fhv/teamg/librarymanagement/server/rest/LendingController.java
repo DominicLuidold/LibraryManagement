@@ -4,7 +4,6 @@ import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN_EXTERNAL_LIBRARY;
 
-
 import at.fhv.teamg.librarymanagement.server.domain.LendingService;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
@@ -24,6 +23,13 @@ import org.apache.camel.json.simple.JsonObject;
 @Controller("/lending")
 public class LendingController {
 
+    /**
+     * Creates a new lending.
+     *
+     * @param request HTTP Request
+     * @param dto Details of lending to create
+     * @return Created Lending DTO
+     */
     @Post(uri = "/", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     @Secured({ADMIN, LIBRARIAN, LIBRARIAN_EXTERNAL_LIBRARY})
     @Operation(summary = "Create a new lending", description = "Create a new lending for "
