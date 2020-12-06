@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -17,10 +18,12 @@ import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumType;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
 import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -42,6 +45,7 @@ public class LendingServiceTest {
         Lending lendingMock = mock(Lending.class);
         Medium mediumMock = mock(Medium.class);
         MediumType mediumTypeMock = mock(MediumType.class);
+        UserRole role = mock(UserRole.class);
 
         when(mediumCopyMock.isAvailable()).thenReturn(true);
         when(mediumCopyMock.getMedium()).thenReturn(mediumMock);
@@ -53,6 +57,8 @@ public class LendingServiceTest {
         doReturn(Optional.of(lendingMock)).when(lendingService).updateLending(any(Lending.class));
         doReturn(Optional.of(mediumCopyMock)).when(lendingService)
             .updateMediumCopy(any(MediumCopy.class));
+        doReturn(UserRoleName.CustomerExternalLibrary).when(role).getName();
+        doReturn(role).when(userMock).getRole();
 
         LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
         builder.endDate(LocalDate.now())
