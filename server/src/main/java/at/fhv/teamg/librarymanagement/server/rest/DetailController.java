@@ -3,7 +3,6 @@ package at.fhv.teamg.librarymanagement.server.rest;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
 
-
 import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;

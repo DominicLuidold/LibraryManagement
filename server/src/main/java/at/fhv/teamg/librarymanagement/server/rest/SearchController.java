@@ -34,8 +34,8 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
-    @Operation(summary = "Search for books", description = "One can search by title, " +
-        "author, isb1n13, topic")
+    @Operation(summary = "Search for books", description = "One can search by title, "
+        + "author, isb1n13, topic")
     @Parameter(name = "title", description = "Title of the book")
     @Parameter(name = "author", description = "Author of the book")
     @Parameter(name = "isbn13", description = "Isbn13 of the book")
@@ -72,8 +72,8 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
-    @Operation(summary = "Search for dvds", description = "One can search by title, " +
-        "director, releaseDate, topic")
+    @Operation(summary = "Search for dvds", description = "One can search by title, "
+        + "director, releaseDate, topic")
     @Parameter(name = "title", description = "Title of the DVD")
     @Parameter(name = "director", description = "Director of the DVD")
     @Parameter(name = "releaseDate", description = "Release date of the DVD")
@@ -109,8 +109,8 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
-    @Operation(summary = "Search for games", description = "One can search by title, " +
-        "developer, platforms, topic")
+    @Operation(summary = "Search for games", description = "One can search by title, "
+        + "developer, platforms, topic")
     @Parameter(name = "title", description = "Title of the game")
     @Parameter(name = "developer", description = "Developer of the game")
     @Parameter(name = "platforms", description = "Platforms of the game")

@@ -24,7 +24,7 @@ import org.apache.camel.json.simple.JsonObject;
 @Controller("/lending")
 public class LendingController {
 
-    @Post(uri="/", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
+    @Post(uri = "/", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     @Secured({ADMIN, LIBRARIAN, LIBRARIAN_EXTERNAL_LIBRARY})
     @Operation(summary = "Create a new lending", description = "Create a new lending for "
         + "a specific medium copy and user.")
