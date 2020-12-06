@@ -12,7 +12,6 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
-import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/topic")

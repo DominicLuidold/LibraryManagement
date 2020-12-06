@@ -2,7 +2,6 @@ package at.fhv.teamg.librarymanagement.server.rest;
 
 import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
-import at.fhv.teamg.librarymanagement.shared.dto.DvdDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import io.micronaut.http.HttpRequest;
@@ -20,7 +19,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/search")
@@ -38,10 +36,10 @@ public class SearchController {
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
     @Operation(summary = "Search for books", description = "One can search by title, " +
         "author, isb1n13, topic")
-    @Parameter(name="title", description ="Title of the book")
-    @Parameter(name="author", description ="Author of the book")
-    @Parameter(name="isbn13", description ="Isbn13 of the book")
-    @Parameter(name="topic", description ="Name of book's topic")
+    @Parameter(name = "title", description = "Title of the book")
+    @Parameter(name = "author", description = "Author of the book")
+    @Parameter(name = "isbn13", description = "Isbn13 of the book")
+    @Parameter(name = "topic", description = "Name of book's topic")
     @ApiResponse(responseCode = "200", description = "List of book results")
     public HttpResponse<List<BookDto>> book(
         HttpRequest<String> request,
@@ -76,10 +74,10 @@ public class SearchController {
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
     @Operation(summary = "Search for dvds", description = "One can search by title, " +
         "director, releaseDate, topic")
-    @Parameter(name="title", description ="Title of the DVD")
-    @Parameter(name="director", description ="Director of the DVD")
-    @Parameter(name="releaseDate", description ="Release date of the DVD")
-    @Parameter(name="topic", description ="Name of DVD's topic")
+    @Parameter(name = "title", description = "Title of the DVD")
+    @Parameter(name = "director", description = "Director of the DVD")
+    @Parameter(name = "releaseDate", description = "Release date of the DVD")
+    @Parameter(name = "topic", description = "Name of DVD's topic")
     @ApiResponse(responseCode = "200", description = "List of DVD results")
     public HttpResponse<List<DvdDto>> dvd(
         HttpRequest<String> request,
@@ -113,10 +111,10 @@ public class SearchController {
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
     @Operation(summary = "Search for games", description = "One can search by title, " +
         "developer, platforms, topic")
-    @Parameter(name="title", description ="Title of the game")
-    @Parameter(name="developer", description ="Developer of the game")
-    @Parameter(name="platforms", description ="Platforms of the game")
-    @Parameter(name="topic", description ="Name of Game's topic")
+    @Parameter(name = "title", description = "Title of the game")
+    @Parameter(name = "developer", description = "Developer of the game")
+    @Parameter(name = "platforms", description = "Platforms of the game")
+    @Parameter(name = "topic", description = "Name of Game's topic")
     @ApiResponse(responseCode = "200", description = "List of game results")
     public HttpResponse<List<GameDto>> game(
         HttpRequest<String> request,

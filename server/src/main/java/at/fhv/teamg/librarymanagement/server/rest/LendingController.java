@@ -24,12 +24,13 @@ import org.apache.camel.json.simple.JsonObject;
 @Controller("/lending")
 public class LendingController {
 
-    @Post(produces = MediaType.TEXT_JSON, consumes = MediaType.TEXT_JSON)
+    @Post(uri="/", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
     @Secured({ADMIN, LIBRARIAN, LIBRARIAN_EXTERNAL_LIBRARY})
     @Operation(summary = "Create a new lending", description = "Create a new lending for "
         + "a specific medium copy and user.")
     @ApiResponse(responseCode = "201", description = "Created lending")
-    public HttpResponse<JsonObject> lend(HttpRequest<String> request, @Body LendingDto dto) {
+    public HttpResponse<JsonObject> lend(HttpRequest<String> request,
+                                         @Body LendingDto dto) {
         var msgDto = new LendingService().createLending(dto);
 
         var response = new JsonObject();

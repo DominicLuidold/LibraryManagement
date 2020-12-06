@@ -85,7 +85,7 @@ public class LendingService extends BaseMediaService {
             Library.addAndSendMessage(new CustomMessage(
                 UUID.randomUUID(),
                 String.format(
-                    "New Inter-Library Lending: Medium Copy: %s,Medium: %,  Library: %s",
+                    "New Inter-Library Lending: Medium Copy: %s, Medium: %s, Library: %s",
                     copy.getId(),
                     copy.getMedium().getTitle(),
                     user.get().getName()

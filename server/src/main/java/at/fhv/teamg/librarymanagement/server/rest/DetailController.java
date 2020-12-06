@@ -3,15 +3,16 @@ package at.fhv.teamg.librarymanagement.server.rest;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
 import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
 
+
 import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
+import at.fhv.teamg.librarymanagement.shared.dto.BookDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDetailsDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
-import at.fhv.teamg.librarymanagement.shared.dto.BookDetailsDto;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -22,7 +23,6 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
-import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/detail")
@@ -95,7 +95,7 @@ public class DetailController {
 
         GameDetailsDto dto =
             new GameDetailsDto.GameDetailsDtoBuilder().details(game).copies(copies)
-            .reservations(reservations).build();
+                .reservations(reservations).build();
 
         return HttpResponse.ok(dto);
     }
