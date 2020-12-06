@@ -37,7 +37,7 @@ public class LendingController {
 
         if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
             response.put("lending", msgDto.getResult());
-            return HttpResponse.ok(response); // todo switch to 201 created?
+            return HttpResponse.created(response);
         } else if (msgDto.getType().equals(MessageDto.MessageType.FAILURE)) {
             return HttpResponse.badRequest(response);
         } else {
