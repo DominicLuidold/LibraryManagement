@@ -39,7 +39,7 @@ public class DvdService extends BaseMediaService {
         List<DvdDto> dtoList = new LinkedList<>();
         entities.forEach(dvd -> dtoList.add(Utils.createDvdDto(
             dvd,
-            getAvailability(dvd.getMedium())
+            Utils.getAvailability(dvd.getMedium())
         )));
 
         return dtoList;
@@ -54,7 +54,7 @@ public class DvdService extends BaseMediaService {
         List<DvdDto> dvdDtos = new LinkedList<>();
 
         getAll().forEach(dvd -> {
-            dvdDtos.add(Utils.createDvdDto(dvd, getAvailability(dvd.getMedium())));
+            dvdDtos.add(Utils.createDvdDto(dvd, Utils.getAvailability(dvd.getMedium())));
         });
 
         return dvdDtos;
@@ -71,7 +71,7 @@ public class DvdService extends BaseMediaService {
         if (medium.isPresent()) {
             Dvd dvd = medium.get().getDvd();
             if (dvd != null) {
-                return Optional.of(Utils.createDvdDto(dvd, getAvailability(dvd.getMedium())));
+                return Optional.of(Utils.createDvdDto(dvd, Utils.getAvailability(dvd.getMedium())));
             }
         }
         return Optional.empty();
@@ -88,7 +88,7 @@ public class DvdService extends BaseMediaService {
         if (mediumCopy.isPresent()) {
             Dvd dvd = mediumCopy.get().getMedium().getDvd();
             if (dvd != null) {
-                return Optional.of(Utils.createDvdDto(dvd, getAvailability(dvd.getMedium())));
+                return Optional.of(Utils.createDvdDto(dvd, Utils.getAvailability(dvd.getMedium())));
             }
         }
         return Optional.empty();

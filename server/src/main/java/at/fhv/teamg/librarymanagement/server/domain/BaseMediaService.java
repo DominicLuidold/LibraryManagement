@@ -17,6 +17,10 @@ import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * The {@link BaseMediaService} class is used for common database actions. These actions
+ * need to be able to get mocked for unit testing.
+ */
 public abstract class BaseMediaService {
     protected Optional<Book> findBookById(UUID id) {
         return new BookDao().find(id);
@@ -44,24 +48,5 @@ public abstract class BaseMediaService {
 
     protected Optional<Topic> findTopicById(UUID id) {
         return new TopicDao().find(id);
-    }
-
-    /**
-     * Determines the availability string (e.g. {@code 3/5}) for a specific {@link Medium}.
-     *
-     * @param medium The medium to use
-     * @return A string containing the availability
-     */
-    protected String getAvailability(Medium medium) {
-        int copies = medium.getCopies().size();
-
-        int availableCopies = 0;
-        for (MediumCopy copy : medium.getCopies()) {
-            if (copy.isAvailable()) {
-                availableCopies++;
-            }
-        }
-
-        return availableCopies + "/" + copies;
     }
 }

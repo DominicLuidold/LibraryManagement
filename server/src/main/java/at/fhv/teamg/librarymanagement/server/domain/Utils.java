@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.server.persistence.entity.Book;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.Game;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
@@ -15,6 +16,25 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
  * A class containing common functionalities that can be used without any specific context.
  */
 public final class Utils {
+
+    /**
+     * Determines the availability string (e.g. {@code 3/5}) for a specific {@link Medium}.
+     *
+     * @param medium The medium to use
+     * @return A string containing the availability
+     */
+    public static String getAvailability(Medium medium) {
+        int copies = medium.getCopies().size();
+
+        int availableCopies = 0;
+        for (MediumCopy copy : medium.getCopies()) {
+            if (copy.isAvailable()) {
+                availableCopies++;
+            }
+        }
+
+        return availableCopies + "/" + copies;
+    }
 
     /**
      * Creates a new {@link MessageDto} with given input.
