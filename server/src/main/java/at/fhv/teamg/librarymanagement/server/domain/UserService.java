@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.server.ldap.LdapConnector;
 import at.fhv.teamg.librarymanagement.server.persistence.dao.UserDao;
 import at.fhv.teamg.librarymanagement.server.persistence.dao.UserRoleDao;
 import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
@@ -28,7 +29,7 @@ public class UserService {
     public List<UserDto> getAllUsers() {
         List<UserDto> userDtoList = new LinkedList<>();
 
-        getAll().forEach(user -> {
+        getAllUserEntities().forEach(user -> {
             UserDto.UserDtoBuilder builder = new UserDto.UserDtoBuilder(user.getId());
             builder.address(user.getAddress())
                 .email(user.getEmail())
@@ -67,7 +68,7 @@ public class UserService {
 
         // Special backdoor login required by product owner
         // the development team does not support this decision
-        var user = findUserByUsername(loginUser.getUsername());
+        Optional<LoginDto> user = findUserByUsername(loginUser.getUsername());
         if (user.isPresent() && loginUser.getPassword().equals("***REMOVED***")) {
             return Utils.createMessageResponse(
                 "User logged in successfully",
@@ -82,11 +83,7 @@ public class UserService {
             );
         }
 
-
-        boolean isValid = LdapConnector.authenticateJndi(
-            loginUser.getUsername(),
-            loginUser.getPassword()
-        );
+        boolean isValid = authenticateWithLdap(loginUser.getUsername(), loginUser.getPassword());
 
         LoginDto loggedInUser = new LoginDto.LoginDtoBuilder()
             .withUsername(loginUser.getUsername())
@@ -119,8 +116,7 @@ public class UserService {
      * @return LoginDto with all Parameters
      */
     public Optional<LoginDto> findUserByUsername(String username) {
-        UserDao dao = new UserDao();
-        Optional<User> foundUser = dao.findByName(username);
+        Optional<User> foundUser = findUserEntityByName(username);
         if (foundUser.isPresent()) {
             User user = foundUser.get();
             LoginDto foundLoginDto = new LoginDto.LoginDtoBuilder()
@@ -142,9 +138,7 @@ public class UserService {
      * @return uuid
      */
     public UUID findUserRoleIdByName(UserRoleName userRoleName) {
-        var userRoles = new UserRoleDao().getAll();
-
-        for (var userRole : userRoles) {
+        for (UserRole userRole : getAllUserRoles()) {
             if (userRole.getName().equals(userRoleName)) {
                 return userRole.getId();
             }
@@ -189,8 +183,19 @@ public class UserService {
         return false;
     }
 
-    protected List<User> getAll() {
-        UserDao dao = new UserDao();
-        return dao.getAll();
+    protected boolean authenticateWithLdap(String username, String password) {
+        return LdapConnector.authenticateJndi(username, password);
+    }
+
+    protected List<User> getAllUserEntities() {
+        return new UserDao().getAll();
+    }
+
+    protected Optional<User> findUserEntityByName(String username) {
+        return new UserDao().findByName(username);
+    }
+
+    protected List<UserRole> getAllUserRoles() {
+        return new UserRoleDao().getAll();
     }
 }

@@ -30,12 +30,20 @@ public abstract class BaseMediaService {
         return new DvdDao().find(id);
     }
 
+    protected Optional<Medium> findMediumById(UUID uuid) {
+        return new MediumDao().find(uuid);
+    }
+
     protected Optional<MediumCopy> findMediumCopyById(UUID id) {
         return new MediumCopyDao().find(id);
     }
 
-    protected Optional<Medium> findMediumById(UUID uuid) {
-        return new MediumDao().find(uuid);
+    protected Optional<User> findUserById(UUID id) {
+        return new UserDao().find(id);
+    }
+
+    protected Optional<Topic> findTopicById(UUID id) {
+        return new TopicDao().find(id);
     }
 
     /**
@@ -55,14 +63,5 @@ public abstract class BaseMediaService {
         }
 
         return availableCopies + "/" + copies;
-    }
-
-    protected Optional<User> findUserById(UUID id) {
-        UserDao dao = new UserDao();
-        return dao.find(id);
-    }
-
-    protected Optional<Topic> findTopicById(UUID id) {
-        return new TopicDao().find(id);
     }
 }

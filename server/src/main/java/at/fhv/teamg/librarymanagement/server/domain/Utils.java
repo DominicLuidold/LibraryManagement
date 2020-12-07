@@ -14,7 +14,7 @@ import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 /**
  * A class containing common functionalities that can be used without any specific context.
  */
-public class Utils {
+public final class Utils {
 
     /**
      * Creates a new {@link MessageDto} with given input.
