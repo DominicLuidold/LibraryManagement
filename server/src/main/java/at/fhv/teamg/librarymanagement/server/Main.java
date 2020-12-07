@@ -71,7 +71,6 @@ public class Main implements Callable<Integer> {
     public static void main(String[] args) {
         Main m = new Main();
         m.setArgs(args);
-        int exitCode = new CommandLine(m).execute(args);
-        System.exit(exitCode);
+        new CommandLine(m).execute(args);
     }
 }
