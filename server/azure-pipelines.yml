@@ -48,7 +48,7 @@ steps:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: '**/LibraryServer.war'
     TargetFolder: '$(build.artifactstagingdirectory)/server'
-    CleanTargetFolder: true
+    CleanTargetFolder: false
     OverWrite: true
     flattenFolders: true
   condition: succeededOrFailed()
