@@ -8,13 +8,17 @@ import java.util.UUID;
 public class LendingDto implements Dto, Serializable {
     private static final long serialVersionUID = 4488858801782386377L;
 
-    private final UUID id;
-    private final LocalDate endDate;
-    private final Integer renewalCount;
-    private final LocalDate returnDate;
-    private final LocalDate startDate;
-    private final UUID mediumCopyId;
-    private final UUID userId;
+    private UUID id;
+    private LocalDate endDate;
+    private Integer renewalCount;
+    private LocalDate returnDate;
+    private LocalDate startDate;
+    private UUID mediumCopyId;
+    private UUID userId;
+
+    public LendingDto() {
+        // necessary for REST API
+    }
 
     private LendingDto(LendingDtoBuilder lendingDtoBuilder) {
         this.id = lendingDtoBuilder.id;

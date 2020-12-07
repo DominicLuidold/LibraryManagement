@@ -77,6 +77,7 @@ public class UserService {
                     .withId(user.get().getId())
                     .withUserRoleName(user.get().getUserRoleName())
                     .withIsValid(true)
+                    .withIsExternalLibrary(user.get().isExternalLibrary())
                     .build()
             );
         }

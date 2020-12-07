@@ -19,6 +19,7 @@ public class Rest {
     private static final Logger LOG = LogManager.getLogger(Rest.class);
     public static final String ADMIN = "Admin";
     public static final String LIBRARIAN = "Librarian";
+    public static final String LIBRARIAN_EXTERNAL_LIBRARY = "CustomerExternalLibrary";
 
     /**
      * Start Micronaut.

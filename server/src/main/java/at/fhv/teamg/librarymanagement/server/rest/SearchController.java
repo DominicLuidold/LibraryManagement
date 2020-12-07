@@ -12,10 +12,13 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import org.apache.camel.json.simple.JsonObject;
 
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/search")
@@ -31,7 +34,14 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book")
-    public HttpResponse<JsonObject> book(
+    @Operation(summary = "Search for books", description = "One can search by title, "
+        + "author, isb1n13, topic")
+    @Parameter(name = "title", description = "Title of the book")
+    @Parameter(name = "author", description = "Author of the book")
+    @Parameter(name = "isbn13", description = "Isbn13 of the book")
+    @Parameter(name = "topic", description = "Name of book's topic")
+    @ApiResponse(responseCode = "200", description = "List of book results")
+    public HttpResponse<List<BookDto>> book(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
         @Nullable @QueryValue String author,
@@ -46,9 +56,8 @@ public class SearchController {
                     .isbn13(isbn13 == null ? "" : isbn13)
                     .topic(topic)
                     .build());
-        var response = new JsonObject();
-        response.put("books", books);
-        return HttpResponse.ok(response);
+
+        return HttpResponse.ok(books);
     }
 
 
@@ -63,7 +72,14 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd")
-    public HttpResponse<JsonObject> dvd(
+    @Operation(summary = "Search for dvds", description = "One can search by title, "
+        + "director, releaseDate, topic")
+    @Parameter(name = "title", description = "Title of the DVD")
+    @Parameter(name = "director", description = "Director of the DVD")
+    @Parameter(name = "releaseDate", description = "Release date of the DVD")
+    @Parameter(name = "topic", description = "Name of DVD's topic")
+    @ApiResponse(responseCode = "200", description = "List of DVD results")
+    public HttpResponse<List<DvdDto>> dvd(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
         @Nullable @QueryValue String director,
@@ -79,9 +95,7 @@ public class SearchController {
                     .topic(topic)
                     .build());
 
-        var response = new JsonObject();
-        response.put("dvds", dvds);
-        return HttpResponse.ok(response);
+        return HttpResponse.ok(dvds);
     }
 
     /**
@@ -95,7 +109,14 @@ public class SearchController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game")
-    public HttpResponse<JsonObject> game(
+    @Operation(summary = "Search for games", description = "One can search by title, "
+        + "developer, platforms, topic")
+    @Parameter(name = "title", description = "Title of the game")
+    @Parameter(name = "developer", description = "Developer of the game")
+    @Parameter(name = "platforms", description = "Platforms of the game")
+    @Parameter(name = "topic", description = "Name of Game's topic")
+    @ApiResponse(responseCode = "200", description = "List of game results")
+    public HttpResponse<List<GameDto>> game(
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
         @Nullable @QueryValue String developer,
@@ -112,8 +133,6 @@ public class SearchController {
                     .build()
             );
 
-        var response = new JsonObject();
-        response.put("games", games);
-        return HttpResponse.ok(response);
+        return HttpResponse.ok(games);
     }
 }
