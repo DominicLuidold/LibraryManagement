@@ -34,7 +34,7 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.3'
     api 'org.hibernate:hibernate-core:5.4.22.Final'
     api 'org.hibernate:hibernate-c3p0:5.4.22.Final'
-    compile ('org.apache.activemq:activemq-all:5.16.0') {
+    compile('org.apache.activemq:activemq-all:5.16.0') {
         exclude group: 'org.slf4j'
     }
     compile 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
@@ -98,11 +98,14 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.from = files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    '**/persistance/*',
-                    '**/rmi/*',
-                    '**/server/*Main*',
-            ])
+            fileTree(dir: it,
+                include: [
+                    '**/domain/*',
+                ],
+                exclude: [
+                    '**/domain/*BaseMediaService*',
+                ]
+            )
         })
     }
 }

@@ -38,7 +38,7 @@ public class GameService extends BaseMediaService {
         List<GameDto> dtoList = new LinkedList<>();
         entities.forEach(game -> dtoList.add(Utils.createGameDto(
             game,
-            getAvailability(game.getMedium())
+            Utils.getAvailability(game.getMedium())
         )));
 
         return dtoList;
@@ -53,7 +53,7 @@ public class GameService extends BaseMediaService {
         List<GameDto> gameDtos = new LinkedList<>();
 
         getAll().forEach(game -> {
-            gameDtos.add(Utils.createGameDto(game, getAvailability(game.getMedium())));
+            gameDtos.add(Utils.createGameDto(game, Utils.getAvailability(game.getMedium())));
         });
 
         return gameDtos;
@@ -70,7 +70,10 @@ public class GameService extends BaseMediaService {
         if (medium.isPresent()) {
             Game game = medium.get().getGame();
             if (game != null) {
-                return Optional.of(Utils.createGameDto(game, getAvailability(game.getMedium())));
+                return Optional.of(Utils.createGameDto(
+                    game,
+                    Utils.getAvailability(game.getMedium()))
+                );
             }
         }
         return Optional.empty();
@@ -87,7 +90,10 @@ public class GameService extends BaseMediaService {
         if (mediumCopy.isPresent()) {
             Game game = mediumCopy.get().getMedium().getGame();
             if (game != null) {
-                return Optional.of(Utils.createGameDto(game, getAvailability(game.getMedium())));
+                return Optional.of(Utils.createGameDto(
+                    game,
+                    Utils.getAvailability(game.getMedium()))
+                );
             }
         }
         return Optional.empty();

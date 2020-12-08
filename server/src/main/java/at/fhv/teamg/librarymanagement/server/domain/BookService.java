@@ -38,7 +38,7 @@ public class BookService extends BaseMediaService {
         List<BookDto> dtoList = new LinkedList<>();
         entities.forEach(book -> dtoList.add(Utils.createBookDto(
             book,
-            getAvailability(book.getMedium())
+            Utils.getAvailability(book.getMedium())
         )));
 
         return dtoList;
@@ -53,7 +53,7 @@ public class BookService extends BaseMediaService {
         List<BookDto> bookDtos = new LinkedList<>();
 
         getAll().forEach(book -> {
-            bookDtos.add(Utils.createBookDto(book, getAvailability(book.getMedium())));
+            bookDtos.add(Utils.createBookDto(book, Utils.getAvailability(book.getMedium())));
         });
 
         return bookDtos;
@@ -70,7 +70,10 @@ public class BookService extends BaseMediaService {
         if (medium.isPresent()) {
             Book book = medium.get().getBook();
             if (book != null) {
-                return Optional.of(Utils.createBookDto(book, getAvailability(book.getMedium())));
+                return Optional.of(Utils.createBookDto(
+                    book,
+                    Utils.getAvailability(book.getMedium()))
+                );
             }
         }
         return Optional.empty();
@@ -87,7 +90,10 @@ public class BookService extends BaseMediaService {
         if (mediumCopy.isPresent()) {
             Book book = mediumCopy.get().getMedium().getBook();
             if (book != null) {
-                return Optional.of(Utils.createBookDto(book, getAvailability(book.getMedium())));
+                return Optional.of(Utils.createBookDto(
+                    book,
+                    Utils.getAvailability(book.getMedium()))
+                );
             }
         }
         return Optional.empty();

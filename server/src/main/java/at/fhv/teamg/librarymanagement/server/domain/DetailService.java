@@ -24,7 +24,7 @@ public class DetailService extends BaseMediaService {
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             builder.author(book.getAuthor())
-                .availability(getAvailability(book.getMedium()))
+                .availability(Utils.getAvailability(book.getMedium()))
                 .isbn10(book.getIsbn10())
                 .isbn13(book.getIsbn13())
                 .languageKey(book.getLanguageKey())
@@ -55,7 +55,7 @@ public class DetailService extends BaseMediaService {
         if (dvdOptional.isPresent()) {
             Dvd dvd = dvdOptional.get();
             builder.actors(dvd.getActors())
-                .availability(getAvailability(dvd.getMedium()))
+                .availability(Utils.getAvailability(dvd.getMedium()))
                 .ageRestriction(dvd.getAgeRestriction())
                 .durationMinutes(String.valueOf(dvd.getDurationMinutes()))
                 .releaseDate(dvd.getMedium().getReleaseDate())
@@ -86,7 +86,7 @@ public class DetailService extends BaseMediaService {
         if (gameOptional.isPresent()) {
             Game game = gameOptional.get();
             builder.ageRestriction(game.getAgeRestriction())
-                .availability(getAvailability(game.getMedium()))
+                .availability(Utils.getAvailability(game.getMedium()))
                 .developer(game.getDeveloper())
                 .platforms(game.getPlatforms())
                 .publisher(game.getPublisher())
