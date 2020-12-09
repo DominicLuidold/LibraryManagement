@@ -72,9 +72,9 @@ public class TabPaneController implements Initializable, Parentable<MainControll
         // Make sure we add dynamic tabs only once
         for (Tab t : this.tabPane.getTabs()) {
             if (t.getText().equals(entry.getTitle())) {
-                LOG.debug("Duplicate tab found");
-                this.tabPane.getSelectionModel().select(t);
-                return Optional.empty();
+                LOG.debug("Duplicate tab found.. closing the duplicate");
+                removeTab(entry.getTitle());
+                break;
             }
         }
         Tab tab = new Tab(entry.getTitle());
