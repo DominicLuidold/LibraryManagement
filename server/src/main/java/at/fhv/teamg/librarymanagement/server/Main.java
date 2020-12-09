@@ -25,7 +25,8 @@ public class Main implements Callable<Integer> {
     @CommandLine.Option(names = {"-t", "--tasks"}, description = "Start Tasks")
     private boolean tasks;
 
-    @CommandLine.Option(names = {"-c", "--cache"}, description = "Start Cache", required = true)
+    // not needed now but could be important in the future
+    @CommandLine.Option(names = {"-c", "--cache"}, description = "Start Cache", required = false)
     private boolean cache;
 
 
@@ -37,10 +38,8 @@ public class Main implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        if (cache == true) {
-            LOG.info("Starting cache due to launch argument");
-            Cache.getInstance();
-        }
+        LOG.info("Starting cache due to launch argument");
+        Cache.getInstance();
         if (tasks == true) {
             LOG.info("Starting task runner due to launch argument");
             TaskRunner.run();
