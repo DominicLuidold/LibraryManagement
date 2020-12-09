@@ -1,11 +1,12 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public class BookDto implements Serializable {
+public class BookDto implements Dto, Serializable {
     private static final long serialVersionUID = 7234119134192614849L;
 
     /* Medium properties */
@@ -16,6 +17,7 @@ public class BookDto implements Serializable {
     private final UUID topic;
     private final List<String> tags;
     private final String availability;
+    private final UUID mediumId;
 
     /* Book properties */
     private final String author;
@@ -38,6 +40,7 @@ public class BookDto implements Serializable {
         this.isbn13 = bookDtoBuilder.isbn13;
         this.languageKey = bookDtoBuilder.languageKey;
         this.publisher = bookDtoBuilder.publisher;
+        this.mediumId = bookDtoBuilder.mediumId;
     }
 
     public static class BookDtoBuilder {
@@ -54,6 +57,7 @@ public class BookDto implements Serializable {
         private String isbn13;
         private String languageKey;
         private String publisher;
+        private UUID mediumId;
 
         public BookDtoBuilder() {
             // GUI might not be able to provide an id
@@ -118,6 +122,11 @@ public class BookDto implements Serializable {
             return this;
         }
 
+        public BookDtoBuilder mediumId(UUID mediumId) {
+            this.mediumId = mediumId;
+            return this;
+        }
+
         public BookDto build() {
             return new BookDto(this);
         }
@@ -169,5 +178,9 @@ public class BookDto implements Serializable {
 
     public String getPublisher() {
         return this.publisher;
+    }
+
+    public UUID getMediumId() {
+        return mediumId;
     }
 }

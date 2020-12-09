@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal.media.details;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AsyncTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +26,7 @@ public class DvdDetailTask extends AsyncTask<DvdDto> {
     protected DvdDto call() throws Exception {
         super.call();
         LOG.debug("Loading Dvd Detail");
-        return RmiClient.getInstance().getDvdDetail(this.dto);
+        return RemoteClient.getInstance().getDvdDetail(this.dto);
     }
 
 }

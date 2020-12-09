@@ -1,11 +1,12 @@
 package at.fhv.teamg.librarymanagement.shared.dto;
 
+import at.fhv.teamg.librarymanagement.shared.ifaces.Dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public class GameDto implements Serializable {
+public class GameDto implements Dto, Serializable {
     private static final long serialVersionUID = 5478353807950770613L;
 
     /* Medium properties */
@@ -22,6 +23,8 @@ public class GameDto implements Serializable {
     private final String developer;
     private final String ageRestriction;
     private final String platforms;
+    private final UUID mediumId;
+
 
     private GameDto(GameDtoBuilder gameDtoBuilder) {
         this.id = gameDtoBuilder.id;
@@ -36,6 +39,7 @@ public class GameDto implements Serializable {
         this.developer = gameDtoBuilder.developer;
         this.ageRestriction = gameDtoBuilder.ageRestriction;
         this.platforms = gameDtoBuilder.platforms;
+        this.mediumId = gameDtoBuilder.mediumId;
     }
 
     public static class GameDtoBuilder {
@@ -51,6 +55,8 @@ public class GameDto implements Serializable {
         private String developer;
         private String ageRestriction;
         private String platforms;
+        private UUID mediumId;
+
 
         public GameDtoBuilder() {
             // GUI might not be able to provide an id
@@ -110,6 +116,11 @@ public class GameDto implements Serializable {
             return this;
         }
 
+        public GameDtoBuilder mediumId(UUID mediumId) {
+            this.mediumId = mediumId;
+            return this;
+        }
+
         public GameDto build() {
             return new GameDto(this);
         }
@@ -157,5 +168,9 @@ public class GameDto implements Serializable {
 
     public String getPlatforms() {
         return this.platforms;
+    }
+
+    public UUID getMediumId() {
+        return mediumId;
     }
 }

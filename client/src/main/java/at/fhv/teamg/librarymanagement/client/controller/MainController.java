@@ -1,6 +1,9 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.ConnectionType;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
+import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import com.jfoenix.controls.JFXSpinner;
 import java.io.IOException;
 import java.net.URL;
@@ -8,6 +11,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -39,6 +43,10 @@ public class MainController implements Initializable {
     private UserController userHeaderMenuController;
 
     private ResourceBundle resources;
+
+    private LoginDto currentUser;
+
+    private UserRoleName userRole;
 
     /**
      * Shows an error alert with a custom title and error message.
@@ -123,12 +131,17 @@ public class MainController implements Initializable {
     }
 
     // intentionally set package modifier for unit testing
-    Queue<TabPaneEntry> getPermittedTabs() {
+    Queue<TabPaneEntry> getPermittedTabs(UserRoleName roleName) {
         Queue<TabPaneEntry> result = new PriorityQueue<>(
             Comparator.comparingInt(TabPaneEntry::getOrder)
         );
 
         result.add(TabPaneEntry.SEARCH);
+
+        if (roleName.equals(UserRoleName.Admin) || roleName.equals(UserRoleName.Librarian)) {
+            LOG.debug("Adding Messages tab because current user role is {}", roleName);
+            result.add(TabPaneEntry.MESSAGES);
+        }
 
         if (result.isEmpty()) {
             LOG.debug("No Tabs allowed. Adding unsupported tab as backup");
@@ -143,9 +156,26 @@ public class MainController implements Initializable {
     /**
      * Sets the currently logged in user (TODO).
      */
-    public synchronized void setLoginUser() {
-        this.tabPaneController.initializeTabMenu();
-        this.userHeaderMenuController.setUserShortcut("Librarian - DEMO");
+    public synchronized void setLoginUser(LoginDto user) {
+        this.currentUser = user;
+        this.userRole = user.getUserRoleName();
 
+
+        this.tabPaneController.initializeTabMenu();
+        this.userHeaderMenuController.setUserShortcut(currentUser.getUsername());
+        this.userHeaderMenuController.setUserTxtRole(userRole.toString());
+
+    }
+
+    public UserRoleName getUserRole() {
+        return userRole;
+    }
+
+    public UUID getUserUuid() {
+        return currentUser.getId();
+    }
+
+    public static boolean isReadOnly(UserRoleName role) {
+        return !(role.equals(UserRoleName.Librarian) || role.equals(UserRoleName.Admin));
     }
 }

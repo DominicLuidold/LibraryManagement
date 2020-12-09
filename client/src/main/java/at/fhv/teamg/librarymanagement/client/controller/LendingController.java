@@ -1,50 +1,40 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
-import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell;
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.BookDetailTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.BookMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdDetailTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.controller.internal.media.util.UserDropdown;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
-import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.TextFields;
 
-public class LendingController implements Initializable, Parentable<SearchController> {
+public class LendingController implements Initializable, Parentable<MediaDetailsController> {
     private static final Logger LOG = LogManager.getLogger(LendingController.class);
 
-    private SearchController parentController;
+    private MediaDetailsController parentController;
     private ResourceBundle resourceBundle;
 
     private MediumType currentMediumType;
@@ -53,8 +43,11 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private GameDto currentGame;
     private UUID currentUuid;
 
+    private UserDropdown dropdown;
+    private List<UserDto> allCustomerList;
+
     @FXML
-    private AnchorPane detailsPane;
+    private AnchorPane lendingPane;
 
     // Generic
     @FXML
@@ -139,96 +132,125 @@ public class LendingController implements Initializable, Parentable<SearchContro
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
+
 
     @FXML
-    private ComboBox<UserDto> userSelect;
+    private TextField txtUserSelect;
 
-    @FXML
-    private Label confirm;
+    private List<TopicDto> topics = new LinkedList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
         LOG.debug("Initialized UserController");
         addMediaTypeEventHandlers();
-
-        RmiClient client = new RmiClient();
-        StringConverter<UserDto> userConverter = new StringConverter<>() {
-            @Override
-            public String toString(UserDto userDto) {
-                if (userDto == null) {
-                    return "Select User";
-                }
-                return userDto.getName() + " (" + userDto.getUsername() + ")";
-            }
-
-            @Override
-            public UserDto fromString(String user) {
-                return new UserDto.UserDtoBuilder().name(user).build();
-            }
-        };
-
-        userSelect.setConverter(userConverter);
-        try {
-            userSelect.setItems(FXCollections.observableArrayList(client.getAllUsers()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        loadAdditionalData();
+        dropdown = new UserDropdown(allCustomerList);
+        TextFields.bindAutoCompletion(txtUserSelect, dropdown.getAllUserString());
 
     }
 
 
     private void addMediaTypeEventHandlers() {
         this.btnReserve.setOnAction(e -> {
-            if (userSelect.getSelectionModel().getSelectedItem() == null) {
-                confirm.setText("select user first");
+            if (txtUserSelect.getText().trim().length() == 0) {
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "No user selected",
+                    "Select a user first."
+                );
                 return;
             }
-            UUID userId = userSelect.getSelectionModel().getSelectedItem().getId();
 
-            LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
-            builder.userId(userId)
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
-                .mediumCopyId(currentUuid)
-                .renewalCount(0);
+            UUID userId = dropdown.getUserID(txtUserSelect.getText().trim());
 
-            RmiClient client = new RmiClient();
+            if (userId != null) {
+                LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder();
+                builder.userId(userId)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now())
+                    .mediumCopyId(currentUuid)
+                    .renewalCount(0);
 
-            LendingDto confirmedLending = null;
-            try {
-                switch (currentMediumType) {
-                    case DVD:
-                        confirmedLending = client.lendDvd(builder.build());
-                        break;
-                    case BOOK:
-                        confirmedLending = client.lendBook(builder.build());
-                        break;
-                    case GAME:
-                        confirmedLending = client.lendGame(builder.build());
-                        break;
-                    default:
-                        LOG.error("no medium type");
+                RemoteClient client = RemoteClient.getInstance();
+
+                MessageDto<LendingDto> response = null;
+                try {
+                    switch (currentMediumType) {
+                        case DVD:
+                            response = client.lendDvd(builder.build());
+                            break;
+                        case BOOK:
+                            response = client.lendBook(builder.build());
+                            break;
+                        case GAME:
+                            response = client.lendGame(builder.build());
+                            break;
+                        default:
+                            LOG.error("no medium type");
+                    }
+
+                } catch (RemoteException remoteException) {
+                    remoteException.printStackTrace();
                 }
 
-            } catch (RemoteException remoteException) {
-                remoteException.printStackTrace();
-            }
+                if (response != null) {
+                    if (response.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.INFORMATION,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending successful",
+                            response.getMessage()
+                        );
+                        this.getParentController().updateView();
+                        this.txtUserSelect.clear();
+                    } else {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.lendingPane.getScene().getWindow(),
+                            "Lending failed",
+                            response.getMessage()
+                        );
+                    }
+                } else {
+                    AlertHelper.showAlert(
+                        Alert.AlertType.ERROR,
+                        this.lendingPane.getScene().getWindow(),
+                        "Lending failed",
+                        "Something went wrong. Lending failed."
+                    );
+                }
 
-            if (confirmedLending != null) {
-                confirm.setText("Lending confirmed");
             } else {
-                confirm.setText("Something went wrong");
+                AlertHelper.showAlert(
+                    Alert.AlertType.ERROR,
+                    this.lendingPane.getScene().getWindow(),
+                    "User not found",
+                    "No user found. Please select a valid user."
+                );
+                return;
             }
-
         });
 
-        this.btnCancel.setOnAction(e -> {
+        this.btnBack.setOnAction(e -> {
             System.out.println("Cancel button pressed");
-            this.parentController.getParentController().removeTab(TabPaneEntry.LENDING);
-            this.parentController.getParentController().selectTab(TabPaneEntry.MEDIA_DETAIL);
+            this.parentController.getParentController().getParentController()
+                .removeTab(TabPaneEntry.LENDING);
+            this.parentController.getParentController().getParentController()
+                .selectTab(TabPaneEntry.MEDIA_DETAIL);
         });
+
+    }
+
+    private void loadAdditionalData() {
+        try {
+            this.allCustomerList = RemoteClient.getInstance().getAllCustomers();
+            this.topics = RemoteClient.getInstance().getAllTopics();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -239,6 +261,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(BookDto bookDto) {
         currentMediumType = MediumType.BOOK;
         this.enableFieldsForMediumType(MediumType.BOOK);
+        this.bindGenericProperties(
+            bookDto.getTitle(),
+            bookDto.getStorageLocation(),
+            bookDto.getTopic(),
+            bookDto.getReleaseDate()
+        );
         currentBook = bookDto;
     }
 
@@ -250,6 +278,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(GameDto gameDto) {
         currentMediumType = MediumType.GAME;
         this.enableFieldsForMediumType(MediumType.GAME);
+        this.bindGenericProperties(
+            gameDto.getTitle(),
+            gameDto.getStorageLocation(),
+            gameDto.getTopic(),
+            gameDto.getReleaseDate()
+        );
         currentGame = gameDto;
     }
 
@@ -261,11 +295,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     public void setCurrentMedium(DvdDto dvdDto) {
         currentMediumType = MediumType.DVD;
         this.enableFieldsForMediumType(MediumType.DVD);
-        System.out.println("###########");
-        System.out.println(dvdDto.getStorageLocation());
-        System.out.println(dvdDto.getTitle());
-        System.out.println(dvdDto.getDirector());
-        System.out.println("###########");
+        this.bindGenericProperties(
+            dvdDto.getTitle(),
+            dvdDto.getStorageLocation(),
+            dvdDto.getTopic(),
+            dvdDto.getReleaseDate()
+        );
         currentDvd = dvdDto;
     }
 
@@ -332,20 +367,24 @@ public class LendingController implements Initializable, Parentable<SearchContro
     private void bindGenericProperties(
         String title,
         String storageLocation,
-        String topic,
-        String releaseDate
+        UUID topicId,
+        LocalDate releaseDate
     ) {
         this.txtTitle.textProperty().bind(new SimpleStringProperty(title));
         this.txtLocation.textProperty().bind(new SimpleStringProperty(storageLocation));
-        this.txtTopic.textProperty().bind(new SimpleStringProperty(topic));
-        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
+        this.txtTopic.textProperty().bind(new SimpleStringProperty(
+            this.topics.stream()
+                .filter(top -> topicId.equals(top.getId()))
+                .findAny().orElse(null).getName()
+        ));
+        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(
+            releaseDate != null ? releaseDate.toString() : ""
+        ));
     }
-
 
     public DvdDto getCurrentDvd() {
         return currentDvd;
     }
-
 
     public GameDto getCurrentGame() {
         return currentGame;
@@ -356,12 +395,12 @@ public class LendingController implements Initializable, Parentable<SearchContro
     }
 
     @Override
-    public SearchController getParentController() {
+    public MediaDetailsController getParentController() {
         return this.parentController;
     }
 
     @Override
-    public void setParentController(SearchController controller) {
+    public void setParentController(MediaDetailsController controller) {
         this.parentController = controller;
     }
 

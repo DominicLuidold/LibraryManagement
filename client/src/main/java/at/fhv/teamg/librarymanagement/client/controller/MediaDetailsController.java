@@ -1,5 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller;
 
+import at.fhv.teamg.librarymanagement.client.controller.internal.AlertHelper;
 import at.fhv.teamg.librarymanagement.client.controller.internal.ButtonTableCell;
 import at.fhv.teamg.librarymanagement.client.controller.internal.Parentable;
 import at.fhv.teamg.librarymanagement.client.controller.internal.TabPaneEntry;
@@ -9,28 +10,37 @@ import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.D
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.DvdMediumCopyTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameDetailTask;
 import at.fhv.teamg.librarymanagement.client.controller.internal.media.details.GameMediumCopyTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
+import at.fhv.teamg.librarymanagement.shared.dto.UserDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -132,7 +142,7 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     @FXML
     private Button btnReserve;
     @FXML
-    private Button btnCancel;
+    private Button btnBack;
 
     @FXML
     private TableColumn<MediumCopyDto, String> columnCopyId;
@@ -144,10 +154,22 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private TableColumn<MediumCopyDto, Button> columnExtend;
     @FXML
     private TableColumn<MediumCopyDto, Button> columnReturn;
-    @FXML // TODO use generics
+    @FXML
+    private TableColumn<UserDto, Button> columnUserId;
+    @FXML
+    private TableColumn<ReservationDto, Button> columnRemoveReservation;
+    @FXML
     private TableView<MediumCopyDto> tblResults;
+    @FXML
+    private TableView<ReservationDto> tblReservations;
+    @FXML
+    private VBox vboxReservations;
+    @FXML
+    private SplitPane splitPane;
 
     private List<TopicDto> topics = new LinkedList<>();
+
+    private List<ReservationDto> reservations = new LinkedList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -158,10 +180,11 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
 
         // Load Topics
         try {
-            this.topics = RmiClient.getInstance().getAllTopics();
+            this.topics = RemoteClient.getInstance().getAllTopics();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
     }
 
     private void setCellFactories() {
@@ -171,11 +194,21 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Lend button has been pressed");
 
+                    if (!dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is not available",
+                            "Cannot lend a medium that has already been lent to another customer"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.LENDING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.LENDING, this).get();
 
                     LendingController lendingController =
                         (LendingController) controller;
@@ -205,18 +238,46 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             ButtonTableCell.forTableColumn(
                 "Extend",
                 (MediumCopyDto dto) -> {
-                    LOG.debug("Book details button has been pressed");
+                    LOG.debug("Extend button has been pressed");
+
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot extend a medium that is not lent out"
+                        );
+                        return dto;
+                    }
 
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.UNSUPPORTED, this).get();
+                            .addTab(TabPaneEntry.EXTEND_LENDING, this).get();
 
-                    MediaDetailsController mediaDetailsController =
-                        (MediaDetailsController) controller;
-                    mediaDetailsController.setCurrentMediumType(MediumType.BOOK, dto.getId());
+                    ExtendLendingController extendLendingController =
+                        (ExtendLendingController) controller;
 
+                    if (null != currentMediumType) {
+                        switch (currentMediumType) {
+                            case DVD:
+                                extendLendingController.setCurrentMedium(currentDvd);
+                                extendLendingController.setCurrentMediumCopy(dto);
+                                break;
+                            case BOOK:
+                                extendLendingController.setCurrentMedium(currentBook);
+                                extendLendingController.setCurrentMediumCopy(dto);
+                                break;
+                            case GAME:
+                                extendLendingController.setCurrentMedium(currentGame);
+                                extendLendingController.setCurrentMediumCopy(dto);
+                                break;
+                            default:
+                                LOG.error("No medium type available.");
+                        }
+                        extendLendingController.setCurrentUuid(dto.getId());
+                    }
                     return dto;
                 }
             )
@@ -227,11 +288,21 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 (MediumCopyDto dto) -> {
                     LOG.debug("Return button has been pressed");
 
+                    if (dto.isAvailable()) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Medium is available",
+                            "Cannot return a medium that has not been lent out"
+                        );
+                        return dto;
+                    }
+
                     // change view
                     Parentable<?> controller =
                         this.getParentController()
                             .getParentController()
-                            .addTab(TabPaneEntry.RETURNING, this.getParentController()).get();
+                            .addTab(TabPaneEntry.RETURNING, this).get();
 
                     ReturningController returningController = (ReturningController) controller;
 
@@ -239,17 +310,79 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                         switch (currentMediumType) {
                             case DVD:
                                 returningController.setCurrentMedium(currentDvd);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             case BOOK:
                                 returningController.setCurrentMedium(currentBook);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             case GAME:
                                 returningController.setCurrentMedium(currentGame);
+                                returningController.setCurrentMediumCopy(dto);
                                 break;
                             default:
                                 LOG.error("No medium type available.");
                         }
                         returningController.setCurrentUuid(dto.getId());
+                    }
+
+                    return dto;
+                }
+            )
+        );
+
+        this.tblResults.setRowFactory(row -> new TableRow<>() {
+            @Override
+            protected void updateItem(MediumCopyDto item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    if (getTableView().getSelectionModel().getSelectedItems().contains(item)) {
+                        setStyle("");
+                    } else if (item.isAvailable() == true) {
+                        setStyle("-fx-background-color: lightseagreen");
+                    } else if (item.isAvailable() == false) {
+                        setStyle("-fx-background-color: lightcoral");
+                    }
+                }
+            }
+        });
+
+        this.columnRemoveReservation.setCellFactory(
+            ButtonTableCell.forTableColumn(
+                "Remove",
+                (ReservationDto dto) -> {
+                    LOG.debug("Remove reservation button has been pressed");
+                    try {
+                        MessageDto<EmptyDto> msgDto = RemoteClient.getInstance()
+                            .removeReservation(dto);
+
+                        if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.INFORMATION,
+                                this.detailsPane.getScene().getWindow(),
+                                "Reservation removed successfully",
+                                msgDto.getMessage()
+                            );
+                            this.updateView();
+                        } else {
+                            AlertHelper.showAlert(
+                                Alert.AlertType.ERROR,
+                                this.detailsPane.getScene().getWindow(),
+                                "Could not remove reservation",
+                                msgDto.getMessage()
+                            );
+                        }
+
+                    } catch (RemoteException e) {
+                        AlertHelper.showAlert(
+                            Alert.AlertType.ERROR,
+                            this.detailsPane.getScene().getWindow(),
+                            "Could not remove reservation",
+                            "An error occurred while trying to remove the reservation."
+                        );
+                        e.printStackTrace();
                     }
 
                     return dto;
@@ -281,8 +414,8 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             }
         });
 
-        this.btnCancel.setOnAction(e -> {
-            System.out.println("Cancel button pressed");
+        this.btnBack.setOnAction(e -> {
+            System.out.println("Back button pressed");
             this.parentController.getParentController().removeTab(TabPaneEntry.MEDIA_DETAIL);
             this.parentController.getParentController().selectTab(TabPaneEntry.SEARCH);
         });
@@ -317,6 +450,23 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
                 break;
             default:
                 break;
+        }
+
+        // Disable Actions for non-librarian and admin
+        UserRoleName role = this.getParentController() // SearchController
+            .getParentController() // TabPaneController
+            .getParentController() // MainController
+            .getUserRole();
+        boolean isReadOnly = MainController.isReadOnly(role);
+        if (isReadOnly) {
+            LOG.debug("Disabling columns lend, return, extend, button reserve,"
+                + " reservation table because current user role is {}", role);
+            this.columnLend.setVisible(false);
+            this.columnReturn.setVisible(false);
+            this.columnExtend.setVisible(false);
+            this.btnReserve.setVisible(false);
+            this.tblReservations.setVisible(false);
+            this.vboxReservations.setVisible(false);
         }
     }
 
@@ -383,15 +533,60 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
     private void bindGenericProperties(
         String title,
         String storageLocation,
-        String topic,
-        String releaseDate
+        UUID topicId,
+        LocalDate releaseDate
     ) {
         this.txtTitle.textProperty().bind(new SimpleStringProperty(title));
         this.txtLocation.textProperty().bind(new SimpleStringProperty(storageLocation));
-        this.txtTopic.textProperty().bind(new SimpleStringProperty(topic));
-        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(releaseDate));
+        this.txtTopic.textProperty().bind(new SimpleStringProperty(
+            this.topics.stream()
+                .filter(top -> topicId.equals(top.getId()))
+                .findAny().orElse(null).getName()
+        ));
+        this.txtReleaseDate.textProperty().bind(new SimpleStringProperty(
+            releaseDate != null ? releaseDate.toString() : ""
+        ));
     }
 
+    private void bindBookProperties(
+        String author,
+        String isbn10,
+        String isbn13,
+        String publisher,
+        String language
+    ) {
+        this.txtBookAuthor.textProperty().bind(new SimpleStringProperty(author));
+        this.txtBookIsbn10.textProperty().bind(new SimpleStringProperty(isbn10));
+        this.txtBookIsbn13.textProperty().bind(new SimpleStringProperty(isbn13));
+        this.txtBookPublisher.textProperty().bind(new SimpleStringProperty(publisher));
+        this.txtBookLanguage.textProperty().bind(new SimpleStringProperty(language));
+    }
+
+    private void bindDvdProperties(
+        String director,
+        String duration,
+        String actors,
+        String studio,
+        String ageRestriction
+    ) {
+        this.txtDvdDirector.textProperty().bind(new SimpleStringProperty(director));
+        this.txtDvdDuration.textProperty().bind(new SimpleStringProperty(duration));
+        this.txtDvdActors.textProperty().bind(new SimpleStringProperty(actors));
+        this.txtDvdStudio.textProperty().bind(new SimpleStringProperty(studio));
+        this.txtDvdAgeRestriction.textProperty().bind(new SimpleStringProperty(ageRestriction));
+    }
+
+    private void bindGameProperties(
+        String publisher,
+        String developer,
+        String ageRestriction,
+        String platforms
+    ) {
+        this.txtGamePublisher.textProperty().bind(new SimpleStringProperty(publisher));
+        this.txtGameDeveloper.textProperty().bind(new SimpleStringProperty(developer));
+        this.txtGameAgeRestriction.textProperty().bind(new SimpleStringProperty(ageRestriction));
+        this.txtGamePlatforms.textProperty().bind(new SimpleStringProperty(platforms));
+    }
 
     private void loadCurrentBook() {
         this.currentMediumType = MediumType.BOOK;
@@ -410,11 +605,16 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentBook.getTitle(),
                 this.currentBook.getStorageLocation(),
-                this.topics.stream().filter(top -> this.currentBook.getTopic().equals(top.getId()))
-                    .findAny().orElse(null).getName(),
-                this.currentBook.getReleaseDate() != null
-                    ? this.currentBook.getReleaseDate().toString()
-                    : ""
+                this.currentBook.getTopic(),
+                this.currentBook.getReleaseDate()
+            );
+
+            this.bindBookProperties(
+                this.currentBook.getAuthor(),
+                this.currentBook.getIsbn10(),
+                this.currentBook.getIsbn13(),
+                this.currentBook.getPublisher(),
+                this.currentBook.getLanguageKey()
             );
 
             BookMediumCopyTask task2 = new BookMediumCopyTask(
@@ -424,14 +624,67 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
+                // Get Reservations
+                this.loadReservations(MediumType.BOOK);
             });
             thread2.start();
         });
         thread.start();
 
+    }
+
+    private void loadReservations(MediumType type) {
+        UserRoleName role = this.parentController.getParentController().getParentController()
+            .getUserRole();
+        if (MainController.isReadOnly(role)) {
+            LOG.debug("Won't load reservations because role is {}", role);
+            return;
+        }
+        List<ReservationDto> res = new LinkedList<>();
+
+        try {
+            switch (type) {
+                case BOOK:
+                    res = RemoteClient.getInstance().getAllBookReservations(this.currentBook);
+                    break;
+                case DVD:
+                    res = RemoteClient.getInstance().getAllDvdReservations(this.currentDvd);
+                    break;
+                case GAME:
+                    res = RemoteClient.getInstance().getAllGameReservations(this.currentGame);
+                    break;
+                default:
+                    break;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        this.tblReservations.setItems(FXCollections.observableList(res));
+    }
+
+    private void handleReserveButtonVisibility(List<MediumCopyDto> copies) {
+        boolean isAvailable = true;
+        if (MainController.isReadOnly(
+            this.parentController.getParentController().getParentController().getUserRole())
+        ) {
+            isAvailable = false;
+        } else {
+            for (MediumCopyDto dto : copies) {
+                // if a copy is available, disable button
+                if (dto.getLendTill() == null) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+        }
+
+
+        this.btnReserve.setVisible(isAvailable);
     }
 
     public DvdDto getCurrentDvd() {
@@ -453,11 +706,18 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentDvd.getTitle(),
                 this.currentDvd.getStorageLocation(),
-                this.currentDvd.getTopic().toString(),
-                this.currentDvd.getReleaseDate() != null
-                    ? this.currentDvd.getReleaseDate().toString()
-                    : ""
+                this.currentDvd.getTopic(),
+                this.currentDvd.getReleaseDate()
             );
+
+            this.bindDvdProperties(
+                this.currentDvd.getDirector(),
+                this.currentDvd.getDurationMinutes(),
+                this.currentDvd.getActors(),
+                this.currentDvd.getStudio(),
+                this.currentDvd.getAgeRestriction()
+            );
+
             DvdMediumCopyTask task2 = new DvdMediumCopyTask(
                 new DvdDto.DvdDtoBuilder(this.currentUuid).build(),
                 this.detailsPane);
@@ -465,9 +725,13 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
+
+                // Get Reservations
+                this.loadReservations(MediumType.DVD);
             });
             thread2.start();
         });
@@ -493,10 +757,15 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             this.bindGenericProperties(
                 this.currentGame.getTitle(),
                 this.currentGame.getStorageLocation(),
-                this.currentGame.getTopic().toString(),
-                this.currentGame.getReleaseDate() != null
-                    ? this.currentGame.getReleaseDate().toString()
-                    : ""
+                this.currentGame.getTopic(),
+                this.currentGame.getReleaseDate()
+            );
+
+            this.bindGameProperties(
+                this.currentGame.getPublisher(),
+                this.currentGame.getDeveloper(),
+                this.currentGame.getAgeRestriction(),
+                this.currentGame.getPlatforms()
             );
 
             GameMediumCopyTask task2 = new GameMediumCopyTask(
@@ -506,13 +775,40 @@ public class MediaDetailsController implements Initializable, Parentable<SearchC
             task2.setOnSucceeded(evt -> {
                 List<MediumCopyDto> result = task2.getValue();
                 this.tblResults.setItems(FXCollections.observableList(result));
+                this.handleReserveButtonVisibility(result);
                 for (MediumCopyDto dto : result) {
                     System.out.println(dto.getId().toString());
                 }
+
+                // Get Reservations
+                this.loadReservations(MediumType.GAME);
             });
             thread2.start();
         });
         thread.start();
+    }
+
+    /**
+     * updates the current medium.
+     */
+    public void updateView() {
+        switch (this.currentMediumType) {
+            case BOOK:
+                System.out.println("##############updating book##################");
+                this.loadCurrentBook();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            case DVD:
+                this.loadCurrentDvd();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            case GAME:
+                this.loadCurrentGame();
+                //this.loadReservations(this.currentMediumType);
+                break;
+            default:
+                LOG.error("no medium type");
+        }
     }
 
     @Override

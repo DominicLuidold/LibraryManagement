@@ -11,6 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane fx:id="pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.fhv.teamg.librarymanagement.client.controller.LoginController">
     <GridPane
             fx:id="grid"
@@ -50,16 +51,20 @@
             </GridPane.margin>
         </Label>
 
+        <ComboBox fx:id="serverDropdown" style="-fx-font-size: 18;" prefHeight="40" prefWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.halignment="CENTER" />
+
+        <ComboBox fx:id="connectionTypeDropdown" style="-fx-font-size: 18;" prefHeight="40" prefWidth="300" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER" />
+
         <!-- Add Name Text Field -->
-        <TextField fx:id="usernameField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="3" promptText="%login.field.username.prompt" GridPane.halignment="CENTER" />
+        <TextField fx:id="usernameField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="%login.field.username.prompt" GridPane.halignment="CENTER" />
 
         <!-- Add Password Field -->
-        <PasswordField fx:id="passwordField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5" promptText="%login.field.password.prompt" GridPane.halignment="CENTER" />
+        <PasswordField fx:id="passwordField" style="-fx-font-size: 18;" prefHeight="40" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="6" promptText="%login.field.password.prompt" GridPane.halignment="CENTER" />
 
         <!-- Add Submit Button -->
         <Button fx:id="submitButton" text="%login.submit"
                 prefWidth="300" prefHeight="40" defaultButton="true"
-                GridPane.columnIndex="0" GridPane.rowIndex="6"
+                GridPane.columnIndex="0" GridPane.rowIndex="7"
                 GridPane.columnSpan="1" GridPane.rowSpan="1"
                 GridPane.halignment="CENTER"
                 onAction="#processLoginCredentials"
@@ -68,5 +73,18 @@
                 <Insets top="10" right="0" bottom="20" left="0"></Insets>
             </GridPane.margin>
         </Button>
+
+        <Button fx:id="guestButton" text="%login.guestlogin"
+                prefWidth="300" prefHeight="40" defaultButton="true"
+                GridPane.columnIndex="0" GridPane.rowIndex="8"
+                GridPane.columnSpan="1" GridPane.rowSpan="1"
+                GridPane.halignment="CENTER"
+                onAction="#loginAsGuest"
+                style="-fx-font-size: 18;">
+            <GridPane.margin>
+                <Insets top="10" right="0" bottom="20" left="0"></Insets>
+            </GridPane.margin>
+        </Button>
+
     </GridPane>
 </AnchorPane>

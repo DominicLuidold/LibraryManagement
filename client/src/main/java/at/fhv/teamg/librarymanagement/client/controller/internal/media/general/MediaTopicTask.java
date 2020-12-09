@@ -1,7 +1,7 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal.media.general;
 
 import at.fhv.teamg.librarymanagement.client.controller.internal.AsyncTask;
-import at.fhv.teamg.librarymanagement.client.rmi.RmiClient;
+import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
 import at.fhv.teamg.librarymanagement.shared.dto.TopicDto;
 import java.util.List;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +25,7 @@ public class MediaTopicTask extends AsyncTask<List<TopicDto>> {
     protected List<TopicDto> call() throws Exception {
         super.call();
         LOG.debug("Loading Book Detail");
-        return RmiClient.getInstance().getAllTopics();
+        return RemoteClient.getInstance().getAllTopics();
     }
 
 }

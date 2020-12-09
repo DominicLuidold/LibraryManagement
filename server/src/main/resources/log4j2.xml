@@ -9,11 +9,20 @@
         <Logger name="at.fhv.teamg.librarymanagement" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE">
-            <AppenderRef ref="LogToConsole"/>
-        </Logger>
         <Logger name="org.hibernate" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Logger name="com.mchange.v2" level="ERROR">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Logger name="org.apache.activemq" level="INFO">
+            <AppenderRef ref="LogToConsole" />
+        </Logger>
+        <Logger name="io.micronaut" level="ERROR">
+            <AppenderRef ref="LogToConsole" />
+        </Logger>
+        <Logger name="io.netty" level="ERROR">
+            <AppenderRef ref="LogToConsole" />
         </Logger>
         <Root level="debug">
             <AppenderRef ref="LogToConsole"/>

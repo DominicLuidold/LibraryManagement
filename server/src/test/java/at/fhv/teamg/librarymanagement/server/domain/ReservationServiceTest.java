@@ -1,6 +1,9 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -8,29 +11,31 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Book;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Dvd;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Game;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Medium;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Reservation;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.UserRole;
-import at.fhv.teamg.librarymanagement.server.persistance.enums.UserRoleName;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Book;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Dvd;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Game;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Medium;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import at.fhv.teamg.librarymanagement.shared.dto.ReservationDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class ReservationServiceTest {
-    private static final UUID validReservationId =
-        UUID.fromString("16748d88-517f-4684-bb39-ef2fa1168d74");
-    private static final UUID notValidReservationId =
-        UUID.fromString("B16B00B5-4711-1337-6969-BADBADBADBAD");
+    private static final UUID validReservationId = UUID.randomUUID();
+    private static final UUID notValidReservationId = UUID.randomUUID();
     private static final UUID validUserId = UUID.randomUUID();
     private static final UUID notValidUserId = UUID.randomUUID();
     private static final UUID validMediumId = UUID.randomUUID();
@@ -136,16 +141,30 @@ public class ReservationServiceTest {
     }
 
     @Test
-    void createReservation_shouldReturnDto() {
+    void createReservation_shouldReturnSuccess() {
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        when(mediumCopyMock.isAvailable()).thenReturn(false);
+        Set<MediumCopy> mediumCopies = new HashSet<>();
+        mediumCopies.add(mediumCopyMock);
+
         Medium mediumMock = mock(Medium.class);
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(mediumMock.getCopies()).thenReturn(mediumCopies);
+
+        Medium otherMediumMock = mock(Medium.class);
+        when(otherMediumMock.getId()).thenReturn(notValidMediumId);
+
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getMedium()).thenReturn(otherMediumMock);
+        Set<Reservation> mockedReservations = new HashSet<>();
+        mockedReservations.add(reservationMock);
+
         User userMock = mock(User.class);
         UserRole userRoleMock = mock(UserRole.class);
-        ReservationDto reservationDtoMock = mock(ReservationDto.class);
-        Reservation reservationMock = mock(Reservation.class);
 
-        when(mediumMock.getId()).thenReturn(validMediumId);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(mockedReservations);
         when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
 
         ReservationService reservationService = spy(ReservationService.class);
@@ -160,11 +179,17 @@ public class ReservationServiceTest {
             .mediumId(validMediumId)
             .userId(validUserId);
 
-        assertTrue(reservationService.createReservation(builder.build()).isPresent());
+        // Assertions
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.SUCCESS, messageDto.getType());
+        assertNotNull(messageDto.getResult());
     }
 
     @Test
-    void createReservation_shouldReturnEmpty() {
+    void createReservation_shouldNotReturnSuccess() {
         Medium mediumMock = mock(Medium.class);
         User userMock = mock(User.class);
         UserRole userRoleMock = mock(UserRole.class);
@@ -172,6 +197,7 @@ public class ReservationServiceTest {
         when(mediumMock.getId()).thenReturn(validMediumId);
         when(userMock.getId()).thenReturn(validUserId);
         when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(new HashSet<>());
         when(userRoleMock.getName()).thenReturn(UserRoleName.Admin);
 
         ReservationService reservationService = spy(ReservationService.class);
@@ -186,7 +212,13 @@ public class ReservationServiceTest {
             .startDate(LocalDate.now())
             .mediumId(notValidMediumId)
             .userId(notValidUserId);
-        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        // Medium not found
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         builder = new ReservationDto.ReservationDtoBuilder();
         builder
@@ -194,7 +226,11 @@ public class ReservationServiceTest {
             .startDate(LocalDate.now())
             .mediumId(validMediumId)
             .userId(notValidUserId);
-        assertFalse(reservationService.createReservation(builder.build()).isPresent());
+
+        // User not found
+        messageDto = reservationService.createReservation(builder.build());
+        assertEquals(MessageDto.MessageType.ERROR, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         builder = new ReservationDto.ReservationDtoBuilder();
         builder
@@ -203,12 +239,195 @@ public class ReservationServiceTest {
             .mediumId(validMediumId)
             .userId(validUserId);
         ReservationDto validReservation = builder.build();
-        assertFalse(reservationService.createReservation(validReservation).isPresent());
+
+        // User's role doesn't match CUSTOMER
+        messageDto = reservationService.createReservation(validReservation);
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
 
         when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
         doReturn(Optional.empty()).when(reservationService)
             .updateReservation(any(Reservation.class));
 
-        assertFalse(reservationService.createReservation(validReservation).isPresent());
+        // Updating reservation failed
+        messageDto = reservationService.createReservation(validReservation);
+        assertEquals(MessageDto.MessageType.ERROR, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void createReservation_shouldReturnFailure_whenCopiesAvailable() {
+        // Mocks
+        MediumCopy mediumCopyMock = mock(MediumCopy.class);
+        Set<MediumCopy> mediumCopies = new HashSet<>();
+        mediumCopies.add(mediumCopyMock);
+        Medium mediumMock = mock(Medium.class);
+
+        when(mediumCopyMock.isAvailable()).thenReturn(true);
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(mediumMock.getCopies()).thenReturn(mediumCopies);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder.endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+
+        // Assertions
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void createReservation_shouldReturnFailure_whenUserAlreadyHasReservation() {
+        // Mocks
+        Medium mediumMock = mock(Medium.class);
+        Reservation reservationMock = mock(Reservation.class);
+
+        Set<Reservation> mockedReservations = new HashSet<>();
+        mockedReservations.add(reservationMock);
+
+        User userMock = mock(User.class);
+        UserRole userRoleMock = mock(UserRole.class);
+
+        when(mediumMock.getId()).thenReturn(validMediumId);
+        when(reservationMock.getMedium()).thenReturn(mediumMock);
+        when(userMock.getId()).thenReturn(validUserId);
+        when(userMock.getRole()).thenReturn(userRoleMock);
+        when(userMock.getReservations()).thenReturn(mockedReservations);
+        when(userRoleMock.getName()).thenReturn(UserRoleName.Customer);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(Optional.of(userMock)).when(reservationService).findUserById(validUserId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder();
+        builder.endDate(LocalDate.now())
+            .startDate(LocalDate.now())
+            .mediumId(validMediumId)
+            .userId(validUserId);
+
+        // Assertions
+        MessageDto<ReservationDto> messageDto = reservationService.createReservation(
+            builder.build()
+        );
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void deleteReservation_shouldReturnSuccess() {
+        // Mocks
+        Medium mediumMock = mock(Medium.class);
+        when(mediumMock.getId()).thenReturn(validMediumId);
+
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getId()).thenReturn(validReservationId);
+        when(reservationMock.getMedium()).thenReturn(mediumMock);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(reservationMock)).when(reservationService)
+            .findReservationById(validReservationId);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(true).when(reservationService).removeReservation(reservationMock);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder(
+            validReservationId
+        ).mediumId(validMediumId);
+
+        // Assertions
+        MessageDto<EmptyDto> messageDto = reservationService.deleteReservation(builder.build());
+
+        assertEquals(MessageDto.MessageType.SUCCESS, messageDto.getType());
+        // No result given due to EmptyDto
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void deleteReservation_shouldReturnFailure_whenReservationNotFound() {
+        // Mocks
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getId()).thenReturn(validReservationId);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.empty()).when(reservationService)
+            .findReservationById(notValidReservationId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder(
+            notValidReservationId
+        );
+
+        // Assertions
+        MessageDto<EmptyDto> messageDto = reservationService.deleteReservation(builder.build());
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void deleteReservation_shouldReturnFailure_whenMediumNotFound() {
+        // Mocks
+        Medium mediumMock = mock(Medium.class);
+        when(mediumMock.getId()).thenReturn(notValidMediumId);
+
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getId()).thenReturn(validReservationId);
+        when(reservationMock.getMedium()).thenReturn(mediumMock);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(reservationMock)).when(reservationService)
+            .findReservationById(validReservationId);
+        doReturn(Optional.empty()).when(reservationService).findMediumById(notValidMediumId);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder(
+            validReservationId
+        ).mediumId(notValidMediumId);
+
+        // Assertions
+        MessageDto<EmptyDto> messageDto = reservationService.deleteReservation(builder.build());
+
+        assertEquals(MessageDto.MessageType.FAILURE, messageDto.getType());
+        assertNull(messageDto.getResult());
+    }
+
+    @Test
+    void deleteReservation_shouldReturnFailure_whenRemovingFails() {
+        // Mocks
+        Medium mediumMock = mock(Medium.class);
+        when(mediumMock.getId()).thenReturn(validMediumId);
+
+        Reservation reservationMock = mock(Reservation.class);
+        when(reservationMock.getId()).thenReturn(validReservationId);
+        when(reservationMock.getMedium()).thenReturn(mediumMock);
+
+        // Service
+        ReservationService reservationService = spy(ReservationService.class);
+        doReturn(Optional.of(reservationMock)).when(reservationService)
+            .findReservationById(validReservationId);
+        doReturn(Optional.of(mediumMock)).when(reservationService).findMediumById(validMediumId);
+        doReturn(false).when(reservationService).removeReservation(reservationMock);
+
+        ReservationDto.ReservationDtoBuilder builder = new ReservationDto.ReservationDtoBuilder(
+            validReservationId
+        ).mediumId(validMediumId);
+
+        // Assertions
+        MessageDto<EmptyDto> messageDto = reservationService.deleteReservation(builder.build());
+
+        assertEquals(MessageDto.MessageType.ERROR, messageDto.getType());
+        assertNull(messageDto.getResult());
     }
 }

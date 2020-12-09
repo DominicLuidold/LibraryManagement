@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane fx:id="messagePane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="at.fhv.teamg.librarymanagement.client.controller.MessagesController">
+    <children>
+        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <children>
+                <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <padding>
+                        <Insets top="5" right="5" bottom="5" left="5" />
+                    </padding>
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                            <children>
+                                <Button fx:id="btnManualMessage" text="Send manual message" />
+                                <ScrollPane fitToWidth="true" fitToHeight="true"
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                <TableView fx:id="messagesTable"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                    <columns>
+                                        <TableColumn fx:id="timeCol" prefWidth="120.0" text="Time">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="dateTime"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="messageCol" prefWidth="800.0"
+                                                     text="Message">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="message"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="statusCol" prefWidth="120.0"
+                                                     text="Status">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="status"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn fx:id="actionCol" prefWidth="120.0" text="Action">
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
+                                </ScrollPane>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

@@ -1,55 +1,99 @@
 package at.fhv.teamg.librarymanagement.server.domain;
 
-import at.fhv.teamg.librarymanagement.server.persistance.dao.LendingDao;
-import at.fhv.teamg.librarymanagement.server.persistance.dao.MediumCopyDao;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.Lending;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.MediumCopy;
-import at.fhv.teamg.librarymanagement.server.persistance.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.LendingDao;
+import at.fhv.teamg.librarymanagement.server.persistence.dao.MediumCopyDao;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.Lending;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.User;
+import at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole;
+import at.fhv.teamg.librarymanagement.server.rmi.Library;
+import at.fhv.teamg.librarymanagement.shared.dto.CustomMessage;
+import at.fhv.teamg.librarymanagement.shared.dto.EmptyDto;
 import at.fhv.teamg.librarymanagement.shared.dto.LendingDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MediumCopyDto;
+import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
+import at.fhv.teamg.librarymanagement.shared.enums.UserRoleName;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LendingService extends BaseMediaService {
+
+    private static final Logger LOG = LogManager.getLogger(LendingService.class);
+    public static final int EXTENDING_DURATION_IN_DAYS = 14;
+    public static final int MAX_RENEWAL_COUNT = 2;
+
     /**
      * Create new lending.
      *
      * @param lendingDto Dto without id and dates
      * @return Newly created lending
      */
-    public Optional<LendingDto> createLending(LendingDto lendingDto) {
+    public MessageDto<LendingDto> createLending(LendingDto lendingDto) {
         Optional<MediumCopy> mediumCopy = findMediumCopyById(lendingDto.getMediumCopyId());
-        if (!mediumCopy.isPresent()) {
-            return Optional.empty();
+        if (mediumCopy.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified medium copy",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         if (!mediumCopy.get().isAvailable()) {
-            return Optional.empty();
+            return Utils.createMessageResponse(
+                "Selected medium copy is not available and currently on loan by someone",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         Optional<User> user = findUserById(lendingDto.getUserId());
-        if (!user.isPresent()) {
-            return Optional.empty();
+        if (user.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not process provided user information",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         Lending lending = new Lending();
         lending.setId(UUID.randomUUID());
         lending.setStartDate(LocalDate.now());
-        lending.setEndDate(
-            LocalDate.now().plusDays(mediumCopy.get().getMedium().getType().getMaxLendingDays()));
+        lending.setEndDate(LocalDate.now().plusDays(
+            mediumCopy.get().getMedium().getType().getMaxLendingDays()
+        ));
         lending.setMediumCopy(mediumCopy.get());
         lending.setUser(user.get());
         lending.setRenewalCount(lendingDto.getRenewalCount());
 
-        if (!updateLending(lending).isPresent()) {
-            return Optional.empty();
+        if (updateLending(lending).isEmpty()) {
+            return Utils.createMessageResponse(
+                "Updating lending information has failed",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         MediumCopy copy = mediumCopy.get();
         copy.setAvailable(false);
         updateMediumCopy(copy);
+
+        // Inter-Library Lend, send  message.
+        UserRole role = user.get().getRole();
+        if (role.getName().equals(UserRoleName.CustomerExternalLibrary)) {
+            LOG.info("Current lending is a ILL");
+            Library.addAndSendMessage(new CustomMessage(
+                UUID.randomUUID(),
+                String.format(
+                    "New Inter-Library Lending: Medium Copy: %s, Medium: %s, Library: %s",
+                    copy.getId(),
+                    copy.getMedium().getTitle(),
+                    user.get().getName()
+                    ),
+                CustomMessage.Status.Open,
+                LocalDateTime.now()
+            ));
+        }
 
         LendingDto.LendingDtoBuilder builder = new LendingDto.LendingDtoBuilder(lending.getId());
         builder.endDate(lending.getEndDate())
@@ -59,8 +103,11 @@ public class LendingService extends BaseMediaService {
             .startDate(lending.getStartDate())
             .userId(lending.getUser().getId());
 
-
-        return Optional.of(builder.build());
+        return Utils.createMessageResponse(
+            "Lending created successfully",
+            MessageDto.MessageType.SUCCESS,
+            builder.build()
+        );
     }
 
     /**
@@ -69,34 +116,135 @@ public class LendingService extends BaseMediaService {
      * @param mediumCopyDto The MediumCopyDto to end the lending for
      * @return true if stopping the lending was successful, false otherwise
      */
-    public boolean returnLending(MediumCopyDto mediumCopyDto) {
+    public MessageDto<EmptyDto> returnLending(MediumCopyDto mediumCopyDto) {
         Optional<MediumCopy> mediumCopyOptional = findMediumCopyById(mediumCopyDto.getId());
-        if (!mediumCopyOptional.isPresent()) {
-            return false;
+        if (mediumCopyOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified medium copy",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         MediumCopy mediumCopy = mediumCopyOptional.get();
         if (mediumCopy.isAvailable()) {
-            return false;
+            return Utils.createMessageResponse(
+                "Selected medium copy is available and not currently on loan from anyone",
+                MessageDto.MessageType.FAILURE
+            );
         }
 
         Optional<Lending> lendingOptional = getCurrentLending(mediumCopy.getLending());
-        if (!lendingOptional.isPresent()) {
-            return false;
+        if (lendingOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Cannot find current lending to extend",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         Lending lending = lendingOptional.get();
         lending.setReturnDate(LocalDate.now());
-        if (!updateLending(lending).isPresent()) {
-            return false;
+        if (updateLending(lending).isEmpty()) {
+            return Utils.createMessageResponse(
+                "Updating lending information has failed",
+                MessageDto.MessageType.ERROR
+            );
         }
 
         mediumCopy.setAvailable(true);
-        if (!updateMediumCopy(mediumCopy).isPresent()) {
-            return false;
+        if (updateMediumCopy(mediumCopy).isEmpty()) {
+            return Utils.createMessageResponse(
+                "Updating medium copy has failed",
+                MessageDto.MessageType.ERROR
+            );
         }
 
-        return true;
+        if (mediumCopy.getMedium().getReservations().size() > 0) {
+            new Thread(() ->
+                Library.addAndSendMessage(new CustomMessage(
+                    UUID.randomUUID(),
+                    Utils.createReturnReservationMessage(mediumCopy.getMedium()),
+                    CustomMessage.Status.Open,
+                    LocalDateTime.now()
+                ))
+            ).start();
+        }
+
+        return Utils.createMessageResponse(
+            "Lending returned successfully",
+            MessageDto.MessageType.SUCCESS
+        );
+    }
+
+    /**
+     * Extends a currently ongoing lending by the {@link #EXTENDING_DURATION_IN_DAYS} if
+     * the renewal count hasn't exceeded {@link #MAX_RENEWAL_COUNT}.
+     *
+     * @param mediumCopyDto The medium copy to extend the lend for
+     * @return {@link MessageDto} containing the status of the operation and a message
+     */
+    public MessageDto<EmptyDto> extendLending(MediumCopyDto mediumCopyDto) {
+        Optional<MediumCopy> mediumCopyOptional = findMediumCopyById(mediumCopyDto.getId());
+        if (mediumCopyOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Could not find specified medium copy",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        MediumCopy mediumCopy = mediumCopyOptional.get();
+        if (mediumCopy.isAvailable()) {
+            return Utils.createMessageResponse(
+                "Selected medium copy is available and not currently on loan from anyone",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        if (mediumCopy.getMedium().getReservations().size() > 0) {
+            return Utils.createMessageResponse(
+                "Cannot extend medium copy, there are reservations for the medium",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        Optional<Lending> lendingOptional = getCurrentLending(mediumCopy.getLending());
+        if (lendingOptional.isEmpty()) {
+            return Utils.createMessageResponse(
+                "Cannot find current lending to extend",
+                MessageDto.MessageType.ERROR
+            );
+        }
+
+        Lending lending = lendingOptional.get();
+        if (lending.getRenewalCount() >= MAX_RENEWAL_COUNT) {
+            return Utils.createMessageResponse(
+                "Medium copy has been extended two times already",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        if (LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isBefore(lending.getEndDate())
+            || LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS).isEqual(lending.getEndDate())
+        ) {
+            return Utils.createMessageResponse(
+                "Medium copy has not been extended as it would shorten the current "
+                    + "lending duration",
+                MessageDto.MessageType.FAILURE
+            );
+        }
+
+        lending.setRenewalCount(lending.getRenewalCount() + 1);
+        lending.setEndDate(LocalDate.now().plusDays(EXTENDING_DURATION_IN_DAYS));
+        if (updateLending(lending).isEmpty()) {
+            return Utils.createMessageResponse(
+                "Updating lending information has failed",
+                MessageDto.MessageType.ERROR
+            );
+        }
+
+        return Utils.createMessageResponse(
+            "Lending extended successfully",
+            MessageDto.MessageType.SUCCESS
+        );
     }
 
     /**
