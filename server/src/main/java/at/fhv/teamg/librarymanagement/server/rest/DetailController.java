@@ -1,8 +1,5 @@
 package at.fhv.teamg.librarymanagement.server.rest;
 
-import static at.fhv.teamg.librarymanagement.server.rest.Rest.ADMIN;
-import static at.fhv.teamg.librarymanagement.server.rest.Rest.LIBRARIAN;
-
 import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.server.domain.MediumCopyService;
 import at.fhv.teamg.librarymanagement.server.domain.ReservationService;
@@ -23,7 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.UUID;
 
-@Secured(SecurityRule.IS_AUTHENTICATED)
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/detail")
 public class DetailController {
     /**
@@ -34,7 +31,6 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "book/{uuid}")
-    @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a book", description = "Get the details of a"
         + "book with all attributes.")
     @ApiResponse(responseCode = "200", description = "Book details")
@@ -58,7 +54,6 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "dvd/{uuid}")
-    @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a DVD", description = "Get the details of a"
         + "DVD with all attributes.")
     @ApiResponse(responseCode = "200", description = "DVD details")
@@ -82,7 +77,6 @@ public class DetailController {
      * @return http response
      */
     @Get(produces = MediaType.TEXT_JSON, uri = "game/{uuid}")
-    @Secured({ADMIN, LIBRARIAN})
     @Operation(summary = "Get the details of a game", description = "Get the details of a"
         + "game with all attributes.")
     @ApiResponse(responseCode = "200", description = "Game details")
