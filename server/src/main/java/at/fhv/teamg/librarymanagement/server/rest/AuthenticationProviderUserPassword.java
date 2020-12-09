@@ -37,6 +37,7 @@ public class AuthenticationProviderUserPassword implements AuthenticationProvide
                 roles.add(loginResult.getResult().getUserRoleName().name());
                 var attributes = new HashMap<String, Object>();
                 attributes.put("isExternalLibrary", loginResult.getResult().isExternalLibrary());
+                attributes.put("uuid", loginResult.getResult().getId().toString());
                 emitter.onNext(
                     new UserDetails(loginResult.getResult().getUsername(), roles, attributes));
                 emitter.onComplete();
