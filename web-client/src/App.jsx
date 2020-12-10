@@ -22,13 +22,13 @@ function App() {
 
       <Switch>
         <Container>
+          <Route exact path="/">
+            <Search />
+          </Route>
+
           <Route path="/book/:id" children={<Book />} />
           <Route path="/dvd/:id" children={<Dvd />} />
           <Route path="/game/:id" children={<Game />} />
-
-          <Route path="/">
-            <Search />
-          </Route>
         </Container>
       </Switch>
     </Router>
