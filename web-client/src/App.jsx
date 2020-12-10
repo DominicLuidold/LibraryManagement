@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navbar } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,25 +14,23 @@ import Search from './features/search/Search';
 function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Search</Link>
-            </li>
-          </ul>
-        </nav>
 
-        <Switch>
-          <Route path="/book/:id" children={<Book />} />
-          <Route path="/dvd/:id" children={<Dvd />} />
-          <Route path="/game/:id" children={<Game />} />
+      <Navbar bg="dark" variant="dark">
+        <Navbar.Text>
+          <Link to="/">Search</Link>
+        </Navbar.Text>
+      </Navbar>
 
-          <Route path="/">
-            <Search />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/book/:id" children={<Book />} />
+        <Route path="/dvd/:id" children={<Dvd />} />
+        <Route path="/game/:id" children={<Game />} />
+
+        <Route path="/">
+          <Search />
+        </Route>
+      </Switch>
+
     </Router>
   );
 }
