@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { searchBook, selectBooks } from "./searchSlice";
+import { searchBook, selectBooks, selectTopics } from "./searchSlice";
 
 function Book() {
     const books = useSelector(selectBooks);
+    const topics = useSelector(selectTopics);
     const dispatch = useDispatch();
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [isbn13, setIsbn13] = useState("");
-
-    books.forEach(element => {
-        console.log(element);
-    });
+    const [topic, setTopic] = useState("");
 
     return (
         <>
@@ -33,8 +31,23 @@ function Book() {
                     <Form.Control placeholder="ISBN 13" onChange={e => setIsbn13(e.target.value)} />
                 </Form.Group>
 
-                {/*TODO Topic */}
-                <Button variant="primary" onClick={() => dispatch(searchBook(title, author, isbn13))} >Search</Button>
+                <Form.Group controlId="topic">
+                    <Form.Label>Topic</Form.Label>
+                    <Form.Control as="select" defaultValue="" onChange={e => setTopic(e.target.value)}>
+                        <option key=""> </option>
+                        {topics.map(t => {
+                            return (
+                                <option key={t.id}>{t.name}</option>
+                            );
+                        })}
+                    </Form.Control>
+                </Form.Group>
+
+                <Button variant="primary" onClick={() => {
+                    let t = topics.find(e => e.name === topic);
+                    dispatch(searchBook(title, author, isbn13, t?.id.toUpperCase()));
+                }
+                } >Search</Button>
             </Form>
 
 

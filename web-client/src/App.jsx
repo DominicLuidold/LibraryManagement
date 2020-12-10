@@ -6,9 +6,9 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import Book from './features/detail/book/Book';
-import Dvd from './features/detail/dvd/Dvd';
-import Game from './features/detail/game/Game';
+import Book from './features/detail/Book/Book';
+import Dvd from './features/detail/Dvd/Dvd';
+import Game from './features/detail/Game/Game';
 import Search from './features/search/Search';
 
 function App() {
