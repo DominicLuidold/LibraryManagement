@@ -28,7 +28,11 @@ export const loadBookDetail = bookId => dispatch => {
     console.log(url);
     fetch(url)
         .then(response => response.json())
-        .then(data => dispatch(setBook(data)));
+        .then(data => dispatch(setBook(data)))
+        .catch(e => {
+            console.log("error fetching book detail");
+            console.log(e);
+        });
 }
 
 export const selectBookDetail = state => state.detail.book;

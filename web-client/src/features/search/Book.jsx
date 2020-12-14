@@ -52,7 +52,7 @@ function Book() {
                 </Form>
             </Col>
             <Col xs={12} lg={8}>
-                <Table>
+                <Table hover>
                     <thead>
                         <tr>
                             <th>Title</th>

@@ -31,14 +31,22 @@ export const searchBook = (title = "", author = "", isbn13 = "", topic = "") => 
     console.log(url);
     fetch(url)
         .then(response => response.json())
-        .then(data => dispatch(setBooks(data)));
+        .then(data => dispatch(setBooks(data)))
+        .catch(e => {
+            console.log("error fetching book search");
+            console.log(e);
+        });
 };
 
 export const loadTopics = () => dispatch => {
     let url = "***REMOVED***/topic";
     fetch(url)
         .then(response => response.json())
-        .then(data => dispatch(setTopics(data)));
+        .then(data => dispatch(setTopics(data)))
+        .catch(e => {
+            console.log("error fetching topics");
+            console.log(e);
+        });
 }
 
 export const selectBooks = state => state.search.books;
