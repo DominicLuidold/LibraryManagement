@@ -1,16 +1,65 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { loadBookDetail, selectBookDetail } from "../detailSlice";
+import { Col, Row, Table } from "react-bootstrap";
+import { selectTopics, loadTopics } from "../../search/searchSlice";
 
 function Book() {
     let { id } = useParams();
-    const dispatch = useDispatch();
-    dispatch(loadBookDetail(id));
     const bookDetail = useSelector(selectBookDetail);
-    console.log(bookDetail);
+    const topics = useSelector(selectTopics);
+    const dispatch = useDispatch();
+
+    if (bookDetail?.details.id !== id) {
+        dispatch(loadBookDetail(id));
+    }
+
+    if (topics.length === 0) {
+        dispatch(loadTopics());
+    }
 
     return (
-        <h1>Detail of Book {id}</h1>
+        <>
+            <Row>
+                <Col>
+                    <h1>{bookDetail?.details.title}</h1>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12} lg={4}>
+                    <Table borderless={true}>
+                        <tbody>
+                            <tr>
+                                <td><b>Author</b></td>
+                                <td>{bookDetail?.details.author}</td>
+                            </tr>
+                            <tr>
+                                <td><b>ISBN 10</b></td>
+                                <td>{bookDetail?.details.isbn10}</td>
+                            </tr>
+                            <tr>
+                                <td><b>ISBN 13</b></td>
+                                <td>{bookDetail?.details.isbn13}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Publisher</b></td>
+                                <td>{bookDetail?.details.publisher}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Language</b></td>
+                                <td>{bookDetail?.details.languageKey}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Topic</b></td>
+                                <td>{topics.find(t => t.id === bookDetail?.details.topic)?.name}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+
+                </Col>
+                <Col xs={12} lg={8}>Copy Table</Col>
+            </Row>
+        </>
     );
 }
 

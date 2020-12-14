@@ -9,7 +9,6 @@ export const detailSlice = createSlice({
     },
     reducers: {
         setBook: (state, action) => {
-            console.log(action);
             state.book = action.payload;
         },
         setDvd: (state, action) => {
@@ -24,6 +23,7 @@ export const detailSlice = createSlice({
 export const { setBook, setDvd, setGame } = detailSlice.actions;
 
 export const loadBookDetail = bookId => dispatch => {
+    dispatch(setBook(null));
     let url = `***REMOVED***/detail/book/${bookId}`;
     console.log(url);
     fetch(url)
