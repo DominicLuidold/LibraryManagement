@@ -36,6 +36,7 @@ public class Cache {
     private List<TopicDto> topicCache;
     private List<UserDto> userCache;
     private UUID customerId;
+    private UUID externalLibraryId;
 
     private Cache() {
         LOG.info("Starting cache preload");
@@ -68,6 +69,7 @@ public class Cache {
             var service = new UserService();
             userCache = service.getAllUsers();
             customerId = service.findUserRoleIdByName(UserRoleName.Customer);
+            externalLibraryId = service.findUserRoleIdByName(UserRoleName.CustomerExternalLibrary);
         }
 
         LOG.info("Preloading done. Cache ready");
@@ -331,7 +333,11 @@ public class Cache {
      */
     public List<UserDto> getAllCustomers() {
         return userCache.stream()
-            .filter(userDto -> userDto.getRoleId().equals(customerId))
+            .filter(
+                userDto ->
+                userDto.getRoleId().equals(customerId)
+                || userDto.getRoleId().equals(externalLibraryId)
+            )
             .collect(Collectors.toList());
     }
 

@@ -178,7 +178,8 @@ public class UserService {
         if (requiredUserRole.equals(UserRoleName.Customer)) {
             return loggedInUser.getUserRoleName().equals(UserRoleName.Customer)
                 || loggedInUser.getUserRoleName().equals(UserRoleName.Librarian)
-                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin);
+                || loggedInUser.getUserRoleName().equals(UserRoleName.Admin)
+                || loggedInUser.getUserRoleName().equals(UserRoleName.CustomerExternalLibrary);
         }
         return false;
     }
