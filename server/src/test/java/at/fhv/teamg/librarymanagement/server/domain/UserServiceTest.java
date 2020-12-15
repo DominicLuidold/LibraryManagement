@@ -270,7 +270,7 @@ public class UserServiceTest {
 
     @Test
     void isUserRoleSufficient_shouldReturnFalse_whenCustomerRequiredAndNotGiven() {
-        assertFalse(UserService.isUserRoleSufficient(
+        assertTrue(UserService.isUserRoleSufficient(
             UserRoleName.Customer,
             new LoginDto.LoginDtoBuilder()
                 .withUserRoleName(UserRoleName.CustomerExternalLibrary)
