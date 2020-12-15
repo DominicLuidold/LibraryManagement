@@ -260,21 +260,17 @@ public class UserServiceTest {
         ));
         assertTrue(UserService.isUserRoleSufficient(
             UserRoleName.Customer,
+            new LoginDto.LoginDtoBuilder()
+                .withUserRoleName(UserRoleName.CustomerExternalLibrary)
+                .build()
+        ));
+        assertTrue(UserService.isUserRoleSufficient(
+            UserRoleName.Customer,
             new LoginDto.LoginDtoBuilder().withUserRoleName(UserRoleName.Librarian).build()
         ));
         assertTrue(UserService.isUserRoleSufficient(
             UserRoleName.Customer,
             new LoginDto.LoginDtoBuilder().withUserRoleName(UserRoleName.Admin).build()
-        ));
-    }
-
-    @Test
-    void isUserRoleSufficient_shouldReturnFalse_whenCustomerRequiredAndNotGiven() {
-        assertTrue(UserService.isUserRoleSufficient(
-            UserRoleName.Customer,
-            new LoginDto.LoginDtoBuilder()
-                .withUserRoleName(UserRoleName.CustomerExternalLibrary)
-                .build()
         ));
     }
 }
