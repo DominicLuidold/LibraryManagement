@@ -1,8 +1,6 @@
 package at.fhv.teamg.librarymanagement.client.controller.internal;
 
-import at.fhv.teamg.librarymanagement.client.remote.EjbClient;
 import at.fhv.teamg.librarymanagement.client.remote.RemoteClient;
-import at.fhv.teamg.librarymanagement.client.remote.RmiClient;
 import at.fhv.teamg.librarymanagement.shared.dto.LoginDto;
 import at.fhv.teamg.librarymanagement.shared.dto.MessageDto;
 import javafx.scene.control.Alert;
@@ -13,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     private static final Logger LOG = LogManager.getLogger(UserLoginTask.class);
     private final LoginDto loginUser;
-    private final String server;
     private final ConnectionType connectionType;
     private final AnchorPane pane;
 
@@ -21,19 +18,12 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
      * Sets all required values for the UserLoginTask.
      *
      * @param loginUser      LoginDto
-     * @param server         Server
      * @param connectionType Type to fetch data (RMI or EJB)
      * @param pane           AnchorPane
      */
-    public UserLoginTask(
-        LoginDto loginUser,
-        String server,
-        ConnectionType connectionType,
-        AnchorPane pane
-    ) {
+    public UserLoginTask(LoginDto loginUser, ConnectionType connectionType, AnchorPane pane) {
         super(pane);
         this.loginUser = loginUser;
-        this.server = server;
         this.connectionType = connectionType;
         this.pane = pane;
     }
@@ -42,13 +32,7 @@ public class UserLoginTask extends AsyncTask<MessageDto<LoginDto>> {
     protected MessageDto<LoginDto> call() throws Exception {
         super.call();
         LOG.debug("Perform user login");
-        if (connectionType.equals(ConnectionType.RMI)) {
-            RmiClient.setServerAddress(server);
-            return RemoteClient.getInstance().loginUser(loginUser);
-        } else {
-            EjbClient.setServerAddress(server);
-            return RemoteClient.getInstance().loginUser(loginUser);
-        }
+        return RemoteClient.getInstance().loginUser(loginUser);
     }
 
     @Override

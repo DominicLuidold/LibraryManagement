@@ -12,17 +12,17 @@
         <Logger name="org.hibernate" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="com.mchange.v2" level="ERROR">
+        <Logger name="com.zaxxer.hikari" level="ERROR">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.apache.activemq" level="INFO">
-            <AppenderRef ref="LogToConsole" />
+        <Logger name="org.apache.activemq" level="ERROR">
+            <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Logger name="io.micronaut" level="ERROR">
-            <AppenderRef ref="LogToConsole" />
+            <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Logger name="io.netty" level="ERROR">
-            <AppenderRef ref="LogToConsole" />
+            <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="debug">
             <AppenderRef ref="LogToConsole"/>
