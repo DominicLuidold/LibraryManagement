@@ -73,7 +73,7 @@ function Book() {
                             {
                                 bookDetail?.copies.map(copy => {
                                     return (
-                                        <tr key={copy.id} style={copy.available ? {background: "#68c17c"}: {background: "#e6717c"}}>
+                                        <tr key={copy.id} style={copy.available ? { background: "#68c17c" } : { background: "#e6717c" }}>
                                             <td>{copy.id}</td>
                                             <td>{copy.available ? "-" : copy.lendTill}</td>
                                         </tr>

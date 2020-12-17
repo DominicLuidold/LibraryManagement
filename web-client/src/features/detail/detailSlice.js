@@ -27,7 +27,13 @@ export const loadBookDetail = bookId => dispatch => {
     let url = `***REMOVED***/detail/book/${bookId}`;
     console.log(url);
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                response.json();
+            } else {
+                throw (response.statusText);
+            }
+        })
         .then(data => dispatch(setBook(data)))
         .catch(e => {
             console.log("error fetching book detail");
