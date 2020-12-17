@@ -60,7 +60,27 @@ export const loadDvdDetail = dvdId => dispatch => {
         });
 }
 
+export const loadGameDetail = gameId => dispatch => {
+    dispatch(setGame(null));
+    let url = `***REMOVED***/detail/game/${gameId}`;
+    console.log(url);
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw (response.statusText);
+            }
+        })
+        .then(data => dispatch(setGame(data)))
+        .catch(e => {
+            console.log("error fetching game detail");
+            console.log(e);
+        });
+}
+
 export const selectBookDetail = state => state.detail.book;
 export const selectDvdDetail = state => state.detail.dvd;
+export const selectGameDetail = state => state.detail.game;
 
 export default detailSlice.reducer;
