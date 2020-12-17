@@ -39,7 +39,7 @@ function Game() {
                             </tr>
                             <tr>
                                 <td><b>Platforms</b></td>
-                                <td>{gameDetail?.details.platforms} min</td>
+                                <td>{gameDetail?.details.platforms}</td>
                             </tr>
                             <tr>
                                 <td><b>Age Restriction</b></td>
