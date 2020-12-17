@@ -141,25 +141,20 @@ public class LoginController implements Initializable {
             return;
         }
 
-        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
-            .withUsername(usernameField.getText())
-            .withPassword(passwordField.getText())
-            .build();
-
         if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
             this.connectionType = ConnectionType.RMI;
         } else {
             this.connectionType = ConnectionType.EJB;
         }
+        RemoteClient.setServerAddress(this.serverDropdown.getSelectionModel().getSelectedItem());
         RemoteClient remoteClient = RemoteClient.getInstance();
         remoteClient.setConnectionType(this.connectionType);
 
-        UserLoginTask loginTask = new UserLoginTask(
-            loginUser,
-            this.serverDropdown.getSelectionModel().getSelectedItem(),
-            this.connectionType,
-            this.pane
-        );
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+            .withUsername(usernameField.getText())
+            .withPassword(passwordField.getText())
+            .build();
+        UserLoginTask loginTask = new UserLoginTask(loginUser, this.connectionType, this.pane);
 
         Thread thread = new Thread(loginTask, "User login Task");
         thread.start();
@@ -188,25 +183,20 @@ public class LoginController implements Initializable {
     public void loginAsGuest() {
         LOG.debug("LoginAsGuest btn pressed");
 
-        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
-            .withUsername("guest")
-            .withPassword("")
-            .build();
-
         if (connectionTypeDropdown.getSelectionModel().getSelectedItem().equals("RMI")) {
             this.connectionType = ConnectionType.RMI;
         } else {
             this.connectionType = ConnectionType.EJB;
         }
+        RemoteClient.setServerAddress(this.serverDropdown.getSelectionModel().getSelectedItem());
         RemoteClient remoteClient = RemoteClient.getInstance();
         remoteClient.setConnectionType(this.connectionType);
 
-        UserLoginTask loginTask = new UserLoginTask(
-            loginUser,
-            this.serverDropdown.getSelectionModel().getSelectedItem(),
-            this.connectionType,
-            this.pane
-        );
+        LoginDto loginUser = new LoginDto.LoginDtoBuilder()
+            .withUsername("guest")
+            .withPassword("")
+            .build();
+        UserLoginTask loginTask = new UserLoginTask(loginUser, this.connectionType, this.pane);
 
         Window owner = this.submitButton.getScene().getWindow();
 

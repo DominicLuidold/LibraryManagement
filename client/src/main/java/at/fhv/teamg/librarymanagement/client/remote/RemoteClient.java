@@ -19,8 +19,8 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class RemoteClient implements LibraryInterface {
-    private static final RmiClient RMI_CLIENT = RmiClient.getInstance();
-    private static final EjbClient EJB_CLIENT = EjbClient.getInstance();
+    private static RmiClient RMI_CLIENT;
+    private static EjbClient EJB_CLIENT;
 
     private static RemoteClient CLIENT_INSTANCE;
     private ConnectionType connectionType;
@@ -38,10 +38,18 @@ public class RemoteClient implements LibraryInterface {
      * @return RemoteClient singleton instance.
      */
     public static RemoteClient getInstance() {
+        RMI_CLIENT = RmiClient.getInstance();
+        EJB_CLIENT = EjbClient.getInstance();
+
         if (CLIENT_INSTANCE == null) {
             CLIENT_INSTANCE = new RemoteClient();
         }
         return CLIENT_INSTANCE;
+    }
+
+    public static void setServerAddress(String address) {
+        RmiClient.setServerAddress(address);
+        EjbClient.setServerAddress(address);
     }
 
     public void setConnectionType(ConnectionType connectionType) {
