@@ -41,6 +41,26 @@ export const loadBookDetail = bookId => dispatch => {
         });
 }
 
+export const loadDvdDetail = dvdId => dispatch => {
+    dispatch(setDvd(null));
+    let url = `***REMOVED***/detail/dvd/${dvdId}`;
+    console.log(url);
+    fetch(url)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw (response.statusText);
+            }
+        })
+        .then(data => dispatch(setDvd(data)))
+        .catch(e => {
+            console.log("error fetching dvd detail");
+            console.log(e);
+        });
+}
+
 export const selectBookDetail = state => state.detail.book;
+export const selectDvdDetail = state => state.detail.dvd;
 
 export default detailSlice.reducer;
