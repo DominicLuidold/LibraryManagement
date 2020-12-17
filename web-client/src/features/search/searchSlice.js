@@ -38,6 +38,18 @@ export const searchBook = (title = "", author = "", isbn13 = "", topic = "") => 
         });
 };
 
+export const searchDvd = (title = "", director = "", releaseDate = "", topic = "") => dispatch => {
+    let url = `***REMOVED***/search/dvd?title=${title}&director=${director}&releaseDate=${releaseDate}&topic=${topic}`;
+    console.log(url);
+    fetch(url)
+        .then(response => response.json())
+        .then(data => dispatch(setDvds(data)))
+        .catch(e => {
+            console.log("error fetching dvd search");
+            console.log(e);
+        });
+};
+
 export const loadTopics = () => dispatch => {
     let url = "***REMOVED***/topic";
     fetch(url)
@@ -50,6 +62,8 @@ export const loadTopics = () => dispatch => {
 }
 
 export const selectBooks = state => state.search.books;
+
+export const selectDvds = state => state.search.dvds;
 
 export const selectTopics = state => state.search.topics;
 
