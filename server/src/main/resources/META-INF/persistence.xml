@@ -44,7 +44,7 @@
             <property name="hibernate.hikari.maximumPoolSize" value="10"/>
             <property name="hibernate.hikari.idleTimeout" value="30000"/>
 
-            <property name="hibernate.hikari.dataSource.url" value="***REMOVED***"/>
+            <property name="hibernate.hikari.jdbcUrl" value="***REMOVED***" />
             <property name="hibernate.hikari.dataSource.user" value="***REMOVED***"/>
             <property name="hibernate.hikari.dataSource.password" value="***REMOVED***"/>
 
