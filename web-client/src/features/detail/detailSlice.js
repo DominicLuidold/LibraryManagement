@@ -29,7 +29,7 @@ export const loadBookDetail = bookId => dispatch => {
     fetch(url)
         .then(response => {
             if (response.ok) {
-                response.json();
+                return response.json();
             } else {
                 throw (response.statusText);
             }
