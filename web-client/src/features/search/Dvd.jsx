@@ -29,7 +29,7 @@ function Dvd() {
 
                     <Form.Group controlId="isbn13">
                         <Form.Label>Release Date</Form.Label>
-                        <Form.Control placeholder="Release Date" onChange={e => setReleaseDate(e.target.value)} />
+                        <Form.Control type="date" placeholder="Release Date" onChange={e => setReleaseDate(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group controlId="topic">
