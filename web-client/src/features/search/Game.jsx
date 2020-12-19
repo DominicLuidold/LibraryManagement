@@ -24,12 +24,12 @@ function Game() {
 
                     <Form.Group controlId="author">
                         <Form.Label>Developer</Form.Label>
-                        <Form.Control placeholder="Director" onChange={e => setDeveloper(e.target.value)} />
+                        <Form.Control placeholder="Developer" onChange={e => setDeveloper(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group controlId="isbn13">
                         <Form.Label>Platforms</Form.Label>
-                        <Form.Control placeholder="Release Date" onChange={e => setPlatforms(e.target.value)} />
+                        <Form.Control placeholder="Platforms" onChange={e => setPlatforms(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group controlId="topic">

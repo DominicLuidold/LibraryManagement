@@ -1,4 +1,4 @@
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { loadTopics, selectTopics } from "../../search/searchSlice";
@@ -22,13 +22,16 @@ function Dvd() {
         <>
             <Row>
                 <Col>
+                    {!dvdDetail &&
+                        <Spinner animation="border" />
+                    }
                     <h1>{dvdDetail?.details.title}</h1>
                 </Col>
             </Row>
             <Row>
                 <Col xs={12} lg={4}>
                     <Table borderless={true}>
-                    <tbody>
+                        <tbody>
                             <tr>
                                 <td><b>Director</b></td>
                                 <td>{dvdDetail?.details.director}</td>
@@ -71,7 +74,7 @@ function Dvd() {
                         </thead>
                         <tbody>
                             {
-                                dvdDetail?.copies.map(copy => {
+                                dvdDetail?.copies?.map(copy => {
                                     return (
                                         <tr key={copy.id} style={copy.available ? { background: "#68c17c" } : { background: "#e6717c" }}>
                                             <td>{copy.id}</td>

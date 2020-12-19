@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { loadBookDetail, selectBookDetail } from "../detailSlice";
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Spinner, Table } from "react-bootstrap";
 import { selectTopics, loadTopics } from "../../search/searchSlice";
 
 function Book() {
@@ -22,6 +22,9 @@ function Book() {
         <>
             <Row>
                 <Col>
+                    {!bookDetail &&
+                        <Spinner animation="border" />
+                    }
                     <h1>{bookDetail?.details.title}</h1>
                 </Col>
             </Row>
@@ -71,7 +74,7 @@ function Book() {
                         </thead>
                         <tbody>
                             {
-                                bookDetail?.copies.map(copy => {
+                                bookDetail?.copies?.map(copy => {
                                     return (
                                         <tr key={copy.id} style={copy.available ? { background: "#68c17c" } : { background: "#e6717c" }}>
                                             <td>{copy.id}</td>

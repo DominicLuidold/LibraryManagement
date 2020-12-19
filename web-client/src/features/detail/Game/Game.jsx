@@ -1,4 +1,4 @@
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { loadTopics, selectTopics } from "../../search/searchSlice";
@@ -22,13 +22,16 @@ function Game() {
         <>
             <Row>
                 <Col>
+                    {!gameDetail &&
+                        <Spinner animation="border" />
+                    }
                     <h1>{gameDetail?.details.title}</h1>
                 </Col>
             </Row>
             <Row>
                 <Col xs={12} lg={4}>
                     <Table borderless={true}>
-                    <tbody>
+                        <tbody>
                             <tr>
                                 <td><b>Developer</b></td>
                                 <td>{gameDetail?.details.developer}</td>
@@ -67,7 +70,7 @@ function Game() {
                         </thead>
                         <tbody>
                             {
-                                gameDetail?.copies.map(copy => {
+                                gameDetail?.copies?.map(copy => {
                                     return (
                                         <tr key={copy.id} style={copy.available ? { background: "#68c17c" } : { background: "#e6717c" }}>
                                             <td>{copy.id}</td>
