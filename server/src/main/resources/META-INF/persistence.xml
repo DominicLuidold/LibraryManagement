@@ -23,23 +23,33 @@
 
         <!-- Properties -->
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:***REMOVED***?serverTimezone=Europe/Berlin&amp;autoReconnect=true"/>
-            <property name="javax.persistence.jdbc.user" value="devusr"/>
+                      value="***REMOVED***"/>
+            <property name="javax.persistence.jdbc.user" value="***REMOVED***"/>
             <property name="javax.persistence.jdbc.password" value="***REMOVED***"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.generate_statistics" value="true"/>
+            <property name="hibernate.use_sql_comments" value="false"/>
+            <property name="hibernate.generate_statistics" value="false"/>
             <property name="hibernate.jdbc.batch_size" value="5"/>
 
-            <!--
-            TODO: Find out how C3PO works in Wildfly -> exception during startup, driver is null?
             <property name="hibernate.connection.provider_class"
-                      value="org.hibernate.connection.C3P0ConnectionProvider"/>
+                      value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>
+
+
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.maximumPoolSize" value="10"/>
+            <property name="hibernate.hikari.idleTimeout" value="30000"/>
+
+            <property name="hibernate.hikari.jdbcUrl" value="***REMOVED***" />
+            <property name="hibernate.hikari.dataSource.user" value="***REMOVED***"/>
+            <property name="hibernate.hikari.dataSource.password" value="***REMOVED***"/>
+
+            <!-- Connection pool -->
+            <!--
             <property name="hibernate.c3p0.min_size" value="5"/>
             <property name="hibernate.c3p0.max_size" value="20"/>
             <property name="hibernate.c3p0.timeout" value="120"/>
@@ -51,7 +61,6 @@
             <property name="hibernate.c3p0.numHelperThreads " value="10"/>
             <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="100"/>
             <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="false"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
             -->
         </properties>
     </persistence-unit>
