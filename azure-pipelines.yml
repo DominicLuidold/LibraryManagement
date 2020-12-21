@@ -28,6 +28,7 @@ steps:
 
 - script: |
     echo $(build.artifactstagingdirectory)
+    echo $(Build.BinariesDirectory)
     cd web-client
     npm install
     npm run build
