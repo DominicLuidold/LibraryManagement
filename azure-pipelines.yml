@@ -34,9 +34,13 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
+- script: |
+    ls -la
+  displayName: 'ls'
+
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: 'build'
+    rootFolderOrFile: './build/'
     includeRootFolder: true
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
