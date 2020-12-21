@@ -27,6 +27,7 @@ steps:
   displayName: 'Install deps'
 
 - script: |
+    cd web-client
     npm install
     npm run build
   displayName: 'npm install and build'
