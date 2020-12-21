@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { selectServer } from "../../optionsSlice";
 import { searchBook, selectBooks, selectTopics } from "./searchSlice";
 
 function Book() {
     const books = useSelector(selectBooks);
     const topics = useSelector(selectTopics);
+    const server = useSelector(selectServer);
     const dispatch = useDispatch();
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
@@ -46,7 +48,7 @@ function Book() {
 
                     <Button variant="primary" onClick={() => {
                         let t = topics.find(e => e.name === topic);
-                        dispatch(searchBook(title, author, isbn13, t?.id.toUpperCase()));
+                        dispatch(searchBook(title, author, isbn13, t?.id.toUpperCase(), server));
                     }
                     } >Search</Button>
                 </Form>

@@ -3,19 +3,21 @@ import { Link, useParams } from "react-router-dom";
 import { loadBookDetail, selectBookDetail } from "../detailSlice";
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { selectTopics, loadTopics } from "../../search/searchSlice";
+import { selectServer } from "../../../optionsSlice";
 
 function Book() {
     let { id } = useParams();
     const bookDetail = useSelector(selectBookDetail);
     const topics = useSelector(selectTopics);
+    const server = useSelector(selectServer);
     const dispatch = useDispatch();
 
     if (bookDetail?.details.id !== id) {
-        dispatch(loadBookDetail(id));
+        dispatch(loadBookDetail(id, server));
     }
 
     if (topics.length === 0) {
-        dispatch(loadTopics());
+        dispatch(loadTopics(server));
     }
 
     return (

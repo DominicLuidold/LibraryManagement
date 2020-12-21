@@ -1,6 +1,7 @@
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { selectServer } from "../../../optionsSlice";
 import { loadTopics, selectTopics } from "../../search/searchSlice";
 import { loadGameDetail, selectGameDetail } from "../detailSlice";
 
@@ -8,14 +9,15 @@ function Game() {
     let { id } = useParams();
     const gameDetail = useSelector(selectGameDetail);
     const topics = useSelector(selectTopics);
+    const server = useSelector(selectServer);
     const dispatch = useDispatch();
 
     if (gameDetail?.details.id !== id) {
-        dispatch(loadGameDetail(id));
+        dispatch(loadGameDetail(id, server));
     }
 
     if (topics.length === 0) {
-        dispatch(loadTopics());
+        dispatch(loadTopics(server));
     }
 
     return (

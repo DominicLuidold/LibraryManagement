@@ -22,9 +22,9 @@ export const detailSlice = createSlice({
 
 export const { setBook, setDvd, setGame } = detailSlice.actions;
 
-export const loadBookDetail = bookId => dispatch => {
+export const loadBookDetail = (bookId, server) => dispatch => {
     dispatch(setBook(null));
-    let url = `***REMOVED***/detail/book/${bookId}`;
+    let url = `${server}:8888/detail/book/${bookId}`;
     console.log(url);
     fetch(url)
         .then(response => {
@@ -41,9 +41,9 @@ export const loadBookDetail = bookId => dispatch => {
         });
 }
 
-export const loadDvdDetail = dvdId => dispatch => {
+export const loadDvdDetail = (dvdId, server) => dispatch => {
     dispatch(setDvd(null));
-    let url = `***REMOVED***/detail/dvd/${dvdId}`;
+    let url = `${server}:8888/detail/dvd/${dvdId}`;
     console.log(url);
     fetch(url)
         .then(response => {
@@ -60,9 +60,9 @@ export const loadDvdDetail = dvdId => dispatch => {
         });
 }
 
-export const loadGameDetail = gameId => dispatch => {
+export const loadGameDetail = (gameId, server) => dispatch => {
     dispatch(setGame(null));
-    let url = `***REMOVED***/detail/game/${gameId}`;
+    let url = `${server}:8888/detail/game/${gameId}`;
     console.log(url);
     fetch(url)
         .then(response => {
