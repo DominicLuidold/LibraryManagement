@@ -81,7 +81,7 @@ function Book() {
                                     return (
                                         <tr key={copy.id} style={copy.available ? { background: "#68c17c" } : { background: "#e6717c" }}>
                                             <td>{copy.id}</td>
-                                            <td>{copy.available ? "-" : copy.lendTill}</td>
+                                            <td>{copy.available ? "-" : `${copy.lendTill[0]}-${copy.lendTill[1]}-${copy.lendTill[2]}`}</td>
                                         </tr>
                                     )
                                 })

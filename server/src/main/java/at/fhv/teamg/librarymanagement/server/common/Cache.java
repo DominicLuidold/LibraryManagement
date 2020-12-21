@@ -23,6 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Cache {
+    public static boolean autoRefresh = false;
+    public static int autRefreshMinutes = 2;
     private static final Logger LOG = LogManager.getLogger(Cache.class);
     private static Cache instance;
 
@@ -73,6 +75,10 @@ public class Cache {
         }
 
         LOG.info("Preloading done. Cache ready");
+
+        if (autoRefresh) {
+            startTimer();
+        }
     }
 
     /**
@@ -335,8 +341,8 @@ public class Cache {
         return userCache.stream()
             .filter(
                 userDto ->
-                userDto.getRoleId().equals(customerId)
-                || userDto.getRoleId().equals(externalLibraryId)
+                    userDto.getRoleId().equals(customerId)
+                        || userDto.getRoleId().equals(externalLibraryId)
             )
             .collect(Collectors.toList());
     }
@@ -346,6 +352,7 @@ public class Cache {
      * Only required when db is accessed by multiple servers.
      */
     private void startTimer() {
+        LOG.info("enabling cache auto refresh");
         TimerTask updateBooks = new TimerTask() {
             @Override
             public void run() {
@@ -356,29 +363,43 @@ public class Cache {
                 }
             }
         };
-        timer.scheduleAtFixedRate(updateBooks, minute * 5, minute * 5);
+        timer.scheduleAtFixedRate(
+            updateBooks,
+            minute * autRefreshMinutes,
+            minute * autRefreshMinutes
+        );
 
-        TimerTask updateTopics = new TimerTask() {
+        TimerTask updateDvd = new TimerTask() {
             @Override
             public void run() {
-                LOG.debug("Invalidating topic cache based on automated timer");
+                LOG.debug("Invalidating dvd cache based on automated timer");
                 synchronized (lock) {
-                    topicCache = new TopicService().getAllTopics();
+                    new DvdService().getAllDvds()
+                        .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
                 }
             }
         };
-        timer.scheduleAtFixedRate(updateTopics, minute * 5, minute * 5);
+        timer
+            .scheduleAtFixedRate(
+                updateDvd,
+                minute * autRefreshMinutes,
+                minute * autRefreshMinutes
+            );
 
-        TimerTask updateUsers = new TimerTask() {
+        TimerTask updateGame = new TimerTask() {
             @Override
             public void run() {
-                LOG.debug("Invalidating user cache based on automated timer");
+                LOG.debug("Invalidating game cache based on automated timer");
                 synchronized (lock) {
-                    userCache = new UserService().getAllUsers();
+                    new GameService().getAllGames()
+                        .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
                 }
             }
         };
-        timer.scheduleAtFixedRate(updateUsers, minute * 5, minute * 5);
-
+        timer.scheduleAtFixedRate(
+            updateGame,
+            minute * autRefreshMinutes,
+            minute * autRefreshMinutes
+        );
     }
 }
