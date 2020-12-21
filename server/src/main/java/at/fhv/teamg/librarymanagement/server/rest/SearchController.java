@@ -4,6 +4,7 @@ import at.fhv.teamg.librarymanagement.server.common.Cache;
 import at.fhv.teamg.librarymanagement.shared.dto.BookDto;
 import at.fhv.teamg.librarymanagement.shared.dto.DvdDto;
 import at.fhv.teamg.librarymanagement.shared.dto.GameDto;
+import io.micronaut.core.convert.format.Format;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -83,7 +84,7 @@ public class SearchController {
         HttpRequest<String> request,
         @Nullable @QueryValue String title,
         @Nullable @QueryValue String director,
-        @Nullable @QueryValue LocalDate releaseDate,
+        @Format("yyyy-MM-dd") @Nullable @QueryValue LocalDate releaseDate,
         @Nullable @QueryValue UUID topic
     ) {
         var dvds = Cache.getInstance()
