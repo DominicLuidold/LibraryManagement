@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { loadBookDetail, selectBookDetail } from "../detailSlice";
-import { Col, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { selectTopics, loadTopics } from "../../search/searchSlice";
 
 function Book() {
@@ -63,6 +63,7 @@ function Book() {
                         </tbody>
                     </Table>
 
+                    <Link to={`/`}><Button>Back</Button></Link>
                 </Col>
                 <Col xs={12} lg={8}>
                     <Table>

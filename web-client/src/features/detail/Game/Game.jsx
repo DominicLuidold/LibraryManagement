@@ -1,6 +1,6 @@
-import { Col, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { loadTopics, selectTopics } from "../../search/searchSlice";
 import { loadGameDetail, selectGameDetail } from "../detailSlice";
 
@@ -59,6 +59,7 @@ function Game() {
                         </tbody>
                     </Table>
 
+                    <Link to={`/`}><Button>Back</Button></Link>
                 </Col>
                 <Col xs={12} lg={8}>
                     <Table>
