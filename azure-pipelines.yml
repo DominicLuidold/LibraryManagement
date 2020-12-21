@@ -27,6 +27,7 @@ steps:
   displayName: 'Install deps'
 
 - script: |
+    echo $(build.artifactstagingdirectory)
     cd web-client
     npm install
     npm run build
