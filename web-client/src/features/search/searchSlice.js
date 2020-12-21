@@ -26,8 +26,8 @@ export const searchSlice = createSlice({
 
 export const { setBooks, setDvds, setGames, setTopics } = searchSlice.actions;
 
-export const searchBook = (title = "", author = "", isbn13 = "", topic = "") => dispatch => {
-    let url = `***REMOVED***/search/book?title=${title}&author=${author}&isbn13=${isbn13}&topic=${topic}`;
+export const searchBook = (title = "", author = "", isbn13 = "", topic = "", server) => dispatch => {
+    let url = `${server}:8888/search/book?title=${title}&author=${author}&isbn13=${isbn13}&topic=${topic}`;
     console.log(url);
     fetch(url)
         .then(response => response.json())
@@ -38,8 +38,8 @@ export const searchBook = (title = "", author = "", isbn13 = "", topic = "") => 
         });
 };
 
-export const searchDvd = (title = "", director = "", releaseDate = "", topic = "") => dispatch => {
-    let url = `***REMOVED***/search/dvd?title=${title}&director=${director}&releaseDate=${releaseDate}&topic=${topic}`;
+export const searchDvd = (title = "", director = "", releaseDate = "", topic = "", server) => dispatch => {
+    let url = `${server}:8888/search/dvd?title=${title}&director=${director}&releaseDate=${releaseDate}&topic=${topic}`;
     console.log(url);
     fetch(url)
         .then(response => response.json())
@@ -50,8 +50,8 @@ export const searchDvd = (title = "", director = "", releaseDate = "", topic = "
         });
 };
 
-export const searchGame = (title = "", developer = "", platforms = "", topic = "") => dispatch => {
-    let url = `***REMOVED***/search/game?title=${title}&developer=${developer}&platforms=${platforms}&topic=${topic}`;
+export const searchGame = (title = "", developer = "", platforms = "", topic = "", server) => dispatch => {
+    let url = `${server}:8888/search/game?title=${title}&developer=${developer}&platforms=${platforms}&topic=${topic}`;
     console.log(url);
     fetch(url)
         .then(response => response.json())
@@ -62,8 +62,8 @@ export const searchGame = (title = "", developer = "", platforms = "", topic = "
         });
 };
 
-export const loadTopics = () => dispatch => {
-    let url = "***REMOVED***/topic";
+export const loadTopics = (server) => dispatch => {
+    let url = `${server}:8888/topic`;
     fetch(url)
         .then(response => response.json())
         .then(data => dispatch(setTopics(data)))

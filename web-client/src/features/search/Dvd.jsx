@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { selectServer } from "../../optionsSlice";
 import { searchDvd, selectDvds, selectTopics } from "./searchSlice";
 
 function Dvd() {
     const dvds = useSelector(selectDvds);
     const topics = useSelector(selectTopics);
+    const server = useSelector(selectServer);
     const dispatch = useDispatch();
     const [title, setTitle] = useState("");
     const [director, setDirector] = useState("");
@@ -46,7 +48,7 @@ function Dvd() {
 
                     <Button variant="primary" onClick={() => {
                         let t = topics.find(e => e.name === topic);
-                        dispatch(searchDvd(title, director, releaseDate, t?.id.toUpperCase()));
+                        dispatch(searchDvd(title, director, releaseDate, t?.id.toUpperCase(), server));
                     }
                     } >Search</Button>
                 </Form>
