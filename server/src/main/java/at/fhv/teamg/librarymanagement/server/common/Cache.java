@@ -363,11 +363,9 @@ public class Cache {
                 }
             }
         };
-        timer.scheduleAtFixedRate(
-            updateBooks,
-            minute * autRefreshMinutes,
-            minute * autRefreshMinutes
-        );
+        timer
+            .scheduleAtFixedRate(updateBooks, minute * autRefreshMinutes,
+                minute * autRefreshMinutes);
 
         TimerTask updateDvd = new TimerTask() {
             @Override
@@ -380,11 +378,7 @@ public class Cache {
             }
         };
         timer
-            .scheduleAtFixedRate(
-                updateDvd,
-                minute * autRefreshMinutes,
-                minute * autRefreshMinutes
-            );
+            .scheduleAtFixedRate(updateDvd, minute * autRefreshMinutes, minute * autRefreshMinutes);
 
         TimerTask updateGame = new TimerTask() {
             @Override
@@ -396,10 +390,7 @@ public class Cache {
                 }
             }
         };
-        timer.scheduleAtFixedRate(
-            updateGame,
-            minute * autRefreshMinutes,
-            minute * autRefreshMinutes
+        timer.scheduleAtFixedRate(updateGame, minute * autRefreshMinutes, minute * autRefreshMinutes
         );
     }
 }
