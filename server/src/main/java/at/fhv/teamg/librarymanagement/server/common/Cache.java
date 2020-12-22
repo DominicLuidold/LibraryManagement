@@ -356,10 +356,14 @@ public class Cache {
         TimerTask updateBooks = new TimerTask() {
             @Override
             public void run() {
-                LOG.debug("Invalidating book cache based on automated timer");
-                synchronized (lock) {
-                    new BookService().getAllBooks()
-                        .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
+                try {
+                    LOG.debug("Invalidating book cache based on automated timer");
+                    synchronized (lock) {
+                        new BookService().getAllBooks()
+                            .forEach(bookDto -> bookCache.put(bookDto.getId(), bookDto));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -370,10 +374,14 @@ public class Cache {
         TimerTask updateDvd = new TimerTask() {
             @Override
             public void run() {
-                LOG.debug("Invalidating dvd cache based on automated timer");
-                synchronized (lock) {
-                    new DvdService().getAllDvds()
-                        .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
+                try {
+                    LOG.debug("Invalidating dvd cache based on automated timer");
+                    synchronized (lock) {
+                        new DvdService().getAllDvds()
+                            .forEach(dvdDto -> dvdCache.put(dvdDto.getId(), dvdDto));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -383,14 +391,18 @@ public class Cache {
         TimerTask updateGame = new TimerTask() {
             @Override
             public void run() {
-                LOG.debug("Invalidating game cache based on automated timer");
-                synchronized (lock) {
-                    new GameService().getAllGames()
-                        .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
+                try {
+                    LOG.debug("Invalidating game cache based on automated timer");
+                    synchronized (lock) {
+                        new GameService().getAllGames()
+                            .forEach(gameDto -> gameCache.put(gameDto.getId(), gameDto));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };
-        timer.scheduleAtFixedRate(updateGame, minute * autRefreshMinutes, minute * autRefreshMinutes
-        );
+        timer.scheduleAtFixedRate(updateGame, minute * autRefreshMinutes,
+            minute * autRefreshMinutes);
     }
 }
