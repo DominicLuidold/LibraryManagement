@@ -58,7 +58,7 @@ public class SearchController {
                     .topic(topic)
                     .build());
 
-        return HttpResponse.ok(books);
+        return HttpResponse.ok(books).header("Cache-Control", "no-store");
     }
 
 
@@ -96,7 +96,7 @@ public class SearchController {
                     .topic(topic)
                     .build());
 
-        return HttpResponse.ok(dvds);
+        return HttpResponse.ok(dvds).header("Cache-Control", "no-store");
     }
 
     /**
@@ -134,6 +134,6 @@ public class SearchController {
                     .build()
             );
 
-        return HttpResponse.ok(games);
+        return HttpResponse.ok(games).header("Cache-Control", "no-store");
     }
 }

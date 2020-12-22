@@ -27,7 +27,7 @@ public abstract class BaseDao<T> implements Dao<T> {
             "LibraryManagement"
         );
     protected static EntityManager entityManager = entityManagerFactory.createEntityManager();
-    private static final Object lock = new Object(); //HACK
+    protected static final Object lock = new Object(); //HACK
 
     /**
      * Finds the object based on the provided {@link UUID}.

@@ -43,7 +43,7 @@ public class DetailController {
         BookDetailsDto dto = new BookDetailsDto.BookDetailsDtoBuilder().details(book).copies(copies)
             .reservations(reservations).build();
 
-        return HttpResponse.ok(dto);
+        return HttpResponse.ok(dto).header("Cache-Control", "no-store");
     }
 
     /**
@@ -66,7 +66,7 @@ public class DetailController {
         DvdDetailsDto dto = new DvdDetailsDto.DvdDetailsDtoBuilder().details(dvd).copies(copies)
             .reservations(reservations).build();
 
-        return HttpResponse.ok(dto);
+        return HttpResponse.ok(dto).header("Cache-Control", "no-store");
     }
 
     /**
@@ -90,6 +90,6 @@ public class DetailController {
             new GameDetailsDto.GameDetailsDtoBuilder().details(game).copies(copies)
                 .reservations(reservations).build();
 
-        return HttpResponse.ok(dto);
+        return HttpResponse.ok(dto).header("Cache-Control", "no-store");
     }
 }

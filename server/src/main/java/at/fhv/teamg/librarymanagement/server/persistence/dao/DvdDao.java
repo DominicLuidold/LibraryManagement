@@ -52,24 +52,26 @@ public class DvdDao extends BaseDao<Dvd> {
      * @return List of Dvd entities
      */
     public List<Dvd> findBy(String title, String director, LocalDate releaseDate, String topic) {
-        TypedQuery<Dvd> query = entityManager.createQuery(
-            "SELECT d FROM Dvd d "
-                + "JOIN Medium m ON d = m.dvd "
-                + "LEFT JOIN Topic t ON m.topic = t "
-                + "WHERE m.title LIKE :title "
-                + "AND d.director LIKE :director "
-                + "AND m.releaseDate >= :releaseDate "
-                + "AND t.name LIKE :topic",
-            Dvd.class
-        );
+        synchronized (lock) {
+            TypedQuery<Dvd> query = entityManager.createQuery(
+                "SELECT d FROM Dvd d "
+                    + "JOIN Medium m ON d = m.dvd "
+                    + "LEFT JOIN Topic t ON m.topic = t "
+                    + "WHERE m.title LIKE :title "
+                    + "AND d.director LIKE :director "
+                    + "AND m.releaseDate >= :releaseDate "
+                    + "AND t.name LIKE :topic",
+                Dvd.class
+            );
 
-        query.setMaxResults(300);
-        query.setParameter("title", "%" + title + "%");
-        query.setParameter("director", "%" + director + "%");
-        query.setParameter("releaseDate", releaseDate);
-        query.setParameter("topic", "%" + topic + "%");
+            query.setMaxResults(300);
+            query.setParameter("title", "%" + title + "%");
+            query.setParameter("director", "%" + director + "%");
+            query.setParameter("releaseDate", releaseDate);
+            query.setParameter("topic", "%" + topic + "%");
 
-        return new LinkedList<>(query.getResultList());
+            return new LinkedList<>(query.getResultList());
+        }
     }
 
     public List<Dvd> getAll() {

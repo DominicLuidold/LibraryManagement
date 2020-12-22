@@ -32,7 +32,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "List of users")
     public HttpResponse<List<UserDto>> all(HttpRequest<String> request) {
         var users = Cache.getInstance().getAllUsers();
-        return HttpResponse.ok(users);
+        return HttpResponse.ok(users).header("Cache-Control", "no-store");
     }
 
     /**
@@ -47,6 +47,6 @@ public class UserController {
     @Secured({ADMIN, LIBRARIAN})
     public HttpResponse<List<UserDto>> customer(HttpRequest<String> request) {
         var customers = Cache.getInstance().getAllCustomers();
-        return HttpResponse.ok(customers);
+        return HttpResponse.ok(customers).header("Cache-Control", "no-store");
     }
 }

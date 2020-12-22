@@ -51,24 +51,26 @@ public class GameDao extends BaseDao<Game> {
      * @return List of Game entities
      */
     public List<Game> findBy(String title, String developer, String platform, String topic) {
-        TypedQuery<Game> query = entityManager.createQuery(
-            "SELECT g FROM Game g "
-                + "JOIN Medium m ON g = m.game "
-                + "LEFT JOIN Topic t ON m.topic = t "
-                + "WHERE m.title LIKE :title "
-                + "AND g.developer LIKE :developer "
-                + "AND g.platforms LIKE :platform "
-                + "AND t.name LIKE :topic",
-            Game.class
-        );
+        synchronized (lock) {
+            TypedQuery<Game> query = entityManager.createQuery(
+                "SELECT g FROM Game g "
+                    + "JOIN Medium m ON g = m.game "
+                    + "LEFT JOIN Topic t ON m.topic = t "
+                    + "WHERE m.title LIKE :title "
+                    + "AND g.developer LIKE :developer "
+                    + "AND g.platforms LIKE :platform "
+                    + "AND t.name LIKE :topic",
+                Game.class
+            );
 
-        query.setMaxResults(300);
-        query.setParameter("title", "%" + title + "%");
-        query.setParameter("developer", "%" + developer + "%");
-        query.setParameter("platform", "%" + platform + "%");
-        query.setParameter("topic", "%" + topic + "%");
+            query.setMaxResults(300);
+            query.setParameter("title", "%" + title + "%");
+            query.setParameter("developer", "%" + developer + "%");
+            query.setParameter("platform", "%" + platform + "%");
+            query.setParameter("topic", "%" + topic + "%");
 
-        return new LinkedList<>(query.getResultList());
+            return new LinkedList<>(query.getResultList());
+        }
     }
 
     public List<Game> getAll() {

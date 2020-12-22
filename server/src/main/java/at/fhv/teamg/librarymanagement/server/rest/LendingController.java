@@ -44,11 +44,11 @@ public class LendingController {
 
         if (msgDto.getType().equals(MessageDto.MessageType.SUCCESS)) {
             response.put("lending", msgDto.getResult());
-            return HttpResponse.created(response);
+            return HttpResponse.created(response).header("Cache-Control", "no-store");
         } else if (msgDto.getType().equals(MessageDto.MessageType.FAILURE)) {
-            return HttpResponse.badRequest(response);
+            return HttpResponse.badRequest(response).header("Cache-Control", "no-store");
         } else {
-            return HttpResponse.serverError(response);
+            return HttpResponse.serverError(response).header("Cache-Control", "no-store");
         }
     }
 
