@@ -3,6 +3,7 @@ import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { selectServer } from "../../optionsSlice";
+import { loadBookDetail } from "../detail/detailSlice";
 import { searchBook, selectBooks, selectTopics } from "./searchSlice";
 
 function Book() {
@@ -72,7 +73,7 @@ function Book() {
                                     <td>{book.storageLocation}</td>
                                     <td>{book.availability}</td>
                                     <td>{book.author}</td>
-                                    <td><Link to={`/book/${book.id}`}>Detail</Link></td>
+                                    <td><Link to={`/book/${book.id}`} onClick={() => dispatch(loadBookDetail(book.id, server))}>Detail</Link></td>
                                 </tr>
                             );
                         })}

@@ -3,6 +3,7 @@ import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { selectServer } from "../../optionsSlice";
+import { loadDvdDetail } from "../detail/detailSlice";
 import { searchDvd, selectDvds, selectTopics } from "./searchSlice";
 
 function Dvd() {
@@ -72,7 +73,7 @@ function Dvd() {
                                     <td>{dvd.storageLocation}</td>
                                     <td>{dvd.availability}</td>
                                     <td>{dvd.director}</td>
-                                    <td><Link to={`/dvd/${dvd.id}`}>Detail</Link></td>
+                                    <td><Link to={`/dvd/${dvd.id}`} onClick={() => dispatch(loadDvdDetail(dvd.id, server))}>Detail</Link></td>
                                 </tr>
                             );
                         })}

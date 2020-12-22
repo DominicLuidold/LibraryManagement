@@ -1,9 +1,9 @@
+import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { loadBookDetail, selectBookDetail } from "../detailSlice";
-import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
-import { selectTopics, loadTopics } from "../../search/searchSlice";
 import { selectServer } from "../../../optionsSlice";
+import { selectTopics } from "../../search/searchSlice";
+import { selectBookDetail } from "../detailSlice";
 
 function Book() {
     let { id } = useParams();
@@ -12,13 +12,13 @@ function Book() {
     const server = useSelector(selectServer);
     const dispatch = useDispatch();
 
-    if (bookDetail?.details.id !== id) {
-        dispatch(loadBookDetail(id, server));
-    }
+    // if (bookDetail?.details.id !== id) {
+    //     dispatch(loadBookDetail(id, server));
+    // }
 
-    if (topics.length === 0) {
-        dispatch(loadTopics(server));
-    }
+    // if (topics.length === 0) {
+    //     dispatch(loadTopics(server));
+    // }
 
     return (
         <>

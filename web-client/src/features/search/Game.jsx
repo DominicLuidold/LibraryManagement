@@ -3,6 +3,7 @@ import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { selectServer } from "../../optionsSlice";
+import { loadGameDetail } from "../detail/detailSlice";
 import { searchGame, selectGames, selectTopics } from "./searchSlice";
 
 function Game() {
@@ -72,7 +73,7 @@ function Game() {
                                     <td>{game.storageLocation}</td>
                                     <td>{game.availability}</td>
                                     <td>{game.developer}</td>
-                                    <td><Link to={`/game/${game.id}`}>Detail</Link></td>
+                                    <td><Link to={`/game/${game.id}`} onClick={() => dispatch(loadGameDetail(game.id, server))}>Detail</Link></td>
                                 </tr>
                             );
                         })}

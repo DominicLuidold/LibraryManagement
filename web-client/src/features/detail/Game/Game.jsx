@@ -2,8 +2,8 @@ import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { selectServer } from "../../../optionsSlice";
-import { loadTopics, selectTopics } from "../../search/searchSlice";
-import { loadGameDetail, selectGameDetail } from "../detailSlice";
+import { selectTopics } from "../../search/searchSlice";
+import { selectGameDetail } from "../detailSlice";
 
 function Game() {
     let { id } = useParams();
@@ -12,13 +12,13 @@ function Game() {
     const server = useSelector(selectServer);
     const dispatch = useDispatch();
 
-    if (gameDetail?.details.id !== id) {
-        dispatch(loadGameDetail(id, server));
-    }
+    // if (gameDetail?.details.id !== id) {
+    //     dispatch(loadGameDetail(id, server));
+    // }
 
-    if (topics.length === 0) {
-        dispatch(loadTopics(server));
-    }
+    // if (topics.length === 0) {
+    //     dispatch(loadTopics(server));
+    // }
 
     return (
         <>
