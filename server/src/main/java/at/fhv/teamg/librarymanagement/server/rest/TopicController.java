@@ -27,6 +27,6 @@ public class TopicController {
     @ApiResponse(responseCode = "200", description = "List of topics")
     public HttpResponse<List<TopicDto>> all(HttpRequest<String> request) {
         var topics = Cache.getInstance().getAllTopics();
-        return HttpResponse.ok(topics);
+        return HttpResponse.ok(topics).header("Cache-Control", "no-store");
     }
 }
