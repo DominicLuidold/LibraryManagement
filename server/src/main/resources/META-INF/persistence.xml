@@ -14,12 +14,12 @@
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Medium</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.MediumCopy</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.MediumType</class>
+        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Message</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Reservation</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Tag</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Topic</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.User</class>
         <class>at.fhv.teamg.librarymanagement.server.persistence.entity.UserRole</class>
-        <class>at.fhv.teamg.librarymanagement.server.persistence.entity.Message</class>
 
         <!-- Properties -->
         <properties>
@@ -36,32 +36,18 @@
             <property name="hibernate.generate_statistics" value="false"/>
             <property name="hibernate.jdbc.batch_size" value="5"/>
 
+            <!-- Connection pool -->
             <property name="hibernate.connection.provider_class"
                       value="com.zaxxer.hikari.hibernate.HikariConnectionProvider"/>
-
 
             <property name="hibernate.hikari.minimumIdle" value="5"/>
             <property name="hibernate.hikari.maximumPoolSize" value="10"/>
             <property name="hibernate.hikari.idleTimeout" value="30000"/>
 
-            <property name="hibernate.hikari.jdbcUrl" value="***REMOVED***" />
+            <property name="hibernate.hikari.jdbcUrl"
+                      value="***REMOVED***"/>
             <property name="hibernate.hikari.dataSource.user" value="***REMOVED***"/>
             <property name="hibernate.hikari.dataSource.password" value="***REMOVED***"/>
-
-            <!-- Connection pool -->
-            <!--
-            <property name="hibernate.c3p0.min_size" value="5"/>
-            <property name="hibernate.c3p0.max_size" value="20"/>
-            <property name="hibernate.c3p0.timeout" value="120"/>
-            <property name="hibernate.c3p0.maxIdleTime" value="110"/>
-            <property name="hibernate.c3p0.max_statements" value="5000"/>
-            <property name="hibernate.c3p0.idle_test_period" value="30"/>
-            <property name="hibernate.c3p0.idleConnectionTestPeriod" value="5"/>
-            <property name="hibernate.c3p0.validationQuery " value="SELECT 1"/>
-            <property name="hibernate.c3p0.numHelperThreads " value="10"/>
-            <property name="hibernate.c3p0.unreturnedConnectionTimeout" value="100"/>
-            <property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces" value="false"/>
-            -->
         </properties>
     </persistence-unit>
 </persistence>

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -25,7 +26,7 @@ public class MediumCopy {
     @ManyToOne
     private Medium medium;
 
-    @OneToMany(mappedBy = "mediumCopy")
+    @OneToMany(mappedBy = "mediumCopy", fetch = FetchType.EAGER)
     private Set<Lending> lending = new LinkedHashSet<>();
 
     public UUID getId() {
