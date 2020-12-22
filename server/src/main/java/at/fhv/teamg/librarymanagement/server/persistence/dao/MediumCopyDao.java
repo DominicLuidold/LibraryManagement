@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MediumCopyDao extends BaseDao<MediumCopy> {
-
     /**
      * {@inheritDoc}
      */

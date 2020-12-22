@@ -51,24 +51,26 @@ public class BookDao extends BaseDao<Book> {
      * @return List of Book entities
      */
     public List<Book> findBy(String title, String author, String isbn13, String topic) {
-        TypedQuery<Book> query = entityManager.createQuery(
-            "SELECT b FROM Book b "
-                + "JOIN Medium m ON b = m.book "
-                + "LEFT JOIN Topic t ON m.topic = t "
-                + "WHERE m.title LIKE :title "
-                + "AND b.author LIKE :author "
-                + "AND b.isbn13 LIKE :isbn13 "
-                + "AND t.name LIKE :topic",
-            Book.class
-        );
+        synchronized (lock) {
+            TypedQuery<Book> query = entityManager.createQuery(
+                "SELECT b FROM Book b "
+                    + "JOIN Medium m ON b = m.book "
+                    + "LEFT JOIN Topic t ON m.topic = t "
+                    + "WHERE m.title LIKE :title "
+                    + "AND b.author LIKE :author "
+                    + "AND b.isbn13 LIKE :isbn13 "
+                    + "AND t.name LIKE :topic",
+                Book.class
+            );
 
-        query.setMaxResults(300);
-        query.setParameter("title", "%" + title + "%");
-        query.setParameter("author", "%" + author + "%");
-        query.setParameter("isbn13", "%" + isbn13 + "%");
-        query.setParameter("topic", "%" + topic + "%");
+            query.setMaxResults(300);
+            query.setParameter("title", "%" + title + "%");
+            query.setParameter("author", "%" + author + "%");
+            query.setParameter("isbn13", "%" + isbn13 + "%");
+            query.setParameter("topic", "%" + topic + "%");
 
-        return new LinkedList<>(query.getResultList());
+            return new LinkedList<>(query.getResultList());
+        }
     }
 
     public List<Book> getAll() {

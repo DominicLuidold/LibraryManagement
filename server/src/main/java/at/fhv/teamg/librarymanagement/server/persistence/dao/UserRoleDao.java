@@ -9,8 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UserRoleDao extends BaseDao<UserRole> {
-    private static final Logger LOG = LogManager.getLogger(UserRoleDao.class);
-
     /**
      * {@inheritDoc}
      */

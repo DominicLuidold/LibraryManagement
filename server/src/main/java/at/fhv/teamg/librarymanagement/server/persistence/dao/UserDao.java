@@ -56,21 +56,23 @@ public class UserDao extends BaseDao<User> {
      * @return a Optional of the User.
      */
     public Optional<User> findByName(String username) {
-        TypedQuery<User> query = entityManager.createQuery(
-            "SELECT u FROM User u "
-                + "JOIN UserRole ur ON ur = u.role "
-                + "WHERE u.username = :username ",
-            User.class
-        );
-        query.setParameter("username", username.trim());
+        synchronized (lock) {
+            TypedQuery<User> query = entityManager.createQuery(
+                "SELECT u FROM User u "
+                    + "JOIN UserRole ur ON ur = u.role "
+                    + "WHERE u.username = :username ",
+                User.class
+            );
+            query.setParameter("username", username.trim());
 
-        Optional<User> user = Optional.empty();
+            Optional<User> user = Optional.empty();
 
-        try {
-            user = Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            LOG.error("Finding user by username failed", e);
+            try {
+                user = Optional.of(query.getSingleResult());
+            } catch (NoResultException e) {
+                LOG.error("Finding user by username failed", e);
+            }
+            return user;
         }
-        return user;
     }
 }
