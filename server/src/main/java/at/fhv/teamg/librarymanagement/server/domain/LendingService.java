@@ -254,6 +254,11 @@ public class LendingService extends BaseMediaService {
      * @return Current lending, {@link Optional#empty()} if there's no active lending
      */
     public Optional<Lending> getCurrentLending(Set<Lending> lendingSet) {
+        if (null == lendingSet) {
+            LOG.error("Received [NULL] instead of [Set<Lending>]. Possibly a Hibernate error..?");
+            return Optional.empty();
+        }
+
         for (Lending lending : lendingSet) {
             if ((lending.getStartDate().isBefore(LocalDate.now())
                 || lending.getStartDate().isEqual(LocalDate.now()))
