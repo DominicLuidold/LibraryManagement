@@ -10,8 +10,8 @@ import base64
 username = "***REMOVED***"
 password = "***REMOVED***"
 userid = None
-#BASE_URL = '***REMOVED***'
-BASE_URL='http://0.0.0.0:8888'
+BASE_URL = '***REMOVED***'
+#BASE_URL='http://0.0.0.0:8888'
 headers = {'Content-Type': 'application/json'}
 session = None
 token = None
@@ -106,17 +106,21 @@ def getCopyIdOfMedium(mediumtype, mediumID):
 	response = glbals['session'].get(glbals['BASE_URL']+"/detail/"+mediumtype+"/"+mediumID, headers=hed)
 	jsonResp = response.json()
 	availableID = None
-	for copy in jsonResp["copies"]:
-		if copy["available"] == True:
-			availableID = copy["id"]
-			print("There is an available Copy")
-			break
-	if availableID == None:
-		print("Sory there is no Copy available.")
-		return None
-	else:
-		print("Okey lets lend the Copy with the ID="+availableID)
-		return availableID
+	#print(jsonResp)
+	try:
+		for copy in jsonResp["copies"]:
+			if copy["available"] == True:
+				availableID = copy["id"]
+				print("There is an available Copy")
+				break
+		if availableID == None:
+			print("Sory there is no Copy available.")
+			return None
+		else:
+			print("Okey lets lend the Copy with the ID="+availableID)
+			return availableID
+	except:
+		print("There are no Copies available")
 	
 def printStatus():
 	glbals = globals()
@@ -147,7 +151,7 @@ class MyPromt(Cmd):
 
 
 	def do_setLogin(self, inp):
-		'''Set the Login Credentials with: "setlogin ''' + glbals['BASE_URL'] + ''' ''' + glbals['username'] + ''' ''' + glbals['password']
+		'''Set the Login Credentials with: "setlogin ***REMOVED*** username password'''
 		global host
 		global username
 		global password
